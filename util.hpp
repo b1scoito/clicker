@@ -17,4 +17,5 @@ namespace util
 	}
 
 	bool is_focused( );
+	std::string get_active_window_title( );
 }

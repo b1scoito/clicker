@@ -19,9 +19,6 @@
     <ClCompile Include="imgui_draw.cpp">
       <Filter>def\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>def\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
       <Filter>def\imgui\impl</Filter>
     </ClCompile>

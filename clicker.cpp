@@ -8,7 +8,7 @@ DWORD WINAPI clicker::thread( LPVOID lParam )
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 
-		if ( config.clicker.enabled && vars::b_mouse_down )
+		if ( config.clicker.enabled && vars::b_mouse_down && util::get_active_window_title( ).find( vars::items[config.clicker.index_version] ) != std::string::npos )
 		{
 			if ( vars::b_first_click )
 			{
@@ -19,6 +19,8 @@ DWORD WINAPI clicker::thread( LPVOID lParam )
 			else
 			{
 				auto random_delay = math::random_int( ( int ) config.clicker.min_cps * 10, ( int ) config.clicker.max_cps * 10 );
+
+				vars::d_current_cps = random_delay / 10;
 
 				if ( ( std::clock( ) - vars::l_last_click_time ) > random_delay )
 				{
