@@ -8,7 +8,7 @@ namespace vars
 	inline int d_current_cps { 0 };
 	inline long l_last_click_time;
 
-	inline const char *items[] = { "Minecraft", "Badlion", "Lunar" };
+	inline const char *items[] = { "Minecraft", "Badlion", "Lunar", "Custom" };
 
 	namespace fonts
 	{

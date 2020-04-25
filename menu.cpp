@@ -11,7 +11,7 @@ void menu::render( )
 			ImGui::SetWindowSize( ( ImVec2( 500, 300 ) ) );
 			ImGui::SetWindowPos( ImVec2( -1, -1 ) );
 
-			ImGui::Checkbox( "enabled", &config.clicker.enabled );
+			ImGui::Checkbox( xorstr( "enabled" ), &config.clicker.enabled );
 
 			ImGui::SliderFloat( xorstr( "maximum cps" ), &config.clicker.max_cps, 1.f, 20.f, xorstr( "%.1f" ) );
 
@@ -23,7 +23,28 @@ void menu::render( )
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "minimum clicks per second" ) );
 
-			ImGui::Combo( "version", &config.clicker.index_version, vars::items, IM_ARRAYSIZE( vars::items ) );
+			ImGui::Combo( xorstr( "version" ), &config.clicker.index_version, vars::items, IM_ARRAYSIZE( vars::items ) );
+
+			static char buffer[ 16 ];
+
+			// this is the worst logic pls help
+
+			switch ( config.clicker.index_version )
+			{
+				case 0:
+					config.clicker.window_name = "Minecraft";
+					break;
+				case 1:
+					config.clicker.window_name = "Badlion";
+					break;
+				case 2:
+					config.clicker.window_name = "Lunar";
+					break;
+				case 3:
+					ImGui::InputText( xorstr( "window name" ), buffer, IM_ARRAYSIZE( buffer ) );
+					config.clicker.window_name = buffer;
+					break;
+			}
 
 			/* bad math */
 			if ( config.clicker.max_cps <= config.clicker.min_cps )
@@ -118,6 +139,8 @@ bool menu::initialize( )
 	ImGuiStyle *style = &ImGui::GetStyle( );
 
 	ImGuiIO &io = ImGui::GetIO( ); ( void ) io;
+
+	io.IniFilename = nullptr; // no config file
 
 	ImGui::StyleColorsDark( );
 

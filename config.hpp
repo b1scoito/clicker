@@ -21,6 +21,7 @@ public:
 	struct
 	{
 		bool enabled { false };
+		std::string window_name;
 		int index_version { 0 };
 		float min_cps { 0.f };
 		float max_cps { 0.f };

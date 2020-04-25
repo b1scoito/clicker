@@ -8,7 +8,7 @@ DWORD WINAPI clicker::thread( LPVOID lParam )
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 
-		if ( config.clicker.enabled && vars::b_mouse_down && util::get_active_window_title( ).find( vars::items[config.clicker.index_version] ) != std::string::npos )
+		if ( config.clicker.enabled && vars::b_mouse_down && util::get_active_window_title( ).find( config.clicker.window_name ) != std::string::npos )
 		{
 			if ( vars::b_first_click )
 			{
