@@ -1,18 +1,15 @@
-#include <fstream>
-#include <ShlObj.h>
 #include "config.hpp"
-#include "archivex.hpp"
 
 cconfig config;
 
 void cconfig::run( const char *name )
 {
-	PWSTR pathToDocuments;
-	if ( SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Documents, 0, NULL, &pathToDocuments ) ) )
+	PWSTR path_to_documents;
+	if ( SUCCEEDED( LI_FN( SHGetKnownFolderPath ).safe_cached( )( FOLDERID_Documents, 0, nullptr, &path_to_documents ) ) )
 	{
-		path = pathToDocuments;
+		path = path_to_documents;
 		path /= name;
-		CoTaskMemFree( pathToDocuments );
+		LI_FN( CoTaskMemFree ).safe_cached( )( path_to_documents );
 	}
 
 	if ( !std::filesystem::is_directory( path ) )

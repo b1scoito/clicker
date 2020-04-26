@@ -2,13 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="console.cpp">
-      <Filter>def\utils\console</Filter>
+      <Filter>def\include\console</Filter>
     </ClCompile>
     <ClCompile Include="util.cpp">
       <Filter>def\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui.cpp">
-      <Filter>def\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
       <Filter>def\imgui</Filter>
@@ -25,12 +22,15 @@
     <ClCompile Include="config.cpp">
       <Filter>def\config</Filter>
     </ClCompile>
-    <ClCompile Include="menu.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="imgui.cpp">
+      <Filter>def\imgui</Filter>
+    </ClCompile>
     <ClCompile Include="clicker.cpp">
       <Filter>clicker</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
+      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,9 +39,6 @@
     </Filter>
     <Filter Include="def\utils">
       <UniqueIdentifier>{449f7495-d7e9-4980-8165-1fd743d0f9ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="def\utils\console">
-      <UniqueIdentifier>{07820f3b-794d-4cef-b7de-35b1efcd1cc6}</UniqueIdentifier>
     </Filter>
     <Filter Include="def\imgui">
       <UniqueIdentifier>{274db353-e095-4fd3-bcdf-de1bce15765c}</UniqueIdentifier>
@@ -61,13 +58,13 @@
     <Filter Include="def\config">
       <UniqueIdentifier>{c845de97-77c3-4fb7-aa17-ff5b98027007}</UniqueIdentifier>
     </Filter>
+    <Filter Include="def\include\console">
+      <UniqueIdentifier>{07820f3b-794d-4cef-b7de-35b1efcd1cc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console.hpp">
-      <Filter>def\utils\console</Filter>
-    </ClInclude>
-    <ClInclude Include="includes.hpp">
-      <Filter>def</Filter>
+      <Filter>def\include\console</Filter>
     </ClInclude>
     <ClInclude Include="util.hpp">
       <Filter>def\utils</Filter>
@@ -79,15 +76,6 @@
       <Filter>def\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
-      <Filter>def\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_truetype.h">
-      <Filter>def\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_textedit.h">
-      <Filter>def\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_rectpack.h">
       <Filter>def\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
@@ -105,9 +93,6 @@
     <ClInclude Include="archivex.hpp">
       <Filter>def\config</Filter>
     </ClInclude>
-    <ClInclude Include="menu.hpp">
-      <Filter>ui</Filter>
-    </ClInclude>
     <ClInclude Include="clicker.hpp">
       <Filter>clicker</Filter>
     </ClInclude>
@@ -118,6 +103,21 @@
       <Filter>def\include</Filter>
     </ClInclude>
     <ClInclude Include="singleton.hpp">
+      <Filter>def\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>def\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>def\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>def\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui.hpp">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="includes.hpp">
       <Filter>def\include</Filter>
     </ClInclude>
   </ItemGroup>

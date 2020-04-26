@@ -167,15 +167,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clicker.cpp" />
+    <ClCompile Include="imgui.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
-    <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="ui.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +191,7 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
-    <ClInclude Include="menu.hpp" />
+    <ClInclude Include="ui.hpp" />
     <ClInclude Include="vars.hpp" />
     <ClInclude Include="includes.hpp" />
     <ClInclude Include="lazy_importer.hpp" />

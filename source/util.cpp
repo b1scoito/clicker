@@ -68,7 +68,7 @@ std::string util::get_active_window_title( )
 {
 	char title[ 256 ];
 	HWND hwnd = LI_FN( GetForegroundWindow ).safe_cached( )( );
-	GetWindowText( hwnd, title, sizeof( title ) );
+	LI_FN( GetWindowTextA ).safe_cached( )( hwnd, title, sizeof( title ) );
 	return title;
 }
 

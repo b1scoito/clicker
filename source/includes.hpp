@@ -17,6 +17,6 @@
 #include "xorstr.hpp"
 #include "console.hpp"
 #include "vars.hpp"
-#include "menu.hpp"
+#include "ui.hpp"
 #include "config.hpp"
 #include "clicker.hpp"

@@ -1,5 +1,10 @@
 #pragma once
 
+#include "includes.hpp"
+#include "archivex.hpp"
+
+#include <ShlObj.h>
+#include <fstream>
 #include <filesystem>
 
 class cconfig final

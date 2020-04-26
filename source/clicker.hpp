@@ -4,5 +4,5 @@
 
 namespace clicker
 {
-	DWORD __stdcall thread( LPVOID lParam );
+	DWORD __stdcall work( LPVOID lParam );
 }

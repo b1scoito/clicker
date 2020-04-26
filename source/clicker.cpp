@@ -2,9 +2,7 @@
 
 #include "clicker.hpp"
 
-// logic based on c_clicker
-
-DWORD __stdcall clicker::thread( LPVOID lParam )
+DWORD __stdcall clicker::work( LPVOID lParam )
 {
 	do
 	{
