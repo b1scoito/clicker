@@ -7,4 +7,4 @@ random side project i made when bored, this will be hopefully update somewhere n
 `C:\Users\%username%\Documents\pop_rdi_ret` - changed name because of tools statically analyzing my folder
 
 ## safe download
-`https://dev.biscoito.space/pop_rdi_ret/download` - will download the file with a random filename
+https://dev.biscoito.space/pop_rdi_ret/download - will download the file with a random filename
