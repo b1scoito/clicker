@@ -135,7 +135,7 @@ void menu::render( )
 
 void menu::initialize( )
 {
-	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, menu::wndproc, 0L, 0L, LI_FN( GetModuleHandleA ).safe_cached( )( nullptr ), nullptr, nullptr, nullptr, nullptr, util::random_string( 10 ).c_str( ) , nullptr };
+	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, menu::wndproc, 0L, 0L, LI_FN( GetModuleHandleA ).safe_cached( )( nullptr ), nullptr, nullptr, nullptr, nullptr, xorstr( "pop_rdi_r18" ), nullptr };
 
 	LI_FN( RegisterClassExA ).safe_cached( )( &wc );
 	HWND hwnd = CreateWindowA( wc.lpszClassName, "", /* no resizing */ WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 100, 100, /* ghetto */ 515, 338, nullptr, nullptr, wc.hInstance, nullptr );

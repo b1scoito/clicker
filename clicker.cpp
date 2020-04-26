@@ -30,10 +30,12 @@ DWORD __stdcall clicker::thread( LPVOID lParam )
 					var::l_last_click_time = std::clock( );
 
 					std::this_thread::sleep_for( std::chrono::milliseconds( util::random_int( 30, 50 ) ) );
-
 					util::input::left_up( );
 
 					var::i_clicks_this_session++;
+
+					_log( LDEBUG, "random_delay %d clock %d last click time %d", random_delay, std::clock( ), var::l_last_click_time );
+
 				}
 			}
 		}
