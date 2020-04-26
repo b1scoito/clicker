@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="math.cpp">
-      <Filter>def\utils\math</Filter>
-    </ClCompile>
     <ClCompile Include="console.cpp">
       <Filter>def\utils\console</Filter>
     </ClCompile>
@@ -26,7 +23,7 @@
       <Filter>def\imgui\impl</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp">
-      <Filter>ui\config</Filter>
+      <Filter>def\config</Filter>
     </ClCompile>
     <ClCompile Include="menu.cpp">
       <Filter>ui</Filter>
@@ -43,9 +40,6 @@
     <Filter Include="def\utils">
       <UniqueIdentifier>{449f7495-d7e9-4980-8165-1fd743d0f9ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="def\utils\math">
-      <UniqueIdentifier>{bde741ec-757b-43a0-939f-eb632317bb42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="def\utils\console">
       <UniqueIdentifier>{07820f3b-794d-4cef-b7de-35b1efcd1cc6}</UniqueIdentifier>
     </Filter>
@@ -61,28 +55,19 @@
     <Filter Include="clicker">
       <UniqueIdentifier>{6d636a47-d231-4683-a3ee-7a6540c2acc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui\config">
+    <Filter Include="def\include">
+      <UniqueIdentifier>{0326fb6d-5596-4a0b-95fb-dec7dc2eb0c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="def\config">
       <UniqueIdentifier>{c845de97-77c3-4fb7-aa17-ff5b98027007}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="math.hpp">
-      <Filter>def\utils\math</Filter>
-    </ClInclude>
     <ClInclude Include="console.hpp">
       <Filter>def\utils\console</Filter>
     </ClInclude>
     <ClInclude Include="includes.hpp">
       <Filter>def</Filter>
-    </ClInclude>
-    <ClInclude Include="singleton.hpp">
-      <Filter>def\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="lazy_importer.hpp">
-      <Filter>def\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="xorstr.hpp">
-      <Filter>def\utils</Filter>
     </ClInclude>
     <ClInclude Include="util.hpp">
       <Filter>def\utils</Filter>
@@ -115,16 +100,25 @@
       <Filter>def\imgui\impl</Filter>
     </ClInclude>
     <ClInclude Include="config.hpp">
-      <Filter>ui\config</Filter>
+      <Filter>def\config</Filter>
     </ClInclude>
     <ClInclude Include="archivex.hpp">
-      <Filter>ui\config</Filter>
+      <Filter>def\config</Filter>
     </ClInclude>
     <ClInclude Include="menu.hpp">
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="clicker.hpp">
       <Filter>clicker</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_importer.hpp">
+      <Filter>def\include</Filter>
+    </ClInclude>
+    <ClInclude Include="xorstr.hpp">
+      <Filter>def\include</Filter>
+    </ClInclude>
+    <ClInclude Include="singleton.hpp">
+      <Filter>def\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

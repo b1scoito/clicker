@@ -4,5 +4,5 @@
 
 namespace clicker
 {
-	DWORD WINAPI thread( LPVOID lParam );
+	DWORD __stdcall thread( LPVOID lParam );
 }

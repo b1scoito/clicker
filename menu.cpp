@@ -13,6 +13,9 @@ void menu::render( )
 
 			ImGui::Checkbox( xorstr( "enabled" ), &config.clicker.enabled );
 
+			if ( ImGui::IsItemHovered( ) )
+				ImGui::SetTooltip( xorstr( "master switch" ) );
+
 			ImGui::SliderFloat( xorstr( "maximum cps" ), &config.clicker.max_cps, 1.f, 20.f, xorstr( "%.1f" ) );
 
 			if ( ImGui::IsItemHovered( ) )
@@ -23,7 +26,10 @@ void menu::render( )
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "minimum clicks per second" ) );
 
-			ImGui::Combo( xorstr( "version" ), &config.clicker.index_version, vars::items, IM_ARRAYSIZE( vars::items ) );
+			ImGui::Combo( xorstr( "version" ), &config.clicker.index_version, var::items, IM_ARRAYSIZE( var::items ) );
+
+			if ( ImGui::IsItemHovered( ) )
+				ImGui::SetTooltip( xorstr( "game version that the auto clicker will work in" ) );
 
 			static char buffer[ 16 ];
 
@@ -32,17 +38,17 @@ void menu::render( )
 			switch ( config.clicker.index_version )
 			{
 				case 0:
-					config.clicker.window_name = "Minecraft";
+					config.clicker.window_title = "Minecraft";
 					break;
 				case 1:
-					config.clicker.window_name = "Badlion";
+					config.clicker.window_title = "Badlion";
 					break;
 				case 2:
-					config.clicker.window_name = "Lunar";
+					config.clicker.window_title = "Lunar";
 					break;
 				case 3:
-					ImGui::InputText( xorstr( "window name" ), buffer, IM_ARRAYSIZE( buffer ) );
-					config.clicker.window_name = buffer;
+					ImGui::InputText( xorstr( "window title" ), buffer, IM_ARRAYSIZE( buffer ) );
+					config.clicker.window_title = buffer;
 					break;
 			}
 
@@ -50,9 +56,19 @@ void menu::render( )
 			if ( config.clicker.max_cps <= config.clicker.min_cps )
 				config.clicker.max_cps += 1.f;
 
-			ImGui::Text( xorstr( "is button down: %s" ), vars::b_mouse_down ? "yes" : "no" );
-			ImGui::Text( xorstr( "current cps: %d" ), vars::d_current_cps );
-			ImGui::Text( xorstr( "average %.3f ms/framerate (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
+			ImGui::Text( xorstr( "is button down: %s" ), var::b_mouse_down ? "yes" : "no" );
+
+			if ( ImGui::IsItemHovered( ) )
+				ImGui::SetTooltip( xorstr( "checks whether or not the left button is pressed down" ) );
+
+			ImGui::Text( xorstr( "current cps: %d" ), var::i_current_cps );
+
+			if ( ImGui::IsItemHovered( ) )
+				ImGui::SetTooltip( xorstr( "current clicks per second" ) );
+
+			ImGui::Text( xorstr( "clicks on this session %d" ), var::i_clicks_this_session );
+
+			ImGui::Text( xorstr( "application average %.3f ms/framerate (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
 
 			ImGui::BeginChild( xorstr( "config" ), ImVec2( 250, 250 ) );
 			{
@@ -117,23 +133,22 @@ void menu::render( )
 	ImGui::EndFrame( );
 }
 
-bool menu::initialize( )
+void menu::initialize( )
 {
-	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, menu::wndproc, 0L, 0L, GetModuleHandle( nullptr ), nullptr, nullptr, nullptr, nullptr, xorstr( "clicker" ) , nullptr };
-	::RegisterClassEx( &wc );
-	HWND hwnd = ::CreateWindow( wc.lpszClassName, xorstr( "" ), /* no resizing */ WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 100, 100, /* ghetto */ 515, 338, nullptr, nullptr, wc.hInstance, nullptr );
+	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, menu::wndproc, 0L, 0L, LI_FN( GetModuleHandleA ).safe_cached( )( nullptr ), nullptr, nullptr, nullptr, nullptr, util::random_string( 10 ).c_str( ) , nullptr };
+
+	LI_FN( RegisterClassExA ).safe_cached( )( &wc );
+	HWND hwnd = CreateWindowA( wc.lpszClassName, "", /* no resizing */ WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 100, 100, /* ghetto */ 515, 338, nullptr, nullptr, wc.hInstance, nullptr );
 
 	if ( !menu::create_device_d3d( hwnd ) )
 	{
 		menu::cleanup_device_d3d( );
-		::UnregisterClass( wc.lpszClassName, wc.hInstance );
-		return EXIT_FAILURE;
+		LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
 	}
 
-	::ShowWindow( hwnd, SW_SHOWDEFAULT );
-	::UpdateWindow( hwnd );
+	LI_FN( ShowWindow ).safe_cached( )( hwnd, SW_SHOWDEFAULT );
+	LI_FN( UpdateWindow ).safe_cached( )( hwnd );
 
-	IMGUI_CHECKVERSION( );
 	ImGui::CreateContext( );
 
 	ImGuiStyle *style = &ImGui::GetStyle( );
@@ -160,10 +175,10 @@ bool menu::initialize( )
 
 	while ( lpMsg.message != WM_QUIT )
 	{
-		if ( ::PeekMessage( &lpMsg, nullptr, 0U, 0U, PM_REMOVE ) )
+		if ( LI_FN( PeekMessageA ).safe_cached( )( &lpMsg, nullptr, 0U, 0U, PM_REMOVE ) )
 		{
-			::TranslateMessage( &lpMsg );
-			::DispatchMessage( &lpMsg );
+			LI_FN( TranslateMessage ).safe_cached( )( &lpMsg );
+			LI_FN( DispatchMessageA ).safe_cached( )( &lpMsg );
 			continue;
 		}
 
@@ -196,12 +211,13 @@ bool menu::initialize( )
 	// destroy imgui and window and d3d and my thighs
 	ImGui_ImplDX9_Shutdown( );
 	ImGui_ImplWin32_Shutdown( );
-	ImGui::DestroyContext( );
-	menu::cleanup_device_d3d( );
-	::DestroyWindow( hwnd );
-	::UnregisterClass( wc.lpszClassName, wc.hInstance );
 
-	return EXIT_SUCCESS;
+	ImGui::DestroyContext( );
+
+	menu::cleanup_device_d3d( );
+
+	LI_FN( DestroyWindow ).safe_cached( )( hwnd );
+	LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
 }
 
 bool menu::create_device_d3d( HWND hWnd )
@@ -265,6 +281,7 @@ LRESULT __stdcall menu::wndproc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 			{
 				parameters.BackBufferWidth = LOWORD( lParam );
 				parameters.BackBufferHeight = HIWORD( lParam );
+
 				menu::reset_device( );
 			}
 			return 0;
@@ -273,8 +290,8 @@ LRESULT __stdcall menu::wndproc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 				return 0;
 			break;
 		case WM_DESTROY:
-			::PostQuitMessage( 0 );
+			LI_FN( PostQuitMessage ).safe_cached( )( 0 );
 			return 0;
 	}
-	return ::DefWindowProc( hwnd, msg, wParam, lParam );
+	return LI_FN( DefWindowProcA ).safe_cached( )( hwnd, msg, wParam, lParam );
 }

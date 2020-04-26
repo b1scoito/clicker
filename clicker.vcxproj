@@ -175,7 +175,6 @@
     <ClCompile Include="imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="math.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
@@ -196,7 +195,6 @@
     <ClInclude Include="vars.hpp" />
     <ClInclude Include="includes.hpp" />
     <ClInclude Include="lazy_importer.hpp" />
-    <ClInclude Include="math.hpp" />
     <ClInclude Include="singleton.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="xorstr.hpp" />

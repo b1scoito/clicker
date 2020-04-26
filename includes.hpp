@@ -12,7 +12,6 @@
 #pragma comment(lib, "d3d9.lib")
 
 #include "util.hpp"
-#include "math.hpp"
 #include "lazy_importer.hpp"
 #include "singleton.hpp"
 #include "xorstr.hpp"
@@ -21,4 +20,3 @@
 #include "menu.hpp"
 #include "config.hpp"
 #include "clicker.hpp"
-#include "math.hpp"

@@ -10,11 +10,11 @@ namespace menu
 	static D3DPRESENT_PARAMETERS    parameters = {};
 
 	void render( );
-	bool initialize( );
+	void initialize( );
 
 	bool create_device_d3d( HWND hWnd );
 	void cleanup_device_d3d( );
 	void reset_device( );
 
-	LRESULT WINAPI wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	LRESULT __stdcall wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 }
