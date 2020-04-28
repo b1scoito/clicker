@@ -7,7 +7,7 @@
 #include <fstream>
 #include <filesystem>
 
-class cconfig final
+class c_config final
 {
 public:
 	void run( const char * );
@@ -17,11 +17,7 @@ public:
 	void remove( size_t );
 	void rename( size_t, const char * );
 	void reset( );
-
-	constexpr auto &get_configs( )
-	{
-		return configs;
-	}
+	constexpr auto &get_configs( ) { return configs; }
 
 	struct
 	{
@@ -30,11 +26,13 @@ public:
 		int index_version { 0 };
 		float min_cps { 0.f };
 		float max_cps { 0.f };
-	} clicker;
+		float main_color[ 4 ] { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+	clicker;
 
 private:
 	std::filesystem::path path;
 	std::vector<std::string> configs;
 };
 
-extern cconfig config;
+extern c_config config;

@@ -26,11 +26,11 @@ SOFTWARE.
 
 #pragma once
 
-template <typename Stream>
-class ArchiveX final
+template <typename t_stream>
+class archx final
 {
 public:
-	constexpr explicit ArchiveX( Stream &stream ) : stream { stream } { }
+	constexpr explicit archx( t_stream &stream ) : stream { stream } { }
 
 	template <typename T>
 	constexpr const auto &operator<<( const T &item ) const
@@ -47,5 +47,5 @@ public:
 	}
 
 private:
-	Stream &stream;
+	t_stream &stream;
 };

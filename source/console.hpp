@@ -2,9 +2,9 @@
 
 #include "includes.hpp"
 
-enum
+enum : int
 {
-	LEMPTY,
+	LEMPTY = 0,
 	LSUCCESS,
 	LDEBUG,
 	LINFO,

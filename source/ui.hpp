@@ -10,7 +10,9 @@ namespace ui
 	static D3DPRESENT_PARAMETERS parameters = {};
 
 	void render( );
-	void initialize( );
+	void create( );
+
+	void dispose( HWND hwnd, WNDCLASSEX wc );
 
 	namespace d3d9
 	{
@@ -65,14 +67,14 @@ namespace ui
 	}
 
 	template <typename T>
-	static ImVec4 color( T r, T g, T b, T a )
+	static ImVec4 color( T r, T g, T b, T a = 255 )
 	{
-		return 
-		{ 
+		return
+		{
 			static_cast< float >( r ) / 255.0f,
 			static_cast< float >( g ) / 255.0f,
 			static_cast< float >( b ) / 255.0f,
-			static_cast< float >( a ) / 255.0f 
+			static_cast< float >( a ) / 255.0f
 		};
 	}
 

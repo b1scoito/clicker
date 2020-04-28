@@ -2,7 +2,7 @@
 
 HHOOK hhk_mouse;
 
-LRESULT __stdcall util::hooking::hh_mouse_callback( int nCode, WPARAM wParam, LPARAM lParam )
+LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam )
 {
 	MSLLHOOKSTRUCT *hook = ( MSLLHOOKSTRUCT * ) lParam;
 
@@ -32,9 +32,9 @@ LRESULT __stdcall util::hooking::hh_mouse_callback( int nCode, WPARAM wParam, LP
 	return LI_FN( CallNextHookEx ).safe_cached( )( hhk_mouse, nCode, wParam, lParam );
 }
 
-DWORD __stdcall util::hooking::m_hook_all( )
+DWORD __stdcall util::hooking::work( )
 {
-	hhk_mouse = LI_FN( SetWindowsHookExA ).safe_cached( )( WH_MOUSE_LL, &util::hooking::hh_mouse_callback, nullptr, 0 );
+	hhk_mouse = LI_FN( SetWindowsHookExA ).safe_cached( )( WH_MOUSE_LL, &util::hooking::mouse, nullptr, 0 );
 
 	MSG lpMsg;
 	while ( LI_FN( GetMessageA ).safe_cached( )( &lpMsg, nullptr, 0, 0 ) )

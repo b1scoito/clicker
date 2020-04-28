@@ -32,6 +32,9 @@
     <ClCompile Include="ui.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>def\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="def">

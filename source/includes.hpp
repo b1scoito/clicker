@@ -1,3 +1,8 @@
+// defining stuff we need
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
+// includes
 #include <windows.h>
 #include <iostream>
 #include <shared_mutex>

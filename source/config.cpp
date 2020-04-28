@@ -1,14 +1,15 @@
 #include "config.hpp"
 
-cconfig config;
+c_config config;
 
-void cconfig::run( const char *name )
+void c_config::run( const char *name )
 {
 	PWSTR path_to_documents;
 	if ( SUCCEEDED( LI_FN( SHGetKnownFolderPath ).safe_cached( )( FOLDERID_Documents, 0, nullptr, &path_to_documents ) ) )
 	{
 		path = path_to_documents;
 		path /= name;
+
 		LI_FN( CoTaskMemFree ).safe_cached( )( path_to_documents );
 	}
 
@@ -18,13 +19,16 @@ void cconfig::run( const char *name )
 		std::filesystem::create_directory( path );
 	}
 
-	std::transform( std::filesystem::directory_iterator { path },
+	std::transform
+	( 
+		std::filesystem::directory_iterator { path },
 		std::filesystem::directory_iterator { },
 		std::back_inserter( configs ),
-		[ ]( const auto &entry ) { return entry.path( ).filename( ).string( ); } );
+		[ ]( const auto &entry ) { return entry.path( ).filename( ).string( ); } 
+	);
 }
 
-void cconfig::load( size_t id )
+void c_config::load( size_t id )
 {
 	if ( !std::filesystem::is_directory( path ) )
 	{
@@ -37,11 +41,11 @@ void cconfig::load( size_t id )
 	if ( !in.good( ) )
 		return;
 
-	ArchiveX<std::ifstream>{ in } >> clicker;
+	archx<std::ifstream>{ in } >> clicker;
 	in.close( );
 }
 
-void cconfig::save( size_t id ) const
+void c_config::save( size_t id ) const
 {
 	if ( !std::filesystem::is_directory( path ) )
 	{
@@ -54,29 +58,29 @@ void cconfig::save( size_t id ) const
 	if ( !out.good( ) )
 		return;
 
-	ArchiveX<std::ofstream>{ out } << clicker;
+	archx<std::ofstream>{ out } << clicker;
 	out.close( );
 }
 
-void cconfig::add( const char *name )
+void c_config::add( const char *name )
 {
 	if ( *name && std::find( std::cbegin( configs ), std::cend( configs ), name ) == std::cend( configs ) )
 		configs.emplace_back( name );
 }
 
-void cconfig::remove( size_t id )
+void c_config::remove( size_t id )
 {
 	std::filesystem::remove( path / configs[ id ] );
 	configs.erase( configs.cbegin( ) + id );
 }
 
-void cconfig::rename( size_t item, const char *newName )
+void c_config::rename( size_t item, const char *new_name )
 {
-	std::filesystem::rename( path / configs[ item ], path / newName );
-	configs[ item ] = newName;
+	std::filesystem::rename( path / configs[ item ], path / new_name );
+	configs[ item ] = new_name;
 }
 
-void cconfig::reset( )
+void c_config::reset( )
 {
 	clicker = { };
 }

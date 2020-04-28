@@ -12,8 +12,21 @@ namespace util
 
 	namespace hooking
 	{
-		DWORD __stdcall m_hook_all( );
-		LRESULT __stdcall hh_mouse_callback( int nCode, WPARAM wParam, LPARAM lParam );
+		DWORD __stdcall work( );
+		LRESULT __stdcall mouse( int nCode, WPARAM wParam, LPARAM lParam );
+	}
+
+	namespace string
+	{
+		template<typename ... args>
+		static std::string format( const std::string &format, args ... arg )
+		{
+			const size_t size = std::snprintf( nullptr, 0, format.c_str( ), arg ... ) + 1;
+			std::unique_ptr<char[]> buf( new char[ size ] );
+			std::snprintf( buf.get( ), size, format.c_str( ), arg ... );
+			return std::string( buf.get( ), buf.get( ) + size - 1 );
+		}
+
 	}
 
 	std::string get_active_window_title( );
