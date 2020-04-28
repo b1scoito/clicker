@@ -41,6 +41,7 @@ Index of this file:
 #include "imgui_internal.h"
 
 #include <ctype.h>      // toupper
+#include <windows.h>    // vk
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>     // intptr_t
 #else
@@ -107,6 +108,175 @@ static const ImU64          IM_U64_MAX = ULLONG_MAX; // (0xFFFFFFFFFFFFFFFFull);
 #else
 static const ImU64          IM_U64_MAX = ( 2ULL * 9223372036854775807LL + 1 );
 #endif
+
+const char *const KeyNames[] = {
+    "unknown",
+    "left mouse",
+    "right mouse",
+    "vk_cancel",
+    "middle mouse",
+    "mouse 4",
+    "mouse 5",
+    "unknown",
+    "vk_back",
+    "tab",
+    "unknown",
+    "unknown",
+    "vk_clear",
+    "vk_return",
+    "unknown",
+    "unknown",
+    "vk_shift",
+    "vk_control",
+    "vk_menu",
+    "vk_pause",
+    "capslock",
+    "vk_kana",
+    "unknown",
+    "vk_junja",
+    "vk_final",
+    "vk_kanji",
+    "unknown",
+    "vk_escape",
+    "vk_convert",
+    "vk_nonconvert",
+    "vk_accept",
+    "vk_modechange",
+    "vk_space",
+    "vk_prior",
+    "vk_next",
+    "vk_end",
+    "vk_home",
+    "vk_left",
+    "vk_up",
+    "vk_right",
+    "vk_down",
+    "vk_select",
+    "vk_print",
+    "vk_execute",
+    "vk_snapshot",
+    "vk_insert",
+    "vk_delete",
+    "vk_help",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "vk_lwin",
+    "vk_rwin",
+    "vk_apps",
+    "unknown",
+    "vk_sleep",
+    "vk_numpad0",
+    "vk_numpad1",
+    "vk_numpad2",
+    "vk_numpad3",
+    "vk_numpad4",
+    "vk_numpad5",
+    "vk_numpad6",
+    "vk_numpad7",
+    "vk_numpad8",
+    "vk_numpad9",
+    "vk_multiply",
+    "vk_add",
+    "vk_separator",
+    "vk_subtract",
+    "vk_decimal",
+    "vk_divide",
+    "f1",
+    "f2",
+    "f3",
+    "f4",
+    "f5",
+    "f6",
+    "f7",
+    "f8",
+    "f9",
+    "f10",
+    "f11",
+    "f12",
+    "f13",
+    "f14",
+    "f15",
+    "f16",
+    "f17",
+    "f18",
+    "f19",
+    "f20",
+    "f21",
+    "f22",
+    "f23",
+    "f24",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "numlock",
+    "scroll lock",
+    "vk_oem_nec_equal",
+    "vk_oem_fj_masshou",
+    "vk_oem_fj_touroku",
+    "vk_oem_fj_loya",
+    "vk_oem_fj_roya",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "shift",
+    "right shift",
+    "ctrl",
+    "right ctrl",
+    "alt",
+    "right alt"
+};
 
 //-------------------------------------------------------------------------
 // [SECTION] Forward Declarations
@@ -3112,6 +3282,143 @@ bool ImGui::InputDouble( const char *label, double *v, double step, double step_
 {
     flags |= ImGuiInputTextFlags_CharsScientific;
     return InputScalar( label, ImGuiDataType_Double, ( void * ) v, ( void * ) ( step > 0.0 ? &step : NULL ), ( void * ) ( step_fast > 0.0 ? &step_fast : NULL ), format, flags );
+}
+
+bool ImGui::Hotkey( const char *label, int *k, const ImVec2 &size_arg )
+{
+    ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + 10 );
+
+    ImGuiWindow *window = GetCurrentWindow( );
+    if ( window->SkipItems )
+        return false;
+
+    ImGuiContext &g = *GImGui;
+    ImGuiIO &io = g.IO;
+    const ImGuiStyle &style = g.Style;
+
+    const ImGuiID id = window->GetID( label );
+    const ImVec2 label_size = CalcTextSize( label, NULL, true );
+    ImVec2 size = ImVec2( 183, 18 );
+    const ImRect frame_bb( window->DC.CursorPos + ImVec2( label_size.x + style.ItemInnerSpacing.x, 0.0f ), window->DC.CursorPos + size );
+    const ImRect total_bb( window->DC.CursorPos, frame_bb.Max );
+
+    ItemSize( total_bb, style.FramePadding.y );
+    if ( !ItemAdd( total_bb, id ) )
+        return false;
+
+    const bool focus_requested = FocusableItemRegister( window, g.ActiveId == id );
+    const bool focus_requested_by_code = focus_requested /*&& ( window->FocusIdxAllCounter == window->FocusIdxAllRequestCurrent )*/;
+    const bool focus_requested_by_tab = focus_requested && !focus_requested_by_code;
+
+    const bool hovered = IsItemHovered( );
+
+    if ( hovered )
+    {
+        SetHoveredID( id );
+        g.MouseCursor = ImGuiMouseCursor_TextInput;
+    }
+
+    const bool user_clicked = hovered && io.MouseClicked[ 0 ];
+
+    if ( focus_requested || user_clicked )
+    {
+        if ( g.ActiveId != id )
+        {
+            memset( io.MouseDown, 0, sizeof( io.MouseDown ) );
+            memset( io.KeysDown, 0, sizeof( io.KeysDown ) );
+            *k = 0;
+        }
+        SetActiveID( id, window );
+        FocusWindow( window );
+    }
+    else if ( io.MouseClicked[ 0 ] )
+    {
+        if ( g.ActiveId == id )
+            ClearActiveID( );
+    }
+
+    bool value_changed = false;
+    int key = *k;
+
+    if ( g.ActiveId == id )
+    {
+        for ( auto i = 0; i < 5; i++ )
+        {
+            if ( io.MouseDown[ i ] )
+            {
+                switch ( i )
+                {
+                    case 0:
+                        key = VK_LBUTTON;
+                        break;
+                    case 1:
+                        key = VK_RBUTTON;
+                        break;
+                    case 2:
+                        key = VK_MBUTTON;
+                        break;
+                    case 3:
+                        key = VK_XBUTTON1;
+                        break;
+                    case 4:
+                        key = VK_XBUTTON2;
+                        break;
+                }
+                value_changed = true;
+                ClearActiveID( );
+            }
+        }
+        if ( !value_changed )
+        {
+            for ( auto i = VK_BACK; i <= VK_RMENU; i++ )
+            {
+                if ( io.KeysDown[ i ] )
+                {
+                    key = i;
+                    value_changed = true;
+                    ClearActiveID( );
+                }
+            }
+        }
+
+        if ( IsKeyPressedMap( ImGuiKey_Escape ) )
+        {
+            *k = 0;
+            ClearActiveID( );
+        }
+        else
+        {
+            *k = key;
+        }
+    }
+
+    // Render
+    // Select which buffer we are going to display. When ImGuiInputTextFlags_NoLiveEdit is Set 'buf' might still be the old value. We Set buf to NULL to prevent accidental usage from now on.
+
+    char buf_display[ 64 ] = "none";
+
+    RenderFrame( frame_bb.Min, frame_bb.Max, GetColorU32( ImGuiCol_FrameBg ), true, style.FrameRounding );
+    window->DrawList->AddRectFilled( frame_bb.Min - ImVec2( 1, 1 ), frame_bb.Max + ImVec2( 1, 1 ), GetColorU32( ImVec4( 0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f ) ), style.FrameRounding );
+    window->DrawList->AddRectFilled( frame_bb.Min, frame_bb.Max, GetColorU32( ImGuiCol_FrameBg ), style.FrameRounding );
+
+    if ( *k != 0 && g.ActiveId != id )
+    {
+        strcpy( buf_display, KeyNames[ *k ] );
+    }
+    else if ( g.ActiveId == id )
+    {
+        strcpy( buf_display, "press a key" );
+    }
+
+    const ImRect clip_rect( frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y ); // Not using frame_bb.Max because we have adjusted size
+    ImVec2 render_pos = frame_bb.Min + style.FramePadding;
+    RenderTextClipped( frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, buf_display, NULL, NULL );
+    //draw_window->DrawList->AddText(g.Font, g.FontSize, render_pos, GetColorU32(ImGuiCol_Text), buf_display, NULL, 0.0f, &clip_rect);
+
+    if ( label_size.x > 0 )
+        RenderText( ImVec2( total_bb.Min.x, frame_bb.Min.y + style.FramePadding.y ), label );
+
+    return value_changed;
 }
 
 //-------------------------------------------------------------------------

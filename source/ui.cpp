@@ -16,6 +16,14 @@ void ui::render( )
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "master switch" ) );
 
+			ImGui::SameLine( );
+
+			ImGui::Combo( xorstr( "" ), &config.clicker.activation_type, xorstr( "always on\0hold\0toggle\0\0" ) );
+						
+			ui::activation_type( );
+
+			ImGui::Hotkey( xorstr( "hotkey" ), &config.clicker.enabled_key, ImVec2( 15, 15 ) );
+
 			ImGui::SliderFloat( xorstr( "maximum cps" ), &config.clicker.max_cps, 1.f, 20.f, xorstr( "%.1f" ) );
 
 			if ( ImGui::IsItemHovered( ) )
@@ -26,14 +34,14 @@ void ui::render( )
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "minimum clicks per second" ) );
 
-			ImGui::Combo( xorstr( "version" ), &config.clicker.index_version, var::items, IM_ARRAYSIZE( var::items ) );
+			ImGui::Combo( xorstr( "version" ), &config.clicker.version_type, xorstr( "Minecraft\0Badlion\0Lunar\0Custom\0\0" ) ); // thanks imgui
 
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "window that the auto clicker will work in" ) );
 
 			static char buffer[ 16 ];
 
-			switch ( config.clicker.index_version )
+			switch ( config.clicker.version_type )
 			{
 				case 0:
 					config.clicker.window_title = xorstr( "Minecraft" );
@@ -134,6 +142,46 @@ void ui::render( )
 	ImGui::EndFrame( );
 }
 
+void ui::activation_type( )
+{
+	switch ( config.clicker.activation_type )
+	{
+		case 0:
+			config.clicker.enabled = true;
+			break;
+
+		case 1:
+			if ( GetAsyncKeyState( config.clicker.enabled_key ) )
+				config.clicker.enabled = true;
+			else
+				config.clicker.enabled = false;
+			break;
+
+		case 2:
+			if ( GetAsyncKeyState( config.clicker.enabled_key ) )
+			{
+				var::b_is_clicked = false;
+				var::b_is_down = true;
+			}
+			else if ( !GetAsyncKeyState( config.clicker.enabled_key ) && var::b_is_down )
+			{
+				var::b_is_clicked = true;
+				var::b_is_down = false;
+			}
+			else
+			{
+				var::b_is_clicked = false;
+				var::b_is_down = false;
+			}
+
+			if ( var::b_is_clicked )
+				config.clicker.enabled = !config.clicker.enabled;
+
+			break;
+
+	}
+}
+
 void ui::create( )
 {
 	WNDCLASSEX wc =
@@ -207,6 +255,7 @@ void ui::create( )
 	style->ChildRounding = 5.0f;
 	style->FrameRounding = 3.0f;
 	style->GrabRounding = 10.0f;
+	//style->WindowMinSize = ImVec2(10, 30);
 
 	// use demo to see color documentation and stuff
 

@@ -70,6 +70,9 @@
     <Filter Include="user interface">
       <UniqueIdentifier>{07170e62-623a-466c-8b05-11315b898f1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hooking">
+      <UniqueIdentifier>{8fc2c275-3c78-4e56-acb4-cc32f45eeedc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console.hpp">

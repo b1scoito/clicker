@@ -12,6 +12,7 @@ namespace ui
 	static D3DPRESENT_PARAMETERS parameters = {};
 
 	void render( );
+	void activation_type( );
 	void create( );
 
 	void dispose( HWND hwnd, WNDCLASSEX wc );
