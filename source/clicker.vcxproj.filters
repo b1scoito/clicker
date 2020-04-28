@@ -2,126 +2,135 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="console.cpp">
-      <Filter>def\include\console</Filter>
+      <Filter>utility\include\console</Filter>
     </ClCompile>
     <ClCompile Include="util.cpp">
-      <Filter>def\utils</Filter>
+      <Filter>utility\utils</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>def\imgui\impl</Filter>
+      <Filter>utility\imgui\impl</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_dx9.cpp">
-      <Filter>def\imgui\impl</Filter>
+      <Filter>utility\imgui\impl</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp">
-      <Filter>def\config</Filter>
+      <Filter>utility\config</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="imgui.cpp">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClCompile>
     <ClCompile Include="clicker.cpp">
       <Filter>clicker</Filter>
     </ClCompile>
     <ClCompile Include="ui.cpp">
-      <Filter>ui</Filter>
+      <Filter>user interface</Filter>
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="definitions.hpp">
+      <Filter>utility\imgui\fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="entry.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="def">
-      <UniqueIdentifier>{52fb2b2d-d7e2-4a96-9408-b05bb03a9576}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="def\utils">
-      <UniqueIdentifier>{449f7495-d7e9-4980-8165-1fd743d0f9ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="def\imgui">
-      <UniqueIdentifier>{274db353-e095-4fd3-bcdf-de1bce15765c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="def\imgui\impl">
-      <UniqueIdentifier>{39d714e6-a6eb-4013-9e25-532baf21d2b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui">
-      <UniqueIdentifier>{07170e62-623a-466c-8b05-11315b898f1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="clicker">
       <UniqueIdentifier>{6d636a47-d231-4683-a3ee-7a6540c2acc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="def\include">
+    <Filter Include="utility">
+      <UniqueIdentifier>{52fb2b2d-d7e2-4a96-9408-b05bb03a9576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\utils">
+      <UniqueIdentifier>{449f7495-d7e9-4980-8165-1fd743d0f9ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\imgui">
+      <UniqueIdentifier>{274db353-e095-4fd3-bcdf-de1bce15765c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\imgui\impl">
+      <UniqueIdentifier>{39d714e6-a6eb-4013-9e25-532baf21d2b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\imgui\fonts">
+      <UniqueIdentifier>{68bad767-f95f-454c-ab9c-f023db3bc2c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\include">
       <UniqueIdentifier>{0326fb6d-5596-4a0b-95fb-dec7dc2eb0c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="def\config">
+    <Filter Include="utility\include\console">
+      <UniqueIdentifier>{07820f3b-794d-4cef-b7de-35b1efcd1cc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility\config">
       <UniqueIdentifier>{c845de97-77c3-4fb7-aa17-ff5b98027007}</UniqueIdentifier>
     </Filter>
-    <Filter Include="def\include\console">
-      <UniqueIdentifier>{07820f3b-794d-4cef-b7de-35b1efcd1cc6}</UniqueIdentifier>
+    <Filter Include="user interface">
+      <UniqueIdentifier>{07170e62-623a-466c-8b05-11315b898f1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console.hpp">
-      <Filter>def\include\console</Filter>
+      <Filter>utility\include\console</Filter>
     </ClInclude>
     <ClInclude Include="util.hpp">
-      <Filter>def\utils</Filter>
+      <Filter>utility\utils</Filter>
     </ClInclude>
     <ClInclude Include="vars.hpp">
-      <Filter>def\utils</Filter>
+      <Filter>utility\utils</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
-      <Filter>def\imgui\impl</Filter>
+      <Filter>utility\imgui\impl</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_dx9.h">
-      <Filter>def\imgui\impl</Filter>
+      <Filter>utility\imgui\impl</Filter>
     </ClInclude>
     <ClInclude Include="config.hpp">
-      <Filter>def\config</Filter>
+      <Filter>utility\config</Filter>
     </ClInclude>
     <ClInclude Include="archivex.hpp">
-      <Filter>def\config</Filter>
+      <Filter>utility\config</Filter>
     </ClInclude>
     <ClInclude Include="clicker.hpp">
       <Filter>clicker</Filter>
     </ClInclude>
     <ClInclude Include="lazy_importer.hpp">
-      <Filter>def\include</Filter>
+      <Filter>utility\include</Filter>
     </ClInclude>
     <ClInclude Include="xorstr.hpp">
-      <Filter>def\include</Filter>
+      <Filter>utility\include</Filter>
     </ClInclude>
     <ClInclude Include="singleton.hpp">
-      <Filter>def\include</Filter>
+      <Filter>utility\include</Filter>
     </ClInclude>
     <ClInclude Include="imstb_textedit.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_rectpack.h">
-      <Filter>def\imgui</Filter>
+      <Filter>utility\imgui</Filter>
     </ClInclude>
     <ClInclude Include="ui.hpp">
-      <Filter>ui</Filter>
+      <Filter>user interface</Filter>
     </ClInclude>
     <ClInclude Include="includes.hpp">
-      <Filter>def\include</Filter>
+      <Filter>utility\include</Filter>
+    </ClInclude>
+    <ClInclude Include="fa.hpp">
+      <Filter>utility\imgui\fonts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

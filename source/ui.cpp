@@ -36,13 +36,13 @@ void ui::render( )
 			switch ( config.clicker.index_version )
 			{
 				case 0:
-					config.clicker.window_title = "Minecraft";
+					config.clicker.window_title = xorstr( "Minecraft" );
 					break;
 				case 1:
-					config.clicker.window_title = "Badlion";
+					config.clicker.window_title = xorstr( "Badlion" );
 					break;
 				case 2:
-					config.clicker.window_title = "Lunar";
+					config.clicker.window_title = xorstr( "Lunar" );
 					break;
 				case 3:
 					ImGui::InputText( xorstr( "window title" ), buffer, IM_ARRAYSIZE( buffer ) );
@@ -53,7 +53,7 @@ void ui::render( )
 			if ( config.clicker.max_cps <= config.clicker.min_cps )
 				config.clicker.max_cps += 1.f;
 
-			ImGui::Text( xorstr( "is button down: %s" ), var::b_mouse_down ? "yes" : "no" );
+			ImGui::Text( xorstr( "is button down: %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
 
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "checks whether or not the left button is pressed down" ) );
@@ -70,7 +70,7 @@ void ui::render( )
 
 			ImGui::Text( xorstr( "application average %.3f ms/framerate (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
 
-			ImGui::BeginChild( "config", ImVec2( 280, 155 ), true );
+			ImGui::BeginChild( xorstr( "config" ), ImVec2( 280, 155 ), true );
 			{
 				constexpr auto &config_items = config.get_configs( );
 				static int current_config = -1;
@@ -95,33 +95,33 @@ void ui::render( )
 							config.rename( current_config, buffer_config );
 					}
 
-					if ( ImGui::Button( ( xorstr( "create" ) ), ImVec2( 75, 30 ) ) )
+					if ( ImGui::Button( ( xorstr( "create " ICON_FA_PLUS ) ), ImVec2( 75, 20 ) ) )
 					{
 						config.add( buffer_config );
 					}
 
 					ImGui::SameLine( );
 
-					if ( ImGui::Button( ( xorstr( "reset" ) ), ImVec2( 75, 30 ) ) )
+					if ( ImGui::Button( ( xorstr( "reset " ICON_FA_REDO ) ), ImVec2( 75, 20 ) ) )
 					{
 						config.reset( );
 					}
 
 					if ( current_config != -1 )
 					{
-						if ( ImGui::Button( ( xorstr( "load" ) ), ImVec2( 75, 30 ) ) )
+						if ( ImGui::Button( ( xorstr( "load " ICON_FA_LONG_ARROW_ALT_UP ) ), ImVec2( 75, 20 ) ) )
 						{
 							config.load( current_config );
 						}
 
 						ImGui::SameLine( );
 
-						if ( ImGui::Button( ( xorstr( "save" ) ), ImVec2( 75, 30 ) ) )
+						if ( ImGui::Button( ( xorstr( "save " ICON_FA_SAVE ) ), ImVec2( 75, 20 ) ) )
 						{
 							config.save( current_config );
 						}
 
-						if ( ImGui::Button( ( xorstr( "delete" ) ), ImVec2( 75, 30 ) ) )
+						if ( ImGui::Button( ( xorstr( "delete " ICON_FA_TRASH ) ), ImVec2( 75, 20 ) ) )
 						{
 							config.remove( current_config );
 						}
@@ -181,20 +181,34 @@ void ui::create( )
 	ImGui::CreateContext( );
 
 	ImGuiStyle *style = &ImGui::GetStyle( );
-	ImGuiIO &io = ImGui::GetIO( ); ( void ) io;
+	ImGuiIO &io = ImGui::GetIO( );
+
+	io.Fonts->AddFontDefault( );
 
 	TCHAR directory[ MAX_PATH ];
 	LI_FN( GetWindowsDirectoryA ).safe_cached( )( directory, MAX_PATH ); // ghetto way of getting this directory iirc
 
 	io.IniFilename = nullptr; // no config file
-	io.Fonts->AddFontFromFileTTF( util::string::format( xorstr( "%s\\Fonts\\SegoeUI.ttf" ), directory ).c_str( ), 18.5f );
+
+	ImFontConfig config;
+	config.MergeMode = true;
+	config.PixelSnapH = true;
+
+	static const ImWchar ranges[] =
+	{
+		ICON_MIN_FA,
+		ICON_MAX_FA,
+		0
+	};
+
+	io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.5f, &config, ranges );
 
 	style->WindowRounding = 0.0f;
 	style->ChildRounding = 5.0f;
 	style->FrameRounding = 3.0f;
 	style->GrabRounding = 10.0f;
 
-	// if you speak english translate it @(http://codehub.altervista.org/index.php?threads/imgui-theme.30/)
+	// use demo to see color documentation and stuff
 
 	style->Colors[ ImGuiCol_Text ] = color( 255, 255, 255 );
 	style->Colors[ ImGuiCol_TextDisabled ] = color( 204, 204, 204 );

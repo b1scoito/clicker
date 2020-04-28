@@ -9,7 +9,7 @@ namespace var
 	inline int i_clicks_this_session { 0 };
 	inline long l_last_click_time;
 
-	inline const char *items[] = { "Minecraft", "Badlion", "Lunar", "Custom" };
+	inline const char *items[] = { "Minecraft", "Badlion",  "Lunar", "Custom" };
 
 	namespace fonts
 	{

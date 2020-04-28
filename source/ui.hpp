@@ -1,6 +1,8 @@
 #pragma once
 
 #include "includes.hpp"
+#include "definitions.hpp" // for font definitions
+#include "fa.hpp" // for the font itself.
 
 namespace ui
 {
@@ -13,7 +15,6 @@ namespace ui
 	void create( );
 
 	void dispose( HWND hwnd, WNDCLASSEX wc );
-
 	namespace d3d9
 	{
 		inline bool create_device_d3d( HWND hwnd )
