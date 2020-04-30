@@ -24,7 +24,7 @@ void console::initialize( )
 	LI_FN( AllocConsole ).safe_cached( )( );
 	LI_FN( AttachConsole ).safe_cached( )( LI_FN( GetCurrentProcessId ).safe_cached( )( ) );
 
-	const auto str_title = util::string::random( util::integer::random( 10, 15 ) );
+	const auto str_title = util::string::random( util::math::random_int( 10, 15 ) );
 	LI_FN( SetConsoleTitleA ).safe_cached( )( str_title.c_str( ) );
 
 	freopen_s( &conin, xorstr( "conin$" ), "r", stdin );

@@ -13,9 +13,10 @@ namespace ui
 
 	void render( );
 	void activation_type( );
-	void create( );
+	bool create( );
 
 	void dispose( HWND hwnd, WNDCLASSEX wc );
+
 	namespace d3d9
 	{
 		inline bool create_device_d3d( HWND hwnd )

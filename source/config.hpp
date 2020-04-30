@@ -24,11 +24,11 @@ public:
 		bool enabled { false };
 		int enabled_key { false };
 		int activation_type { 0 };
-		std::string window_title;
 		int version_type { 0 };
-		float min_cps { 0.f };
-		float max_cps { 0.f };
-		float main_color[ 4 ] { 1.0f, 1.0f, 1.0f, 1.0f };
+		int min_cps { 0 };
+		int max_cps { 0 };
+
+		std::string window_title;
 	}
 	clicker;
 

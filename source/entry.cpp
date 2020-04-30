@@ -18,7 +18,11 @@ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 	config.run( xorstr( "pop_rdi_ret" ) ); // this will be statically analyzed, if you want an actual config system do a web-based one (https://github.com/whoshuu/cpr)
 
-	ui::create( ); // creating window and d3d9 render
+	if ( !ui::create( ) ) // creating window and d3d9 render
+	{
+		_log( LCRITICAL, xorstr( "failed to create ui, exiting." ) );
+		return EXIT_FAILURE;
+	}
 
 	return EXIT_SUCCESS;
 }

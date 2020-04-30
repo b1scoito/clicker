@@ -48,9 +48,9 @@ namespace util
 
 	}
 
-	namespace integer
+	namespace math
 	{
-		inline int random( int i_start, int i_end )
+		inline int random_int( int i_start, int i_end )
 		{
 			std::random_device rd;
 			std::mt19937 rng( rd( ) );

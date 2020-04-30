@@ -18,7 +18,11 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 			}
 			else
 			{
-				auto random_delay = util::integer::random( ( int ) config.clicker.min_cps * 10, ( int ) config.clicker.max_cps * 10 );
+				auto random_delay = util::math::random_int
+				(
+					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.2 ), 
+					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.48 ) 
+				); // old meth logic
 
 				var::i_current_cps = random_delay / 10;
 
@@ -27,7 +31,7 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 					util::input::left_down( );
 					var::l_last_click_time = std::clock( );
 
-					std::this_thread::sleep_for( std::chrono::milliseconds( util::integer::random( 30, 50 ) ) );
+					std::this_thread::sleep_for( std::chrono::milliseconds( util::math::random_int( 30, 50 ) ) );
 					util::input::left_up( );
 
 					var::i_clicks_this_session++;

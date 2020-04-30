@@ -19,17 +19,17 @@ void ui::render( )
 			ImGui::SameLine( );
 
 			ImGui::Combo( xorstr( "" ), &config.clicker.activation_type, xorstr( "always on\0hold\0toggle\0\0" ) );
-						
+
 			ui::activation_type( );
 
 			ImGui::Hotkey( xorstr( "hotkey" ), &config.clicker.enabled_key, ImVec2( 15, 15 ) );
 
-			ImGui::SliderFloat( xorstr( "maximum cps" ), &config.clicker.max_cps, 1.f, 20.f, xorstr( "%.1f" ) );
+			ImGui::SliderInt( xorstr( "maximum cps" ), &config.clicker.max_cps, 1, 20, xorstr( "cps %d" ) );
 
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "maximum clicks per second" ) );
 
-			ImGui::SliderFloat( xorstr( "minimum cps" ), &config.clicker.min_cps, 1.f, 20.f, xorstr( "%.1f" ) );
+			ImGui::SliderInt( xorstr( "minimum cps" ), &config.clicker.min_cps, 1, 20, xorstr( "cps %d" ) );
 
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "minimum clicks per second" ) );
@@ -58,8 +58,8 @@ void ui::render( )
 					break;
 			}
 
-			if ( config.clicker.max_cps <= config.clicker.min_cps )
-				config.clicker.max_cps += 1.f;
+			if ( config.clicker.max_cps <= config.clicker.min_cps && !( config.clicker.min_cps > 19 ) )
+				config.clicker.max_cps += 1;
 
 			ImGui::Text( xorstr( "is button down: %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
 
@@ -151,19 +151,19 @@ void ui::activation_type( )
 			break;
 
 		case 1:
-			if ( GetAsyncKeyState( config.clicker.enabled_key ) )
+			if ( LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) )
 				config.clicker.enabled = true;
 			else
 				config.clicker.enabled = false;
 			break;
 
 		case 2:
-			if ( GetAsyncKeyState( config.clicker.enabled_key ) )
+			if ( LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) )
 			{
 				var::b_is_clicked = false;
 				var::b_is_down = true;
 			}
-			else if ( !GetAsyncKeyState( config.clicker.enabled_key ) && var::b_is_down )
+			else if ( !LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) && var::b_is_down )
 			{
 				var::b_is_clicked = true;
 				var::b_is_down = false;
@@ -182,7 +182,7 @@ void ui::activation_type( )
 	}
 }
 
-void ui::create( )
+bool ui::create( )
 {
 	WNDCLASSEX wc =
 	{
@@ -221,6 +221,8 @@ void ui::create( )
 	{
 		ui::d3d9::cleanup_device_d3d( );
 		LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
+		
+		return false;
 	}
 
 	LI_FN( ShowWindow ).safe_cached( )( hwnd, SW_SHOWDEFAULT );
@@ -255,7 +257,6 @@ void ui::create( )
 	style->ChildRounding = 5.0f;
 	style->FrameRounding = 3.0f;
 	style->GrabRounding = 10.0f;
-	//style->WindowMinSize = ImVec2(10, 30);
 
 	// use demo to see color documentation and stuff
 
@@ -282,8 +283,11 @@ void ui::create( )
 	style->Colors[ ImGuiCol_HeaderHovered ] = color( 240, 123, 254 );
 	style->Colors[ ImGuiCol_HeaderActive ] = color( 240, 142, 252 );
 
-	ImGui_ImplWin32_Init( hwnd );
-	ImGui_ImplDX9_Init( device );
+	if ( !ImGui_ImplWin32_Init( hwnd ) )
+		return false;
+
+	if ( !ImGui_ImplDX9_Init( device ) )
+		return false;
 
 	ImVec4 clear_color = ImVec4( 0.45f, 0.55f, 0.60f, 1.00f );
 
@@ -337,6 +341,7 @@ void ui::create( )
 	// destroy imgui and window n d3d and my thighs ;3
 	ui::dispose( hwnd, wc );
 
+	return true;
 }
 
 void ui::dispose( HWND hwnd, WNDCLASSEX wc )
