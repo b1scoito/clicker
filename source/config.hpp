@@ -22,7 +22,8 @@ public:
 	struct
 	{
 		bool enabled { false };
-		int enabled_key { false };
+		bool clicker_enabled { false };
+		int enabled_key { 0 };
 		int activation_type { 0 };
 		int version_type { 0 };
 		int min_cps { 0 };

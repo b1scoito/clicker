@@ -2,7 +2,7 @@
 
 LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam )
 {
-	MSLLHOOKSTRUCT *hook = ( MSLLHOOKSTRUCT * ) lParam;
+	auto *hook = ( MSLLHOOKSTRUCT * ) lParam;
 
 	if ( ( hook->flags == LLMHF_INJECTED ) || ( hook->flags == LLMHF_LOWER_IL_INJECTED ) )
 		return false;

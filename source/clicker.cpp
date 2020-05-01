@@ -8,7 +8,13 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 
-		if ( config.clicker.enabled && var::b_mouse_down && util::window::get_active_window_title( ).find( config.clicker.window_title ) != std::string::npos )
+		if
+			(
+				config.clicker.enabled &&
+				config.clicker.clicker_enabled &&
+				var::b_mouse_down &&
+				util::window::get_active_window_title( ).find( config.clicker.window_title ) != std::string::npos
+				)
 		{
 			if ( var::b_first_click )
 			{
@@ -20,11 +26,9 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 			{
 				auto random_delay = util::math::random_int
 				(
-					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.2 ), 
-					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.48 ) 
+					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.2 ),
+					1000 / ( config.clicker.min_cps + config.clicker.max_cps * ( int ) 0.48 )
 				); // old meth logic
-
-				var::i_current_cps = random_delay / 10;
 
 				if ( ( std::clock( ) - var::l_last_click_time ) > random_delay )
 				{

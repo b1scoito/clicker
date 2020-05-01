@@ -46,6 +46,30 @@ namespace util
 			return string;
 		}
 
+		inline std::string to_lower( std::string str )
+		{
+			transform( str.begin( ), str.end( ), str.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
+			return str;
+		}
+
+		inline std::string to_upper( std::string str )
+		{
+			transform( str.begin( ), str.end( ), str.begin( ), static_cast< int( * )( int ) >( ::toupper ) );
+			return str;
+		}
+
+		inline std::wstring to_lower( std::wstring data )
+		{
+			transform( data.begin( ), data.end( ), data.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
+			return data;
+		}
+
+		inline std::wstring to_lower( std::wstring data, std::size_t size )
+		{
+			transform( data.begin( ), data.begin( ) + size, data.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
+			return data;
+		}
+
 	}
 
 	namespace math

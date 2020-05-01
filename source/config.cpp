@@ -20,11 +20,11 @@ void c_config::run( const char *name )
 	}
 
 	std::transform
-	( 
+	(
 		std::filesystem::directory_iterator { path },
 		std::filesystem::directory_iterator { },
 		std::back_inserter( configs ),
-		[ ]( const auto &entry ) { return entry.path( ).filename( ).string( ); } 
+		[ ]( const auto &entry ) { return entry.path( ).filename( ).string( ); }
 	);
 }
 

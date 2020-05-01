@@ -8,6 +8,8 @@
 #include <shared_mutex>
 #include <vector>
 #include <random>
+#include <unordered_map>
+#include <string>
 
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
@@ -16,10 +18,11 @@
 #include <d3d9.h>
 #pragma comment(lib, "d3d9.lib")
 
-#include "util.hpp"
 #include "lazy_importer.hpp"
 #include "singleton.hpp"
 #include "xorstr.hpp"
+
+#include "util.hpp"
 #include "console.hpp"
 #include "vars.hpp"
 #include "ui.hpp"

@@ -6,77 +6,56 @@ void ui::render( )
 {
 	ImGui::NewFrame( );
 	{
-		ImGui::Begin( xorstr( "clicker" ), 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar );
+		ImGui::Begin( xorstr( "clicker" ), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar );
 		{
 			ImGui::SetWindowSize( ImVec2( 534, 311 ) );
 			ImGui::SetWindowPos( ImVec2( 0, 0 ) );
 
-			ImGui::Checkbox( xorstr( "enabled" ), &config.clicker.enabled );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "master switch" ) );
+			ImGui::Checkbox( xorstr( "##enabled" ), &config.clicker.enabled );
 
 			ImGui::SameLine( );
 
-			ImGui::Combo( xorstr( "" ), &config.clicker.activation_type, xorstr( "always on\0hold\0toggle\0\0" ) );
+			ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "enabled\0hold\0toggle\0\0" ) );
+
+			ImGui::SameLine( );
+
+			ui::key_bind_button( config.clicker.enabled_key, 125, 20 );
 
 			ui::activation_type( );
 
-			ImGui::Hotkey( xorstr( "hotkey" ), &config.clicker.enabled_key, ImVec2( 15, 15 ) );
+			ImGui::SliderInt( xorstr( "##mincps" ), &config.clicker.max_cps, 1, 20, xorstr( "min cps %d" ) );
+			ImGui::SliderInt( xorstr( "##maxcps" ), &config.clicker.min_cps, 1, 20, xorstr( "max cps %d" ) );
 
-			ImGui::SliderInt( xorstr( "maximum cps" ), &config.clicker.max_cps, 1, 20, xorstr( "cps %d" ) );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "maximum clicks per second" ) );
-
-			ImGui::SliderInt( xorstr( "minimum cps" ), &config.clicker.min_cps, 1, 20, xorstr( "cps %d" ) );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "minimum clicks per second" ) );
-
-			ImGui::Combo( xorstr( "version" ), &config.clicker.version_type, xorstr( "Minecraft\0Badlion\0Lunar\0Custom\0\0" ) ); // thanks imgui
+			ImGui::Combo( xorstr( "version" ), &config.clicker.version_type, xorstr( "Badlion " ICON_FA_CHECK "\0Lunar " ICON_FA_CHECK "\0Minecraft\0Custom\0\0" ) ); // thanks imgui
 
 			if ( ImGui::IsItemHovered( ) )
 				ImGui::SetTooltip( xorstr( "window that the auto clicker will work in" ) );
 
-			static char buffer[ 16 ];
+			static char buffer_w[ 16 ];
 
 			switch ( config.clicker.version_type )
 			{
 				case 0:
-					config.clicker.window_title = xorstr( "Minecraft" );
-					break;
-				case 1:
 					config.clicker.window_title = xorstr( "Badlion" );
 					break;
-				case 2:
+				case 1:
 					config.clicker.window_title = xorstr( "Lunar" );
 					break;
+				case 2:
+					config.clicker.window_title = xorstr( "Minecraft" );
+					break;
 				case 3:
-					ImGui::InputText( xorstr( "window title" ), buffer, IM_ARRAYSIZE( buffer ) );
-					config.clicker.window_title = buffer;
+					ImGui::InputText( xorstr( "title" ), buffer_w, IM_ARRAYSIZE( buffer_w ) );
+					config.clicker.window_title = buffer_w;
 					break;
 			}
 
 			if ( config.clicker.max_cps <= config.clicker.min_cps && !( config.clicker.min_cps > 19 ) )
 				config.clicker.max_cps += 1;
 
-			ImGui::Text( xorstr( "is button down: %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "checks whether or not the left button is pressed down" ) );
-
-			ImGui::Text( xorstr( "current cps: %d" ), var::i_current_cps );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "current clicks per second" ) );
-
+			ImGui::Text( xorstr( "is button down %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
 			ImGui::Text( xorstr( "clicks on this session %d" ), var::i_clicks_this_session );
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "clicks on the current session" ) );
-
-			ImGui::Text( xorstr( "application average %.3f ms/framerate (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
+			ImGui::Text( xorstr( "application average %.1f ms (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
 
 			ImGui::BeginChild( xorstr( "config" ), ImVec2( 280, 155 ), true );
 			{
@@ -86,7 +65,7 @@ void ui::render( )
 				if ( static_cast< size_t >( current_config ) >= config_items.size( ) )
 					current_config = -1;
 
-				static char buffer_config[ 16 ];
+				static char buffer[ 16 ];
 
 				if ( ImGui::ListBox( xorstr( "configs" ), &current_config, [ ]( void *data, int idx, const char **out_text )
 					{
@@ -95,17 +74,17 @@ void ui::render( )
 						return true;
 					}, &config_items, config_items.size( ), 5 ) && current_config != -1 )
 
-					strcpy_s( buffer_config, config_items[ current_config ].c_str( ) );
+					strcpy_s( buffer, config_items[ current_config ].c_str( ) );
 
-					if ( ImGui::InputText( xorstr( "name" ), buffer_config, IM_ARRAYSIZE( buffer_config ), ImGuiInputTextFlags_EnterReturnsTrue ) )
+					if ( ImGui::InputText( xorstr( "name" ), buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
 					{
 						if ( current_config != -1 )
-							config.rename( current_config, buffer_config );
+							config.rename( current_config, buffer );
 					}
 
 					if ( ImGui::Button( ( xorstr( "create " ICON_FA_PLUS ) ), ImVec2( 75, 20 ) ) )
 					{
-						config.add( buffer_config );
+						config.add( buffer );
 					}
 
 					ImGui::SameLine( );
@@ -142,19 +121,48 @@ void ui::render( )
 	ImGui::EndFrame( );
 }
 
+void ui::key_bind_button( int &key, int width, int height )
+{
+	static auto b_get = false;
+	static std::string sz_text = xorstr( "click to bind" );
+
+	if ( ImGui::Button( sz_text.c_str( ), ImVec2( static_cast< float >( width ), static_cast< float >( height ) ) ) )
+		b_get = true;
+
+	if ( b_get )
+	{
+		for ( auto i = 1; i < 256; i++ )
+		{
+			if ( GetAsyncKeyState( i ) & 0x8000 )
+			{
+				if ( i != 12 )
+				{
+					key = i == VK_ESCAPE ? 0 : i;
+					b_get = false;
+				}
+			}
+		}
+		sz_text = xorstr( "press a key" );
+	}
+	else if ( !b_get && key == 0 )
+		sz_text = xorstr( "click to bind" );
+	else if ( !b_get && key != 0 )
+		sz_text = xorstr( "bound to " ) + util::string::to_lower( ui::get_key_name_by_id( key ) );
+}
+
 void ui::activation_type( )
 {
 	switch ( config.clicker.activation_type )
 	{
 		case 0:
-			config.clicker.enabled = true;
+			config.clicker.clicker_enabled = true;
 			break;
 
 		case 1:
 			if ( LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) )
-				config.clicker.enabled = true;
+				config.clicker.clicker_enabled = true;
 			else
-				config.clicker.enabled = false;
+				config.clicker.clicker_enabled = false;
 			break;
 
 		case 2:
@@ -175,7 +183,7 @@ void ui::activation_type( )
 			}
 
 			if ( var::b_is_clicked )
-				config.clicker.enabled = !config.clicker.enabled;
+				config.clicker.clicker_enabled = !config.clicker.clicker_enabled;
 
 			break;
 
@@ -221,7 +229,7 @@ bool ui::create( )
 	{
 		ui::d3d9::cleanup_device_d3d( );
 		LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
-		
+
 		return false;
 	}
 
@@ -234,9 +242,6 @@ bool ui::create( )
 	ImGuiIO &io = ImGui::GetIO( );
 
 	io.Fonts->AddFontDefault( );
-
-	TCHAR directory[ MAX_PATH ];
-	LI_FN( GetWindowsDirectoryA ).safe_cached( )( directory, MAX_PATH ); // ghetto way of getting this directory iirc
 
 	io.IniFilename = nullptr; // no config file
 
@@ -255,7 +260,7 @@ bool ui::create( )
 
 	style->WindowRounding = 0.0f;
 	style->ChildRounding = 5.0f;
-	style->FrameRounding = 3.0f;
+	style->FrameRounding = 4.0f;
 	style->GrabRounding = 10.0f;
 
 	// use demo to see color documentation and stuff
@@ -294,7 +299,7 @@ bool ui::create( )
 	MSG lpMsg;
 	ZeroMemory( &lpMsg, sizeof( lpMsg ) );
 
-	_log( LDEBUG, xorstr( "imgui loop init" ) );
+	_log( LDEBUG, xorstr( "waiting for program end" ) );
 
 	while ( lpMsg.message != WM_QUIT )
 	{
