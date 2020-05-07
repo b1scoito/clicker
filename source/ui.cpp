@@ -23,8 +23,8 @@ void ui::render( )
 
 			ui::activation_type( );
 
-			ImGui::SliderInt( xorstr( "##mincps" ), &config.clicker.max_cps, 1, 20, xorstr( "min cps %d" ) );
 			ImGui::SliderInt( xorstr( "##maxcps" ), &config.clicker.min_cps, 1, 20, xorstr( "max cps %d" ) );
+			ImGui::SliderInt( xorstr( "##mincps" ), &config.clicker.max_cps, 1, 20, xorstr( "min cps %d" ) );
 
 			ImGui::Combo( xorstr( "version" ), &config.clicker.version_type, xorstr( "Badlion " ICON_FA_CHECK "\0Lunar " ICON_FA_CHECK "\0Minecraft\0Custom\0\0" ) ); // thanks imgui
 
@@ -50,8 +50,8 @@ void ui::render( )
 					break;
 			}
 
-			if ( config.clicker.max_cps <= config.clicker.min_cps && !( config.clicker.min_cps > 19 ) )
-				config.clicker.max_cps += 1;
+			if ( config.clicker.min_cps <= config.clicker.max_cps && !( config.clicker.max_cps > 19 ) )
+				config.clicker.min_cps += 1;
 
 			ImGui::Text( xorstr( "is button down %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
 			ImGui::Text( xorstr( "clicks on this session %d" ), var::i_clicks_this_session );
