@@ -22,10 +22,12 @@ public:
 	struct
 	{
 		bool enabled { false };
-		bool clicker_enabled { false };
-		int enabled_key { 0 };
+		bool hotkey_enabled { false };
+
+		int key { 0 };
 		int activation_type { 0 };
 		int version_type { 0 };
+
 		int min_cps { 0 };
 		int max_cps { 0 };
 

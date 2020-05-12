@@ -108,9 +108,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clicker.cpp" />
-    <ClCompile Include="definitions.hpp" />
+    <ClCompile Include="font_definitions.hpp" />
     <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
@@ -134,11 +133,11 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
-    <ClInclude Include="fa.hpp" />
+    <ClInclude Include="fontawesome.hpp" />
     <ClInclude Include="ui.hpp" />
     <ClInclude Include="vars.hpp" />
     <ClInclude Include="includes.hpp" />
-    <ClInclude Include="lazy_importer.hpp" />
+    <ClInclude Include="lazy.hpp" />
     <ClInclude Include="singleton.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="xorstr.hpp" />

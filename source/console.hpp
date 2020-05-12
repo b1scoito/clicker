@@ -30,7 +30,7 @@ public:
 	template<typename ... arg>
 	void print( const int type, const std::string &format, arg ... a )
 	{
-		static auto h_console = LI_FN( GetStdHandle ).safe_cached( )( STD_OUTPUT_HANDLE );
+		static auto h_console = LI_FN( GetStdHandle ).cached( )( STD_OUTPUT_HANDLE );
 		std::unique_lock<decltype( m )> lock( m );
 
 		const size_t size = std::snprintf( nullptr, 0, format.c_str( ), a ... ) + 1;
@@ -72,19 +72,19 @@ public:
 
 		if ( type > LEMPTY )
 		{
-			LI_FN( SetConsoleTextAttribute ).safe_cached( )( h_console, 15 );
+			LI_FN( SetConsoleTextAttribute ).cached( )( h_console, 15 );
 			std::cout << xorstr( "[ " );
-			LI_FN( SetConsoleTextAttribute ).safe_cached( )( h_console, tag[ type ].first );
+			LI_FN( SetConsoleTextAttribute ).cached( )( h_console, tag[ type ].first );
 			std::cout << tag[ type ].second.c_str( );
-			LI_FN( SetConsoleTextAttribute ).safe_cached( )( h_console, 15 );
+			LI_FN( SetConsoleTextAttribute ).cached( )( h_console, 15 );
 			std::cout << xorstr( " ] - " );
 		}
 
 		if ( type == LDEBUG )
 		{
-			LI_FN( SetConsoleTextAttribute ).safe_cached( )( h_console, tag[ type ].first );
+			LI_FN( SetConsoleTextAttribute ).cached( )( h_console, tag[ type ].first );
 			std::cout << str_formated << std::endl;
-			LI_FN( SetConsoleTextAttribute ).safe_cached( )( h_console, 15 );
+			LI_FN( SetConsoleTextAttribute ).cached( )( h_console, 15 );
 		}
 		else
 			std::cout << str_formated << std::endl;

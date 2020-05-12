@@ -1,5 +1,3 @@
-#pragma once
-
 #include "clicker.hpp"
 
 DWORD __stdcall clicker::work( LPVOID lParam )
@@ -11,7 +9,7 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 		if
 			(
 				config.clicker.enabled &&
-				config.clicker.clicker_enabled &&
+				config.clicker.hotkey_enabled &&
 				var::b_mouse_down &&
 				util::window::get_active_window_title( ).find( config.clicker.window_title ) != std::string::npos
 				)

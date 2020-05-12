@@ -57,19 +57,6 @@ namespace util
 			transform( str.begin( ), str.end( ), str.begin( ), static_cast< int( * )( int ) >( ::toupper ) );
 			return str;
 		}
-
-		inline std::wstring to_lower( std::wstring data )
-		{
-			transform( data.begin( ), data.end( ), data.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
-			return data;
-		}
-
-		inline std::wstring to_lower( std::wstring data, std::size_t size )
-		{
-			transform( data.begin( ), data.begin( ) + size, data.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
-			return data;
-		}
-
 	}
 
 	namespace math
@@ -89,9 +76,14 @@ namespace util
 		inline std::string get_active_window_title( )
 		{
 			char title[ 256 ];
-			HWND hwnd = LI_FN( GetForegroundWindow ).safe_cached( )( );
-			LI_FN( GetWindowTextA ).safe_cached( )( hwnd, title, sizeof( title ) );
+			HWND hwnd = LI_FN( GetForegroundWindow ).cached( )( );
+			LI_FN( GetWindowTextA ).cached( )( hwnd, title, sizeof( title ) );
 			return title;
+		}
+
+		inline HWND get_active_window_handle( )
+		{
+			return LI_FN( GetForegroundWindow ).cached( )( );
 		}
 	}
 

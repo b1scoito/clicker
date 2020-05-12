@@ -6,13 +6,13 @@ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 	config.run( xorstr( "pop_rdi_ret" ) ); // this will be statically analyzed, if you want an actual config system do a web-based one (https://github.com/whoshuu/cpr)
 
-	if ( !LI_FN( CreateThread ).safe_cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &util::hooking::work, nullptr, 0, nullptr ) ) // creating mouse hook loop
+	if ( !LI_FN( CreateThread ).cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &util::hooking::work, nullptr, 0, nullptr ) ) // creating mouse hook loop
 	{
 		_log( LCRITICAL, xorstr( "failed to create hook thread, exiting." ) );
 		return EXIT_FAILURE;
 	}
 
-	if ( !LI_FN( CreateThread ).safe_cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &clicker::work, nullptr, 0, nullptr ) ) // creating clicker loop
+	if ( !LI_FN( CreateThread ).cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &clicker::work, nullptr, 0, nullptr ) ) // creating clicker loop
 	{
 		_log( LCRITICAL, xorstr( "failed to create clicker thread, exiting." ) );
 		return EXIT_FAILURE;

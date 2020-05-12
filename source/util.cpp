@@ -2,19 +2,17 @@
 
 LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam )
 {
-	auto *hook = ( MSLLHOOKSTRUCT * ) lParam;
+	auto *hook = reinterpret_cast< MSLLHOOKSTRUCT * > ( lParam );
 
-	if ( ( hook->flags == LLMHF_INJECTED ) || ( hook->flags == LLMHF_LOWER_IL_INJECTED ) )
+	if ( ( hook->flags == LLMHF_INJECTED ) ) // don't inject on me please.
+	{
+		hook->flags &= ~LLMHF_INJECTED;
+		hook->flags &= ~LLMHF_LOWER_IL_INJECTED;
 		return false;
-
-	if ( ( hook->flags & LLMHF_INJECTED ) == LLMHF_INJECTED )
-		return false;
+	}
 
 	if ( wParam != WM_MOUSEMOVE )
 	{
-		if ( ( hook->flags == LLMHF_INJECTED ) || ( hook->flags == LLMHF_LOWER_IL_INJECTED ) )
-			return false;
-
 		switch ( wParam )
 		{
 			case WM_LBUTTONDOWN:
@@ -27,21 +25,21 @@ LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam 
 		}
 	}
 
-	return LI_FN( CallNextHookEx ).safe_cached( )( hook_mouse, nCode, wParam, lParam );
+	return LI_FN( CallNextHookEx ).cached( )( hook_mouse, nCode, wParam, lParam );
 }
 
 DWORD __stdcall util::hooking::work( )
 {
-	hook_mouse = LI_FN( SetWindowsHookExA ).safe_cached( )( WH_MOUSE_LL, &util::hooking::mouse, nullptr, 0 );
+	hook_mouse = LI_FN( SetWindowsHookExA ).cached( )( WH_MOUSE_LL, &util::hooking::mouse, nullptr, 0 );
 
 	MSG lpMsg;
-	while ( LI_FN( GetMessageA ).safe_cached( )( &lpMsg, nullptr, 0, 0 ) )
+	while ( LI_FN( GetMessageA ).cached( )( &lpMsg, nullptr, 0, 0 ) )
 	{
-		LI_FN( TranslateMessage ).safe_cached( )( &lpMsg );
-		LI_FN( DispatchMessageA ).safe_cached( )( &lpMsg );
+		LI_FN( TranslateMessage ).cached( )( &lpMsg );
+		LI_FN( DispatchMessageA ).cached( )( &lpMsg );
 	}
 
-	LI_FN( UnhookWindowsHookEx ).safe_cached( )( hook_mouse );
+	LI_FN( UnhookWindowsHookEx ).cached( )( hook_mouse );
 
 	return EXIT_SUCCESS;
 }
@@ -51,7 +49,7 @@ void util::input::left_down( )
 	INPUT input = { 0 };
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	LI_FN( SendInput ).safe_cached( )( 1, &input, sizeof( INPUT ) );
+	LI_FN( SendInput ).cached( )( 1, &input, sizeof( INPUT ) );
 }
 
 void util::input::left_up( )
@@ -59,5 +57,5 @@ void util::input::left_up( )
 	INPUT input = { 0 };
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-	LI_FN( SendInput ).safe_cached( )( 1, &input, sizeof( INPUT ) );
+	LI_FN( SendInput ).cached( )( 1, &input, sizeof( INPUT ) );
 }

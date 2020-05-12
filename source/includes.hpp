@@ -18,7 +18,7 @@
 #include <d3d9.h>
 #pragma comment(lib, "d3d9.lib")
 
-#include "lazy_importer.hpp"
+#include "lazy.hpp"
 #include "singleton.hpp"
 #include "xorstr.hpp"
 

@@ -5,12 +5,12 @@ c_config config;
 void c_config::run( const char *name )
 {
 	PWSTR path_to_documents;
-	if ( SUCCEEDED( LI_FN( SHGetKnownFolderPath ).safe_cached( )( FOLDERID_Documents, 0, nullptr, &path_to_documents ) ) )
+	if ( SUCCEEDED( LI_FN( SHGetKnownFolderPath ).cached( )( FOLDERID_Documents, 0, nullptr, &path_to_documents ) ) )
 	{
 		path = path_to_documents;
 		path /= name;
 
-		LI_FN( CoTaskMemFree ).safe_cached( )( path_to_documents );
+		LI_FN( CoTaskMemFree ).cached( )( path_to_documents );
 	}
 
 	if ( !std::filesystem::is_directory( path ) )

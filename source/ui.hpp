@@ -1,8 +1,8 @@
 #pragma once
 
 #include "includes.hpp"
-#include "definitions.hpp" // for font definitions
-#include "fa.hpp" // for the font itself.
+#include "font_definitions.hpp" // for font definitions
+#include "fontawesome.hpp" // for the font itself.
 
 namespace ui
 {
@@ -12,7 +12,6 @@ namespace ui
 	static D3DPRESENT_PARAMETERS parameters = {};
 
 	void render( );
-	void key_bind_button( int &key, int width, int height );
 
 	inline std::string get_key_name_by_id( int id )
 	{
@@ -76,7 +75,10 @@ namespace ui
 		return key_names[ id ];
 	}
 
+	void key_bind_button( int &key, int width, int height );
+
 	void activation_type( );
+
 	bool create( );
 
 	void dispose( HWND hwnd, WNDCLASSEX wc );

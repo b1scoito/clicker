@@ -31,13 +31,10 @@
     <ClCompile Include="ui.cpp">
       <Filter>menu</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>def\include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="definitions.hpp">
+    <ClCompile Include="entry.cpp" />
+    <ClCompile Include="font_definitions.hpp">
       <Filter>def\include\imgui\fonts</Filter>
     </ClCompile>
-    <ClCompile Include="entry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="clicker">
@@ -105,9 +102,6 @@
     <ClInclude Include="clicker.hpp">
       <Filter>clicker</Filter>
     </ClInclude>
-    <ClInclude Include="lazy_importer.hpp">
-      <Filter>def\include</Filter>
-    </ClInclude>
     <ClInclude Include="xorstr.hpp">
       <Filter>def\include</Filter>
     </ClInclude>
@@ -126,11 +120,14 @@
     <ClInclude Include="ui.hpp">
       <Filter>menu</Filter>
     </ClInclude>
-    <ClInclude Include="fa.hpp">
-      <Filter>def\include\imgui\fonts</Filter>
-    </ClInclude>
     <ClInclude Include="includes.hpp">
       <Filter>def</Filter>
+    </ClInclude>
+    <ClInclude Include="fontawesome.hpp">
+      <Filter>def\include\imgui\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy.hpp">
+      <Filter>def\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

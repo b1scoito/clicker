@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ui.hpp"
 
 void ui::render( )
@@ -19,7 +17,7 @@ void ui::render( )
 
 			ImGui::SameLine( );
 
-			ui::key_bind_button( config.clicker.enabled_key, 125, 20 );
+			ui::key_bind_button( config.clicker.key, 125, 20 );
 
 			ui::activation_type( );
 
@@ -54,6 +52,7 @@ void ui::render( )
 				config.clicker.min_cps += 1;
 
 			ImGui::Text( xorstr( "is button down %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
+			ImGui::Text( xorstr( "is hotkey toggled %s" ), config.clicker.hotkey_enabled ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
 			ImGui::Text( xorstr( "clicks on this session %d" ), var::i_clicks_this_session );
 			ImGui::Text( xorstr( "application average %.1f ms (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
 
@@ -155,23 +154,23 @@ void ui::activation_type( )
 	switch ( config.clicker.activation_type )
 	{
 		case 0:
-			config.clicker.clicker_enabled = true;
+			config.clicker.hotkey_enabled = true;
 			break;
 
 		case 1:
-			if ( LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) )
-				config.clicker.clicker_enabled = true;
+			if ( LI_FN( GetAsyncKeyState ).cached( )( config.clicker.key ) )
+				config.clicker.hotkey_enabled = true;
 			else
-				config.clicker.clicker_enabled = false;
+				config.clicker.hotkey_enabled = false;
 			break;
 
 		case 2:
-			if ( LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) )
+			if ( LI_FN( GetAsyncKeyState ).cached( )( config.clicker.key ) )
 			{
 				var::b_is_clicked = false;
 				var::b_is_down = true;
 			}
-			else if ( !LI_FN( GetAsyncKeyState ).safe_cached( )( config.clicker.enabled_key ) && var::b_is_down )
+			else if ( !LI_FN( GetAsyncKeyState ).cached( )( config.clicker.key ) && var::b_is_down )
 			{
 				var::b_is_clicked = true;
 				var::b_is_down = false;
@@ -183,7 +182,7 @@ void ui::activation_type( )
 			}
 
 			if ( var::b_is_clicked )
-				config.clicker.clicker_enabled = !config.clicker.clicker_enabled;
+				config.clicker.hotkey_enabled = !config.clicker.hotkey_enabled;
 
 			break;
 
@@ -199,7 +198,7 @@ bool ui::create( )
 		ui::d3d9::wndproc,
 		0L,
 		0L,
-		LI_FN( GetModuleHandleA ).safe_cached( )( nullptr ),
+		LI_FN( GetModuleHandleA ).cached( )( nullptr ),
 		nullptr,
 		nullptr,
 		nullptr,
@@ -208,7 +207,7 @@ bool ui::create( )
 		nullptr
 	};
 
-	LI_FN( RegisterClassExA ).safe_cached( )( &wc );
+	LI_FN( RegisterClassExA ).cached( )( &wc );
 
 	HWND hwnd = CreateWindowA
 	(
@@ -228,13 +227,13 @@ bool ui::create( )
 	if ( !ui::d3d9::create_device_d3d( hwnd ) )
 	{
 		ui::d3d9::cleanup_device_d3d( );
-		LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
+		LI_FN( UnregisterClassA ).cached( )( wc.lpszClassName, wc.hInstance );
 
 		return false;
 	}
 
-	LI_FN( ShowWindow ).safe_cached( )( hwnd, SW_SHOWDEFAULT );
-	LI_FN( UpdateWindow ).safe_cached( )( hwnd );
+	LI_FN( ShowWindow ).cached( )( hwnd, SW_SHOWDEFAULT );
+	LI_FN( UpdateWindow ).cached( )( hwnd );
 
 	ImGui::CreateContext( );
 
@@ -303,10 +302,10 @@ bool ui::create( )
 
 	while ( lpMsg.message != WM_QUIT )
 	{
-		if ( LI_FN( PeekMessageA ).safe_cached( )( &lpMsg, nullptr, 0U, 0U, PM_REMOVE ) )
+		if ( LI_FN( PeekMessageA ).cached( )( &lpMsg, nullptr, 0U, 0U, PM_REMOVE ) )
 		{
-			LI_FN( TranslateMessage ).safe_cached( )( &lpMsg );
-			LI_FN( DispatchMessageA ).safe_cached( )( &lpMsg );
+			LI_FN( TranslateMessage ).cached( )( &lpMsg );
+			LI_FN( DispatchMessageA ).cached( )( &lpMsg );
 			continue;
 		}
 
@@ -358,8 +357,8 @@ void ui::dispose( HWND hwnd, WNDCLASSEX wc )
 
 	ui::d3d9::cleanup_device_d3d( );
 
-	LI_FN( DestroyWindow ).safe_cached( )( hwnd );
-	LI_FN( UnregisterClassA ).safe_cached( )( wc.lpszClassName, wc.hInstance );
+	LI_FN( DestroyWindow ).cached( )( hwnd );
+	LI_FN( UnregisterClassA ).cached( )( wc.lpszClassName, wc.hInstance );
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
@@ -387,9 +386,9 @@ LRESULT __stdcall ui::d3d9::wndproc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 			break;
 
 		case WM_DESTROY:
-			LI_FN( PostQuitMessage ).safe_cached( )( 0 );
+			LI_FN( PostQuitMessage ).cached( )( 0 );
 			return 0;
 	}
 
-	return LI_FN( DefWindowProcA ).safe_cached( )( hwnd, msg, wParam, lParam );
+	return LI_FN( DefWindowProcA ).cached( )( hwnd, msg, wParam, lParam );
 }
