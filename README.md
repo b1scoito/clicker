@@ -12,11 +12,11 @@ Tested on Lunar and Badlion.
 
 Please open an issue if you found a bug [here](https://github.com/b1scoito/clicker/issues).
 
+## Download
+Download the latest release [here](https://github.com/b1scoito/clicker/releases/latest).
+
 ## Menu
 ![image](https://b.catgirlsare.sexy/iEqgevkD.png)
 
 ## Config path
 `%userprofile%\Documents\w_w` - Changed name because of tools statically analyzing my folder
-
-## Download
-Download the latest release [here](https://github.com/b1scoito/clicker/releases/latest).
