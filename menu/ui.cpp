@@ -345,6 +345,9 @@ bool ui::create( )
 		ImGui_ImplDX9_NewFrame( );
 		ImGui_ImplWin32_NewFrame( );
 
+		if ( 1000.f / ImGui::GetIO( ).Framerate < 1000.f / 60 )
+			std::this_thread::sleep_for( std::chrono::milliseconds( ( long long ) ( 1000.f / 60 ) ) );
+
 		// rending menu
 		ui::render( );
 
