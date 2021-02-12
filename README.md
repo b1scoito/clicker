@@ -15,7 +15,7 @@ Please open an issue if you found a bug [here](https://github.com/b1scoito/click
 ## Download
 Download the latest release [here](https://github.com/b1scoito/clicker/releases/latest).
 
-`w_w.vm.exe` is a more protected version of the binary. If you want that link is [here](https://b.catgirlsare.sexy/HCqD9gNd.exe) or [here](https://u.biscoit.in/BjbKTcPP.exe). Any anti-virus flag is a false flag.
+`w_w.vm.exe` is a more protected version of the binary. If you want that link is [here](https://b.catgirlsare.sexy/W_wThV5b.exe) or [here](https://u.biscoit.in/CbHZje0f.exe). Any anti-virus flag is a false flag.
 
 ## Menu
 ![image](https://b.catgirlsare.sexy/iEqgevkD.png)
