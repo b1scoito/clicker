@@ -6,38 +6,51 @@ void ui::render( )
 	{
 		ImGui::Begin( xorstr( "clicker" ), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar );
 		{
-			ImGui::SetWindowSize( ImVec2( 534, 311 ) );
+			ImGui::SetWindowSize( ImVec2( 550, 350 ) );
 			ImGui::SetWindowPos( ImVec2( 0, 0 ) );
 
-			ImGui::Checkbox( xorstr( "##enabled" ), &config.clicker.enabled );
+			ImGui::Text( "Keybindings" );
+			ImGui::Separator( );
+			{
+				ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "Enabled\0Hold\0Toggle\0\0" ) );
+				ImGui::SameLine( );
+				ui::key_bind_button( config.clicker.key, 155, 20 );
+				ui::activation_type( );
+			}
 
-			ImGui::SameLine( );
+			ImGui::Text( "Clicker configuration" );
+			ImGui::Separator( );
+			{
+				ImGui::Checkbox( xorstr( "Left clicker enabled##lc_enabled" ), &config.clicker.left_enabled );
 
-			ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "enabled\0hold\0toggle\0\0" ) );
+				ImGui::SliderInt( xorstr( "##l_maxcps" ), &config.clicker.l_min_cps, 1, 20, xorstr( "Maximum CPS %d" ) );
+				ImGui::SliderInt( xorstr( "##l_mincps" ), &config.clicker.l_max_cps, 1, 20, xorstr( "Minimum CPS %d" ) );
 
-			ImGui::SameLine( );
+				ImGui::Checkbox( xorstr( "Right clicker enabled##lr_enabled" ), &config.clicker.right_enabled );
 
-			ui::key_bind_button( config.clicker.key, 125, 20 );
+				ImGui::SliderInt( xorstr( "##r_maxcps" ), &config.clicker.r_min_cps, 1, 20, xorstr( "Maximum CPS %d" ) );
+				ImGui::SliderInt( xorstr( "##r_mincps" ), &config.clicker.r_max_cps, 1, 20, xorstr( "Minimum CPS %d" ) );
 
-			ui::activation_type( );
+				ImGui::Combo( xorstr( "Client Version" ), &config.clicker.version_type, xorstr( "Lunar\0Badlion\0Minecraft\0Custom\0\0" ) ); // thanks imgui
+				if ( ImGui::IsItemHovered( ) )
+					ImGui::SetTooltip( xorstr( "Window that the auto clicker will work in." ) );
 
-			ImGui::SliderInt( xorstr( "##maxcps" ), &config.clicker.min_cps, 1, 20, xorstr( "max cps %d" ) );
-			ImGui::SliderInt( xorstr( "##mincps" ), &config.clicker.max_cps, 1, 20, xorstr( "min cps %d" ) );
-
-			ImGui::Combo( xorstr( "version" ), &config.clicker.version_type, xorstr( "Badlion " ICON_FA_CHECK "\0Lunar " ICON_FA_CHECK "\0Minecraft\0Custom\0\0" ) ); // thanks imgui
-
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( xorstr( "window that the auto clicker will work in" ) );
+				ImGui::Checkbox( xorstr( "Blockhit" ), &config.clicker.blockhit );
+				if ( config.clicker.blockhit )
+				{
+					ImGui::SliderInt( xorstr( "##blockhit_chance" ), &config.clicker.blockhit_chance, 1, 100, xorstr( "Blockhit chance %d%%" ) );
+				}
+			}
 
 			static char buffer_w[ 16 ];
 
 			switch ( config.clicker.version_type )
 			{
 				case 0:
-					config.clicker.window_title = xorstr( "Badlion" );
+					config.clicker.window_title = xorstr( "Lunar" );
 					break;
 				case 1:
-					config.clicker.window_title = xorstr( "Lunar" );
+					config.clicker.window_title = xorstr( "Badlion" );
 					break;
 				case 2:
 					config.clicker.window_title = xorstr( "Minecraft" );
@@ -48,72 +61,91 @@ void ui::render( )
 					break;
 			}
 
-			if ( config.clicker.min_cps <= config.clicker.max_cps && !( config.clicker.max_cps > 19 ) )
-				config.clicker.min_cps += 1;
+			if ( config.clicker.l_min_cps <= config.clicker.l_max_cps && !( config.clicker.l_max_cps > 19 ) )
+				config.clicker.l_min_cps += 1;
 
-			ImGui::Text( xorstr( "is button down %s" ), var::b_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
-			ImGui::Text( xorstr( "is hotkey toggled %s" ), config.clicker.hotkey_enabled ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
-			ImGui::Text( xorstr( "clicks on this session %d" ), var::i_clicks_this_session );
-			ImGui::Text( xorstr( "application average %.1f ms (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
+			if ( config.clicker.r_min_cps <= config.clicker.r_max_cps && !( config.clicker.r_max_cps > 19 ) )
+				config.clicker.r_min_cps += 1;
 
-			ImGui::BeginChild( xorstr( "config" ), ImVec2( 280, 155 ), true );
+			ImGui::Text( "Information" );
+			ImGui::Separator( );
 			{
-				constexpr auto &config_items = config.get_configs( );
-				static int current_config = -1;
+				ImGui::Text( xorstr( "Is button down? %s" ), var::b_l_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
+				ImGui::Text( xorstr( "Is hotkey toggled? %s" ), config.clicker.hotkey_enabled ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
+				ImGui::Text( xorstr( "Clicks this session: %d" ), var::i_clicks_this_session );
 
-				if ( static_cast< size_t >( current_config ) >= config_items.size( ) )
-					current_config = -1;
-
-				static char buffer[ 16 ];
-
-				if ( ImGui::ListBox( xorstr( "configs" ), &current_config, [ ]( void *data, int idx, const char **out_text )
-					{
-						auto &vector = *static_cast< std::vector<std::string> * >( data );
-						*out_text = vector[ idx ].c_str( );
-						return true;
-					}, &config_items, config_items.size( ), 5 ) && current_config != -1 )
-
-					strcpy_s( buffer, config_items[ current_config ].c_str( ) );
-
-					if ( ImGui::InputText( xorstr( "name" ), buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
-					{
-						if ( current_config != -1 )
-							config.rename( current_config, buffer );
-					}
-
-					if ( ImGui::Button( ( xorstr( "create " ICON_FA_PLUS ) ), ImVec2( 75, 20 ) ) )
-					{
-						config.add( buffer );
-					}
-
-					ImGui::SameLine( );
-
-					if ( ImGui::Button( ( xorstr( "reset " ICON_FA_REDO ) ), ImVec2( 75, 20 ) ) )
-					{
-						config.reset( );
-					}
-
-					if ( current_config != -1 )
-					{
-						if ( ImGui::Button( ( xorstr( "load " ICON_FA_LONG_ARROW_ALT_UP ) ), ImVec2( 75, 20 ) ) )
-						{
-							config.load( current_config );
-						}
-
-						ImGui::SameLine( );
-
-						if ( ImGui::Button( ( xorstr( "save " ICON_FA_SAVE ) ), ImVec2( 75, 20 ) ) )
-						{
-							config.save( current_config );
-						}
-
-						if ( ImGui::Button( ( xorstr( "delete " ICON_FA_TRASH ) ), ImVec2( 75, 20 ) ) )
-						{
-							config.remove( current_config );
-						}
-					}
+#if _DEBUG
+				ImGui::Text( xorstr( "Application average %.1f ms (%.1f fps)" ), 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
+#endif
 			}
-			ImGui::EndChild( );
+
+			ImGui::Text( "Config settings" );
+			ImGui::Separator( );
+			{
+
+				ImGui::Checkbox( "Show config settings", &config.clicker.config_show );
+				if ( config.clicker.config_show )
+				{
+					ImGui::BeginChild( xorstr( "config" ), ImVec2( 350, 150 ), false );
+					{
+						constexpr auto &config_items = config.get_configs( );
+						static int current_config = -1;
+
+						if ( static_cast< size_t >( current_config ) >= config_items.size( ) )
+							current_config = -1;
+
+						static char buffer[ 16 ];
+
+						if ( ImGui::ListBox( xorstr( "Configs" ), &current_config, [ ]( void *data, int idx, const char **out_text )
+							{
+								auto &vector = *static_cast< std::vector<std::string> * >( data );
+								*out_text = vector[ idx ].c_str( );
+								return true;
+							}, &config_items, config_items.size( ), 5 ) && current_config != -1 )
+
+							strcpy_s( buffer, config_items[ current_config ].c_str( ) );
+
+							if ( ImGui::InputText( xorstr( "Config name" ), buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
+							{
+								if ( current_config != -1 )
+									config.rename( current_config, buffer );
+							}
+
+							if ( ImGui::Button( ( xorstr( "Create " ICON_FA_PLUS ) ), ImVec2( 75, 20 ) ) )
+							{
+								config.add( buffer );
+							}
+
+							ImGui::SameLine( );
+
+							if ( ImGui::Button( ( xorstr( "Reset " ICON_FA_REDO ) ), ImVec2( 75, 20 ) ) )
+							{
+								config.reset( );
+							}
+
+							if ( current_config != -1 )
+							{
+								if ( ImGui::Button( ( xorstr( "Load " ICON_FA_LONG_ARROW_ALT_UP ) ), ImVec2( 75, 20 ) ) )
+								{
+									config.load( current_config );
+								}
+
+								ImGui::SameLine( );
+
+								if ( ImGui::Button( ( xorstr( "Save " ICON_FA_SAVE ) ), ImVec2( 75, 20 ) ) )
+								{
+									config.save( current_config );
+								}
+
+								if ( ImGui::Button( ( xorstr( "Delete " ICON_FA_TRASH ) ), ImVec2( 75, 20 ) ) )
+								{
+									config.remove( current_config );
+								}
+							}
+					}
+					ImGui::EndChild( );
+				}
+			}
 		}
 		ImGui::End( );
 	}
@@ -123,7 +155,7 @@ void ui::render( )
 void ui::key_bind_button( int &key, int width, int height )
 {
 	static auto b_get = false;
-	static std::string sz_text = xorstr( "click to bind" );
+	static std::string sz_text = xorstr( "Click to bind" );
 
 	if ( ImGui::Button( sz_text.c_str( ), ImVec2( static_cast< float >( width ), static_cast< float >( height ) ) ) )
 		b_get = true;
@@ -141,12 +173,12 @@ void ui::key_bind_button( int &key, int width, int height )
 				}
 			}
 		}
-		sz_text = xorstr( "press a key" );
+		sz_text = xorstr( "Press a key" );
 	}
 	else if ( !b_get && key == 0 )
-		sz_text = xorstr( "click to bind" );
+		sz_text = xorstr( "Click to bind" );
 	else if ( !b_get && key != 0 )
-		sz_text = xorstr( "bound to " ) + util::string::to_lower( ui::get_key_name_by_id( key ) );
+		sz_text = xorstr( "Bound to " ) + util::string::to_lower( ui::get_key_name_by_id( key ) );
 }
 
 void ui::activation_type( )
@@ -154,7 +186,8 @@ void ui::activation_type( )
 	switch ( config.clicker.activation_type )
 	{
 		case 0:
-			config.clicker.hotkey_enabled = true;
+			if ( config.clicker.left_enabled || config.clicker.right_enabled )
+				config.clicker.hotkey_enabled = true;
 			break;
 
 		case 1:
@@ -203,7 +236,7 @@ bool ui::create( )
 		nullptr,
 		nullptr,
 		nullptr,
-		xorstr( "pop_rsi_r18" ),
+		xorstr( "w_w" ),
 		nullptr
 	};
 
@@ -213,11 +246,11 @@ bool ui::create( )
 	(
 		wc.lpszClassName,
 		xorstr( "" ),
-		WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX,
+		WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_POPUP,
 		100,
 		100,
-		550,
-		350,
+		566,
+		389,
 		nullptr,
 		nullptr,
 		wc.hInstance,
@@ -242,7 +275,7 @@ bool ui::create( )
 
 	io.Fonts->AddFontDefault( );
 
-	io.IniFilename = nullptr; // no config file
+	io.IniFilename = nullptr; // No ImGui config file
 
 	ImFontConfig config;
 	config.MergeMode = true;
@@ -298,7 +331,7 @@ bool ui::create( )
 	MSG lpMsg;
 	ZeroMemory( &lpMsg, sizeof( lpMsg ) );
 
-	_log( LDEBUG, xorstr( "waiting for program end" ) );
+	_log( LDEBUG, xorstr( "Waiting for program end" ) );
 
 	while ( lpMsg.message != WM_QUIT )
 	{

@@ -16,12 +16,19 @@ LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam 
 		switch ( wParam )
 		{
 			case WM_LBUTTONDOWN:
-				var::b_first_click = true;
-				var::b_mouse_down = true;
+				var::b_l_first_click = true;
+				var::b_l_mouse_down = true;
 				break;
 			case WM_LBUTTONUP:
-				var::b_mouse_down = false;
+				var::b_l_mouse_down = false;
 				break;
+
+			case WM_RBUTTONDOWN:
+				var::b_r_first_click = true;
+				var::b_r_mouse_down = true;
+				break;
+			case WM_RBUTTONUP:
+				var::b_r_mouse_down = false;
 		}
 	}
 
@@ -57,5 +64,21 @@ void util::input::left_up( )
 	INPUT input = { 0 };
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+	LI_FN( SendInput ).cached( )( 1, &input, sizeof( INPUT ) );
+}
+
+void util::input::right_down( )
+{
+	INPUT input = { 0 };
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+	LI_FN( SendInput ).cached( )( 1, &input, sizeof( INPUT ) );
+}
+
+void util::input::right_up( )
+{
+	INPUT input = { 0 };
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
 	LI_FN( SendInput ).cached( )( 1, &input, sizeof( INPUT ) );
 }

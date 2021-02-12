@@ -1,8 +1,8 @@
 #pragma once
 
-#include "includes.hpp"
-#include "font_definitions.hpp" // for font definitions
-#include "fontawesome.hpp" // for the font itself.
+#include "../includes.hpp"
+#include "../def/include/imgui/fonts/font_definitions.hpp" // for font definitions
+#include "../def/include/imgui/fonts/fontawesome.hpp" // for the font itself.
 
 namespace ui
 {

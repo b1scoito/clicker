@@ -1,13 +1,15 @@
 # clicker
-c++ autoclicker w/ modern cpp code, configs and imgui mainly made for minecraft
+C++ Autoclicker w/ modern cpp code, configs and imgui mainly made for minecraft.
+Tested on Lunar, Badlion, and the original Client.
+Has right click and left click option.
 
-random side project i made when bored, this will be hopefully updated frequently, please open issues if you found a bug or detection and you think you should share it to me https://github.com/b1scoito/clicker/issues
+Please open issues if you found a bug: https://github.com/b1scoito/clicker/issues
 
 ## menu
 ![image](https://i.imgur.com/gIQ3zfn.png)
 
 ## config path
-`%userprofile%\Documents\pop_rdi_ret` - changed name because of tools statically analyzing my folder
+`%userprofile%\Documents\w_w` - Changed name because of tools statically analyzing my folder
 
 ## download
-moved to releases section.
+https://github.com/b1scoito/clicker/releases
