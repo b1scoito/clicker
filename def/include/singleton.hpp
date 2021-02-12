@@ -4,8 +4,8 @@ template<typename T>
 class singleton
 {
 protected:
-	singleton( ) = default;
-	~singleton( ) = default;
+	singleton( ) { }
+	~singleton( ) { }
 
 	singleton( const singleton & ) = delete;
 	singleton &operator=( const singleton & ) = delete;

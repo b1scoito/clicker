@@ -30,7 +30,7 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 						util::input::left_down( );
 						var::l_last_click_time = std::clock( );
 
-						if ( config.clicker.blockhit && std::rand( ) % ( 100 / config.clicker.blockhit_chance ) == 0 )
+						if ( config.clicker.blockhit && config.clicker.blockhit_chance > 0 && std::rand( ) % ( 100 / config.clicker.blockhit_chance ) == 0 )
 							util::input::right_down( );
 
 						std::this_thread::sleep_for( std::chrono::milliseconds( util::math::random_int( 30, 50 ) ) );

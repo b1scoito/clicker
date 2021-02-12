@@ -9,7 +9,7 @@ void ui::render( )
 			ImGui::SetWindowSize( ImVec2( 550, 350 ) );
 			ImGui::SetWindowPos( ImVec2( 0, 0 ) );
 
-			ImGui::Text( "Keybindings" );
+			ImGui::Text( xorstr( "Keybindings" ) );
 			ImGui::Separator( );
 			{
 				ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "Always On\0Hold\0Toggle\0\0" ) );
@@ -18,13 +18,15 @@ void ui::render( )
 				ui::activation_type( );
 			}
 
-			ImGui::Text( "Clicker configuration" );
+			ImGui::Text( xorstr( "Clicker configuration" ) );
 			ImGui::Separator( );
 			{
 				ImGui::Checkbox( xorstr( "Left clicker enabled##lc_enabled" ), &config.clicker.left_enabled );
 
 				ImGui::SliderInt( xorstr( "##l_maxcps" ), &config.clicker.l_min_cps, 1, 20, xorstr( "Maximum CPS %d" ) );
 				ImGui::SliderInt( xorstr( "##l_mincps" ), &config.clicker.l_max_cps, 1, 20, xorstr( "Minimum CPS %d" ) );
+
+				ImGui::Separator( );
 
 				ImGui::Checkbox( xorstr( "Right clicker enabled##lr_enabled" ), &config.clicker.right_enabled );
 
@@ -35,30 +37,30 @@ void ui::render( )
 				if ( ImGui::IsItemHovered( ) )
 					ImGui::SetTooltip( xorstr( "Window that the auto clicker will work in." ) );
 
+				static char buffer_w[ 16 ];
+
+				switch ( config.clicker.version_type )
+				{
+					case 0:
+						config.clicker.window_title = xorstr( "Lunar" );
+						break;
+					case 1:
+						config.clicker.window_title = xorstr( "Badlion" );
+						break;
+					case 2:
+						config.clicker.window_title = xorstr( "Minecraft" );
+						break;
+					case 3:
+						ImGui::InputText( xorstr( "title" ), buffer_w, IM_ARRAYSIZE( buffer_w ) );
+						config.clicker.window_title = buffer_w;
+						break;
+				}
+
 				ImGui::Checkbox( xorstr( "Blockhit" ), &config.clicker.blockhit );
 				if ( config.clicker.blockhit )
 				{
 					ImGui::SliderInt( xorstr( "##blockhit_chance" ), &config.clicker.blockhit_chance, 1, 100, xorstr( "Blockhit chance %d%%" ) );
 				}
-			}
-
-			static char buffer_w[ 16 ];
-
-			switch ( config.clicker.version_type )
-			{
-				case 0:
-					config.clicker.window_title = xorstr( "Lunar" );
-					break;
-				case 1:
-					config.clicker.window_title = xorstr( "Badlion" );
-					break;
-				case 2:
-					config.clicker.window_title = xorstr( "Minecraft" );
-					break;
-				case 3:
-					ImGui::InputText( xorstr( "title" ), buffer_w, IM_ARRAYSIZE( buffer_w ) );
-					config.clicker.window_title = buffer_w;
-					break;
 			}
 
 			if ( config.clicker.l_min_cps <= config.clicker.l_max_cps && !( config.clicker.l_max_cps > 19 ) )
@@ -67,7 +69,7 @@ void ui::render( )
 			if ( config.clicker.r_min_cps <= config.clicker.r_max_cps && !( config.clicker.r_max_cps > 19 ) )
 				config.clicker.r_min_cps += 1;
 
-			ImGui::Text( "Information" );
+			ImGui::Text( xorstr( "Information" ) );
 			ImGui::Separator( );
 			{
 				ImGui::Text( xorstr( "Is button down? %s" ), var::b_l_mouse_down ? xorstr( ICON_FA_CHECK " " ) : xorstr( ICON_FA_TIMES " " ) );
@@ -79,11 +81,11 @@ void ui::render( )
 #endif
 			}
 
-			ImGui::Text( "Config settings" );
+			ImGui::Text( xorstr( "Config settings" ) );
 			ImGui::Separator( );
 			{
 
-				ImGui::Checkbox( "Show config settings", &config.clicker.config_show );
+				ImGui::Checkbox( xorstr( "Show config settings" ), &config.clicker.config_show );
 				if ( config.clicker.config_show )
 				{
 					ImGui::BeginChild( xorstr( "config" ), ImVec2( 350, 150 ), false );
@@ -291,13 +293,13 @@ bool ui::create( )
 	io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.5f, &config, ranges );
 
 	style->WindowRounding = 0.0f;
-	style->ChildRounding = 5.0f;
-	style->FrameRounding = 4.0f;
-	style->GrabRounding = 10.0f;
+	style->ChildRounding = 1.0f;
+	style->FrameRounding = 1.0f;
+	style->GrabRounding = 3.0f;
 
 	// use demo to see color documentation and stuff
 
-	style->Colors[ ImGuiCol_Text ] = color( 255, 255, 255 );
+	style->Colors[ ImGuiCol_Text ] = color( 250, 250, 250 );
 	style->Colors[ ImGuiCol_TextDisabled ] = color( 204, 204, 204 );
 	style->Colors[ ImGuiCol_WindowBg ] = color( 25, 25, 25 );
 	style->Colors[ ImGuiCol_PopupBg ] = color( 31, 31, 31 );
@@ -345,6 +347,7 @@ bool ui::create( )
 		ImGui_ImplDX9_NewFrame( );
 		ImGui_ImplWin32_NewFrame( );
 
+		// frame cap for performance
 		if ( 1000.f / ImGui::GetIO( ).Framerate < 1000.f / 60 )
 			std::this_thread::sleep_for( std::chrono::milliseconds( ( long long ) ( 1000.f / 60 ) ) );
 
@@ -378,7 +381,6 @@ bool ui::create( )
 			ui::d3d9::reset_device( );
 	}
 
-	// destroy imgui and window n d3d and my thighs ;3
 	ui::dispose( hwnd, wc );
 
 	return true;

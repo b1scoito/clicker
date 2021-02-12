@@ -108,9 +108,6 @@
     <ClInclude Include="def\include\lazy.hpp">
       <Filter>def\include</Filter>
     </ClInclude>
-    <ClInclude Include="def\include\singleton.hpp">
-      <Filter>def\include</Filter>
-    </ClInclude>
     <ClInclude Include="def\utils\util.hpp">
       <Filter>def\utils</Filter>
     </ClInclude>
@@ -127,5 +124,6 @@
       <Filter>menu</Filter>
     </ClInclude>
     <ClInclude Include="includes.hpp" />
+    <ClInclude Include="def\include\singleton.hpp" />
   </ItemGroup>
 </Project>

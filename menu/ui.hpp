@@ -136,15 +136,9 @@ namespace ui
 	}
 
 	template <typename T>
-	static ImVec4 color( T r, T g, T b, T a = 255 )
+	ImVec4 color( T r, T g, T b, T a = 255 )
 	{
-		return
-		{
-			static_cast< float >( r ) / 255.0f,
-			static_cast< float >( g ) / 255.0f,
-			static_cast< float >( b ) / 255.0f,
-			static_cast< float >( a ) / 255.0f
-		};
+		return ImColor( r, g, b, a );
 	}
 
 }
