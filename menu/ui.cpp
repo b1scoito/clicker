@@ -12,7 +12,7 @@ void ui::render( )
 			ImGui::Text( "Keybindings" );
 			ImGui::Separator( );
 			{
-				ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "Enabled\0Hold\0Toggle\0\0" ) );
+				ImGui::Combo( xorstr( "##combo" ), &config.clicker.activation_type, xorstr( "Always On\0Hold\0Toggle\0\0" ) );
 				ImGui::SameLine( );
 				ui::key_bind_button( config.clicker.key, 155, 20 );
 				ui::activation_type( );
