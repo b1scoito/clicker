@@ -57,9 +57,6 @@
     <ClInclude Include="def\utils\vars.hpp" />
     <ClInclude Include="menu\ui.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{25C13AC6-6ACC-42C9-8422-559D75DE0A86}</ProjectGuid>

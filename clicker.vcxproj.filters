@@ -110,7 +110,4 @@
     <ClInclude Include="def\config\archivex.hpp" />
     <ClInclude Include="def\config\config.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
 </Project>
