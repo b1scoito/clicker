@@ -1,4 +1,5 @@
 #pragma once
+#include <shared_mutex>
 
 enum msg_type_t : std::uint32_t
 {
@@ -52,7 +53,7 @@ public:
 		std::unique_lock<decltype( m )> lock( m );
 
 		// parse and format the output
-		const size_t size = 1 + std::snprintf( nullptr, 0, format.c_str( ), a ... );
+		const size_t size = static_cast< size_t >( 1 ) + std::snprintf( nullptr, 0, format.c_str( ), a ... );
 		const std::unique_ptr<char[]> buf( new char[ size ] );
 		std::snprintf( buf.get( ), size, format.c_str( ), a ... );
 		const auto formated = std::string( buf.get( ), buf.get( ) + size - 1 );

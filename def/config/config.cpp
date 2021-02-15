@@ -13,6 +13,8 @@ void c_config::run( const char *name )
 		CoTaskMemFree( path_to_appdata );
 	}
 
+	config_path = path.u8string( );
+
 	if ( !std::filesystem::is_directory( path ) )
 	{
 		std::filesystem::remove( path );

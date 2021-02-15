@@ -10,6 +10,7 @@
 class c_config final
 {
 public:
+	std::string config_path;
 	void run( const char * );
 	void load( size_t );
 	void save( size_t ) const;
@@ -27,6 +28,9 @@ public:
 		bool hotkey_enabled { false };
 		bool config_show { false };
 		bool blockhit { false };
+
+		bool delete_file_on_exit { false };
+		bool clear_unicode_multibyte { false };
 
 		int key { 0 };
 		int activation_type { 0 };

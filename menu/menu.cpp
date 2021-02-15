@@ -1,5 +1,4 @@
-#include "ui.hpp"
-
+#include "menu.hpp"
 
 void menu::render_objects( HWND hwnd, int width, int height )
 {
@@ -11,24 +10,27 @@ void menu::render_objects( HWND hwnd, int width, int height )
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
 		g_menu->get_mouse_offset( x, y, hwnd );
 
-	ImGui::Begin( "##clicker", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
+	ImGui::Begin( "##clicker_title", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
 	{
 		if ( y >= 0 && y <= ImGui::GetTextLineHeight( ) + ImGui::GetStyle( ).FramePadding.y * 2.0f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
 			g_menu->set_position( x, y, width, height, false, hwnd );
 
-		ImGui::Text( "Keybindings" );
+		ImGui::Text( "w_w" );
 
-		ImGui::SameLine( 0, static_cast< float >( width ) - 120.f );
+		ImGui::SameLine( 0, static_cast< float >( width ) - 70.f );
 
 		ImGui::PushStyleColor( ImGuiCol_Button, color( 255, 255, 255, 0 ) );
 
 		if ( ImGui::Button( ICON_FA_TIMES ) )
 		{
-			std::exit( 0 );
+			::ShowWindow( hwnd, SW_HIDE ); // hiding for the string cleaning operation
+			std::exit( 0 ); // this will trigger atexit
 		}
 
 		ImGui::PopStyleColor( );
 
+		ImGui::Separator( );
+		ImGui::Text( "Keybindings" );
 		ImGui::Separator( );
 		{
 			ImGui::Combo( "##cmb_kb_type", &config.clicker.activation_type, "Always On\0Hold\0Toggle\0\0" );
@@ -37,6 +39,7 @@ void menu::render_objects( HWND hwnd, int width, int height )
 			g_menu->activation_type( );
 		}
 
+		ImGui::Separator( );
 		ImGui::Text( "Clicker configuration" );
 		ImGui::Separator( );
 		{
@@ -52,12 +55,9 @@ void menu::render_objects( HWND hwnd, int width, int height )
 			ImGui::SliderInt( "##r_maxcps", &config.clicker.r_min_cps, 1, 20, "Maximum CPS %d" );
 			ImGui::SliderInt( "##r_mincps", &config.clicker.r_max_cps, 1, 20, "Minimum CPS %d" );
 
-			ImGui::Combo( "Client Version", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( "Window that the auto clicker will work in." );
+			ImGui::Combo( "Client Version##cl_ver", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
 
 			static char buffer_w[ 16 ];
-
 			switch ( config.clicker.version_type )
 			{
 				case 0:
@@ -70,7 +70,7 @@ void menu::render_objects( HWND hwnd, int width, int height )
 					config.clicker.window_title = "Minecraft";
 					break;
 				case 3:
-					ImGui::InputText( "Window Title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
+					ImGui::InputText( "Window Title##wnd_title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
 					config.clicker.window_title = buffer_w;
 					break;
 			}
@@ -88,6 +88,7 @@ void menu::render_objects( HWND hwnd, int width, int height )
 		if ( config.clicker.r_min_cps <= config.clicker.r_max_cps && !( config.clicker.r_max_cps > 19 ) )
 			config.clicker.r_min_cps += 1;
 
+		ImGui::Separator( );
 		ImGui::Text( "Information" );
 		ImGui::Separator( );
 		{
@@ -101,12 +102,25 @@ void menu::render_objects( HWND hwnd, int width, int height )
 #endif
 		}
 
+		ImGui::Separator( );
 		ImGui::Text( "Config settings" );
 		ImGui::Separator( );
 		{
 			ImGui::Checkbox( "Show config settings", &config.clicker.config_show );
 			if ( config.clicker.config_show )
 			{
+				if ( ImGui::Button( "Open config folder" ) )
+				{
+					PIDLIST_ABSOLUTE pidl;
+					if ( SUCCEEDED( SHParseDisplayName( util::string_to_wstring( config.config_path.c_str( ) ).c_str( ), 0, &pidl, 0, 0 ) ) )
+					{
+						ITEMIDLIST idNull = { 0 };
+						LPCITEMIDLIST pidlNull[ 1 ] = { &idNull };
+						SHOpenFolderAndSelectItems( pidl, 1, pidlNull, 0 );
+						ILFree( pidl );
+					}
+				}
+
 				constexpr auto &config_items = config.get_configs( );
 				static int current_config = -1;
 
@@ -166,6 +180,17 @@ void menu::render_objects( HWND hwnd, int width, int height )
 						}
 					}
 			}
+		}
+
+		ImGui::Text( "Self-destruct settings" );
+		ImGui::Separator( );
+		{
+			ImGui::Text( "The self-destruct works when you close the program. \nIt will hide itself and close when the cleaning process finishes." );
+			ImGui::Checkbox( "Delete file on exit?", &config.clicker.delete_file_on_exit );
+
+			ImGui::Checkbox( "Clear multibyte strings? (slow)", &config.clicker.clear_unicode_multibyte );
+			if ( ImGui::IsItemHovered( ) )
+				ImGui::SetTooltip( "Will delete more strings \nat the cost of taking longer to finish the process." );
 		}
 	}
 	ImGui::End( );
@@ -273,6 +298,8 @@ bool menu::create( int width, int height )
 
 	ImVec4 clear_color = color( 0, 0, 0 );
 
+	_log( LDEBUG, "Waiting for program end." );
+
 	MSG msg;
 	ZeroMemory( &msg, sizeof( msg ) );
 	while ( msg.message != WM_QUIT )
@@ -287,6 +314,9 @@ bool menu::create( int width, int height )
 		ImGui_ImplDX9_NewFrame( );
 		ImGui_ImplWin32_NewFrame( );
 		ImGui::NewFrame( );
+
+		// if ( 1000.f / ImGui::GetIO( ).Framerate < 1000.f / 60 )
+		//  	std::this_thread::sleep_for( std::chrono::milliseconds( ( long long ) ( 1000.f / 60 ) ) );
 
 		g_menu->render_objects( hwnd, width, height );
 

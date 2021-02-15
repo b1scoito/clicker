@@ -39,9 +39,6 @@
     <ClCompile Include="def\utils\util.cpp">
       <Filter>def\utils</Filter>
     </ClCompile>
-    <ClCompile Include="menu\ui.cpp">
-      <Filter>menu</Filter>
-    </ClCompile>
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="def\imgui\impl\imgui_impl_dx9.cpp">
       <Filter>def\include\imgui\impl</Filter>
@@ -61,6 +58,11 @@
     <ClCompile Include="def\config\config.cpp" />
     <ClCompile Include="def\imgui\imgui_demo.cpp" />
     <ClCompile Include="def\imgui\imgui_tables.cpp" />
+    <ClCompile Include="def\scanner\scanner.cpp" />
+    <ClCompile Include="menu\menu.cpp">
+      <Filter>menu</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse\mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clicker\clicker.hpp">
@@ -71,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="def\utils\vars.hpp">
       <Filter>def\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="menu\ui.hpp">
-      <Filter>menu</Filter>
     </ClInclude>
     <ClInclude Include="def\imgui\fonts\font_definitions.hpp">
       <Filter>def\include\imgui\fonts</Filter>
@@ -109,5 +108,10 @@
     <ClInclude Include="def\includes.hpp" />
     <ClInclude Include="def\config\archivex.hpp" />
     <ClInclude Include="def\config\config.hpp" />
+    <ClInclude Include="def\scanner\scanner.hpp" />
+    <ClInclude Include="menu\menu.hpp">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse\mouse.hpp" />
   </ItemGroup>
 </Project>

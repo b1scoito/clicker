@@ -20,6 +20,9 @@ public:
 	void render_objects( HWND hwnd, int width, int height );
 	bool create( int width, int height );
 
+	~menu( ) = default;
+	menu( ) = default;
+
 private:
 	template <typename T>
 	ImVec4 color( T r, T g, T b, T a = 255 )
@@ -154,7 +157,6 @@ private:
 					config.clicker.hotkey_enabled = !config.clicker.hotkey_enabled;
 
 				break;
-
 		}
 	}
 
@@ -162,7 +164,6 @@ public:
 	LPDIRECT3D9 g_pD3D = NULL;
 	LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 	D3DPRESENT_PARAMETERS g_d3dpp = {};
-
 
 	void set_position( int x, int y, int w, int h, bool b_center, HWND hwnd )
 	{
@@ -247,6 +248,5 @@ public:
 		ImGui_ImplDX9_CreateDeviceObjects( );
 	}
 };
-
 
 inline auto g_menu = std::make_unique<menu>( );

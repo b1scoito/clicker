@@ -1,6 +1,6 @@
 #include "clicker.hpp"
 
-DWORD __stdcall clicker::work( LPVOID lParam )
+void clicker::work( )
 {
 	while ( true )
 	{
@@ -13,7 +13,7 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 				if ( vars::b_l_first_click )
 				{
 					std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
-					util::input::left_up( );
+					g_mouse->left_up( );
 					vars::b_l_first_click = false;
 				}
 				else
@@ -26,17 +26,17 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 
 					if ( ( std::clock( ) - vars::l_last_click_time ) > random_delay )
 					{
-						util::input::left_down( );
+						g_mouse->left_down( );
 						vars::l_last_click_time = std::clock( );
 
 						if ( config.clicker.blockhit && config.clicker.blockhit_chance > 0 && std::rand( ) % ( 100 / config.clicker.blockhit_chance ) == 0 )
-							util::input::right_down( );
+							g_mouse->right_down( );
 
 						std::this_thread::sleep_for( std::chrono::milliseconds( util::random_int( 30, 50 ) ) );
-						util::input::left_up( );
+						g_mouse->left_up( );
 
 						if ( config.clicker.blockhit )
-							util::input::right_up( );
+							g_mouse->right_up( );
 
 						vars::i_clicks_this_session++;
 
@@ -50,7 +50,7 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 				if ( vars::b_r_first_click )
 				{
 					std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
-					util::input::right_up( );
+					g_mouse->right_up( );
 					vars::b_r_first_click = false;
 				}
 				else
@@ -63,11 +63,11 @@ DWORD __stdcall clicker::work( LPVOID lParam )
 
 					if ( ( std::clock( ) - vars::l_last_click_time ) > random_delay )
 					{
-						util::input::right_down( );
+						g_mouse->right_down( );
 						vars::l_last_click_time = std::clock( );
 
 						std::this_thread::sleep_for( std::chrono::milliseconds( util::random_int( 30, 50 ) ) );
-						util::input::right_up( );
+						g_mouse->right_up( );
 
 						vars::i_clicks_this_session++;
 

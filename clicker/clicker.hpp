@@ -1,8 +1,15 @@
 #pragma once
 
 #include "../def/includes.hpp"
+#include "../mouse/mouse.hpp"
 
-namespace clicker
+class clicker
 {
-	DWORD __stdcall work( LPVOID lParam );
-}
+public:
+	void work( );
+
+	~clicker( ) = default;
+	clicker( ) = default;
+};
+
+inline auto g_clicker = std::make_unique<clicker>( );

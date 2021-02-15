@@ -1,92 +1,22 @@
 #include "util.hpp"
 
-LRESULT __stdcall util::hooking::mouse( int nCode, WPARAM wParam, LPARAM lParam )
-{
-	auto *hook = reinterpret_cast< MSLLHOOKSTRUCT * > ( lParam );
-
-	if ( ( hook->flags == LLMHF_INJECTED ) ) // Don't inject on me please.
-	{
-		hook->flags &= ~LLMHF_INJECTED;
-		hook->flags &= ~LLMHF_LOWER_IL_INJECTED;
-		return false;
-	}
-
-	if ( wParam != WM_MOUSEMOVE )
-	{
-		switch ( wParam )
-		{
-			case WM_LBUTTONDOWN:
-				vars::b_l_first_click = true;
-				vars::b_l_mouse_down = true;
-				break;
-			case WM_LBUTTONUP:
-				vars::b_l_mouse_down = false;
-				break;
-
-			case WM_RBUTTONDOWN:
-				vars::b_r_first_click = true;
-				vars::b_r_mouse_down = true;
-				break;
-			case WM_RBUTTONUP:
-				vars::b_r_mouse_down = false;
-		}
-	}
-
-	return CallNextHookEx( hook_mouse, nCode, wParam, lParam );
-}
-
-DWORD __stdcall util::hooking::work( )
-{
-	hook_mouse = SetWindowsHookExA( WH_MOUSE_LL, &util::hooking::mouse, nullptr, 0 );
-
-	MSG lpMsg;
-	while ( GetMessage( &lpMsg, nullptr, 0, 0 ) )
-	{
-		TranslateMessage( &lpMsg );
-		DispatchMessageA( &lpMsg );
-	}
-
-	UnhookWindowsHookEx( hook_mouse );
-
-	return EXIT_SUCCESS;
-}
-
-void util::input::left_down( )
-{
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	SendInput( 1, &input, sizeof( INPUT ) );
-}
-
-void util::input::left_up( )
-{
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-	SendInput( 1, &input, sizeof( INPUT ) );
-}
-
-void util::input::right_down( )
-{
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
-	SendInput( 1, &input, sizeof( INPUT ) );
-}
-
-void util::input::right_up( )
-{
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
-	SendInput( 1, &input, sizeof( INPUT ) );
-}
-
 std::string util::to_lower( std::string str )
 {
 	std::transform( str.begin( ), str.end( ), str.begin( ), static_cast< int( * )( int ) >( ::tolower ) );
 	return str;
+}
+
+std::wstring util::string_to_wstring( std::string str )
+{
+	if ( str.empty( ) )
+		return std::wstring( );
+
+	const auto len = str.length( ) + 1;
+	auto ret = std::wstring( len, 0 );
+	const auto size = MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, &str[ 0 ], str.size( ), &ret[ 0 ], len );
+	ret.resize( size );
+
+	return ret;
 }
 
 int util::random_int( int i_start, int i_end )
@@ -112,4 +42,46 @@ std::string util::get_serial( )
 	GetVolumeInformationA( R"(C:)", nullptr, 0, &disk_serial, nullptr, nullptr, nullptr, 0 );
 
 	return std::to_string( disk_serial );
+}
+
+DWORD util::get_process_id_by_name( const std::string &str_proc )
+{
+	if ( str_proc.empty( ) )
+		return false;
+
+	auto str_fl = str_proc;
+	if ( str_fl.find_last_of( "." ) != std::string::npos )
+		str_fl.erase( str_fl.find_last_of( "." ), std::string::npos );
+
+	str_fl += ".exe";
+
+	const auto handle = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, NULL );
+	PROCESSENTRY32 m_entry; m_entry.dwSize = sizeof( m_entry );
+
+	if ( !Process32First( handle, &m_entry ) )
+		return 0;
+
+	do
+	{
+		if ( util::to_lower( m_entry.szExeFile ).compare( util::to_lower( str_fl ) ) == 0 )
+		{
+			CloseHandle( handle );
+			return m_entry.th32ProcessID;
+		}
+	} while ( Process32Next( handle, &m_entry ) );
+
+	return 0;
+}
+
+void util::self_delete( std::string file_path )
+{
+	TCHAR szCmd[ 2 * MAX_PATH ];
+	STARTUPINFO si = { 0 };
+	PROCESS_INFORMATION pi = { 0 };
+
+	StringCbPrintf( szCmd, 2 * MAX_PATH, "cmd.exe /C ping 1.1.1.1 -n 5 > nul & del /f /q \"%s\"", file_path.c_str( ) );
+	CreateProcess( NULL, szCmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi );
+
+	CloseHandle( pi.hThread );
+	CloseHandle( pi.hProcess );
 }
