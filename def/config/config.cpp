@@ -4,13 +4,13 @@ c_config config;
 
 void c_config::run( const char *name )
 {
-	PWSTR path_to_documents;
-	if ( SUCCEEDED( LI_FN( SHGetKnownFolderPath ).cached( )( FOLDERID_Documents, 0, nullptr, &path_to_documents ) ) )
+	PWSTR path_to_appdata;
+	if ( SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &path_to_appdata ) ) )
 	{
-		path = path_to_documents;
+		path = path_to_appdata;
 		path /= name;
 
-		LI_FN( CoTaskMemFree ).cached( )( path_to_documents );
+		CoTaskMemFree( path_to_appdata );
 	}
 
 	if ( !std::filesystem::is_directory( path ) )

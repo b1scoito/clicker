@@ -1,26 +1,34 @@
-#include "includes.hpp"
+#include "clicker/clicker.hpp"
+#include "menu/ui.hpp"
 
-int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, INT nShowCmd )
+#include "def/includes.hpp"
+
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
-	_log( LDEBUG, xorstr( "Initializing" ) ); // added to construct class when program start
+	std::atexit( [ ]( )
+		{
+			// self-destruct
+		} );
 
-	config.run( xorstr( "w_w" ) ); // this will be statically analyzed, if you want an actual config system do a web-based one (https://github.com/whoshuu/cpr)
+	_log( LDEBUG, "Initializing." );
 
-	if ( !LI_FN( CreateThread ).cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &util::hooking::work, nullptr, 0, nullptr ) ) // creating mouse hook loop
+	config.run( util::get_serial( ).c_str( ) );
+
+	if ( !CreateThread( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &util::hooking::work, nullptr, 0, nullptr ) )
 	{
-		_log( LCRITICAL, xorstr( "Failed to create hook thread, exiting." ) );
+		_log( LERROR, "Failed to create hook thread, exiting." );
 		return EXIT_FAILURE;
 	}
 
-	if ( !LI_FN( CreateThread ).cached( )( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &clicker::work, nullptr, 0, nullptr ) ) // creating clicker loop
+	if ( !CreateThread( nullptr, 0, ( LPTHREAD_START_ROUTINE ) &clicker::work, nullptr, 0, nullptr ) )
 	{
-		_log( LCRITICAL, xorstr( "Failed to create clicker thread, exiting." ) );
+		_log( LERROR, "Failed to create clicker thread, exiting." );
 		return EXIT_FAILURE;
 	}
 
-	if ( !ui::create( ) ) // creating window and d3d9 render loop
+	if ( !g_menu->create( 550, 350 ) )
 	{
-		_log( LCRITICAL, xorstr( "Failed to create ui, exiting." ) );
+		_log( LERROR, "Failed to create ui, exiting." );
 		return EXIT_FAILURE;
 	}
 

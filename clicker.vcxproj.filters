@@ -36,77 +36,35 @@
     <ClCompile Include="clicker\clicker.cpp">
       <Filter>clicker</Filter>
     </ClCompile>
-    <ClCompile Include="def\include\console\console.cpp">
-      <Filter>def\include\console</Filter>
-    </ClCompile>
-    <ClCompile Include="def\include\imgui\impl\imgui_impl_dx9.cpp">
-      <Filter>def\include\imgui\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="def\include\imgui\impl\imgui_impl_win32.cpp">
-      <Filter>def\include\imgui\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="def\include\imgui\imgui.cpp">
-      <Filter>def\include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="def\include\imgui\imgui_draw.cpp">
-      <Filter>def\include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="def\include\imgui\imgui_widgets.cpp">
-      <Filter>def\include\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="def\utils\util.cpp">
       <Filter>def\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="menu\config\config.cpp">
-      <Filter>menu\config</Filter>
     </ClCompile>
     <ClCompile Include="menu\ui.cpp">
       <Filter>menu</Filter>
     </ClCompile>
     <ClCompile Include="entry.cpp" />
+    <ClCompile Include="def\imgui\impl\imgui_impl_dx9.cpp">
+      <Filter>def\include\imgui\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="def\imgui\impl\imgui_impl_win32.cpp">
+      <Filter>def\include\imgui\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="def\imgui\imgui.cpp">
+      <Filter>def\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="def\imgui\imgui_draw.cpp">
+      <Filter>def\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="def\imgui\imgui_widgets.cpp">
+      <Filter>def\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="def\config\config.cpp" />
+    <ClCompile Include="def\imgui\imgui_demo.cpp" />
+    <ClCompile Include="def\imgui\imgui_tables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clicker\clicker.hpp">
       <Filter>clicker</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\console\console.hpp">
-      <Filter>def\include\console</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\fonts\font_definitions.hpp">
-      <Filter>def\include\imgui\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\fonts\fontawesome.hpp">
-      <Filter>def\include\imgui\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\impl\imgui_impl_dx9.h">
-      <Filter>def\include\imgui\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\impl\imgui_impl_win32.h">
-      <Filter>def\include\imgui\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imconfig.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imgui.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imgui_internal.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imstb_rectpack.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imstb_textedit.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\imgui\imstb_truetype.h">
-      <Filter>def\include\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\xorstr.hpp">
-      <Filter>def\include</Filter>
-    </ClInclude>
-    <ClInclude Include="def\include\lazy.hpp">
-      <Filter>def\include</Filter>
     </ClInclude>
     <ClInclude Include="def\utils\util.hpp">
       <Filter>def\utils</Filter>
@@ -114,16 +72,45 @@
     <ClInclude Include="def\utils\vars.hpp">
       <Filter>def\utils</Filter>
     </ClInclude>
-    <ClInclude Include="menu\config\archivex.hpp">
-      <Filter>menu\config</Filter>
-    </ClInclude>
-    <ClInclude Include="menu\config\config.hpp">
-      <Filter>menu\config</Filter>
-    </ClInclude>
     <ClInclude Include="menu\ui.hpp">
       <Filter>menu</Filter>
     </ClInclude>
-    <ClInclude Include="includes.hpp" />
-    <ClInclude Include="def\include\singleton.hpp" />
+    <ClInclude Include="def\imgui\fonts\font_definitions.hpp">
+      <Filter>def\include\imgui\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\fonts\fontawesome.hpp">
+      <Filter>def\include\imgui\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\impl\imgui_impl_dx9.h">
+      <Filter>def\include\imgui\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\impl\imgui_impl_win32.h">
+      <Filter>def\include\imgui\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imconfig.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imgui.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imgui_internal.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imstb_rectpack.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imstb_textedit.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\imgui\imstb_truetype.h">
+      <Filter>def\include\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="def\console.hpp" />
+    <ClInclude Include="def\includes.hpp" />
+    <ClInclude Include="def\config\archivex.hpp" />
+    <ClInclude Include="def\config\config.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

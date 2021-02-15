@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../includes.hpp"
-
-namespace var
+namespace vars
 {
 	inline bool b_l_mouse_down { false };
 	inline bool b_l_first_click { false };

@@ -12,39 +12,53 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="clicker\clicker.cpp" />
-    <ClCompile Include="def\include\console\console.cpp" />
-    <ClCompile Include="def\include\imgui\imgui.cpp" />
-    <ClCompile Include="def\include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="def\include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="def\include\imgui\impl\imgui_impl_dx9.cpp" />
-    <ClCompile Include="def\include\imgui\impl\imgui_impl_win32.cpp" />
+    <ClCompile Include="def\config\config.cpp" />
+    <ClCompile Include="def\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="def\imgui\imgui_demo.cpp" />
+    <ClCompile Include="def\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="def\imgui\imgui_tables.cpp" />
+    <ClCompile Include="def\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="def\imgui\impl\imgui_impl_dx9.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="def\imgui\impl\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="def\utils\util.cpp" />
-    <ClCompile Include="entry.cpp" />
-    <ClCompile Include="menu\config\config.cpp" />
+    <ClCompile Include="entry.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="menu\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clicker\clicker.hpp" />
-    <ClInclude Include="def\include\console\console.hpp" />
-    <ClInclude Include="def\include\imgui\fonts\fontawesome.hpp" />
-    <ClInclude Include="def\include\imgui\fonts\font_definitions.hpp" />
-    <ClInclude Include="def\include\imgui\imconfig.h" />
-    <ClInclude Include="def\include\imgui\imgui.h" />
-    <ClInclude Include="def\include\imgui\imgui_internal.h" />
-    <ClInclude Include="def\include\imgui\impl\imgui_impl_dx9.h" />
-    <ClInclude Include="def\include\imgui\impl\imgui_impl_win32.h" />
-    <ClInclude Include="def\include\imgui\imstb_rectpack.h" />
-    <ClInclude Include="def\include\imgui\imstb_textedit.h" />
-    <ClInclude Include="def\include\imgui\imstb_truetype.h" />
-    <ClInclude Include="def\include\lazy.hpp" />
-    <ClInclude Include="def\include\singleton.hpp" />
-    <ClInclude Include="def\include\xorstr.hpp" />
+    <ClInclude Include="def\config\archivex.hpp" />
+    <ClInclude Include="def\config\config.hpp" />
+    <ClInclude Include="def\console.hpp" />
+    <ClInclude Include="def\imgui\fonts\fontawesome.hpp" />
+    <ClInclude Include="def\imgui\fonts\font_definitions.hpp" />
+    <ClInclude Include="def\imgui\imconfig.h" />
+    <ClInclude Include="def\imgui\imgui.h" />
+    <ClInclude Include="def\imgui\imgui_internal.h" />
+    <ClInclude Include="def\imgui\impl\imgui_impl_dx9.h" />
+    <ClInclude Include="def\imgui\impl\imgui_impl_win32.h" />
+    <ClInclude Include="def\imgui\imstb_rectpack.h" />
+    <ClInclude Include="def\imgui\imstb_textedit.h" />
+    <ClInclude Include="def\imgui\imstb_truetype.h" />
+    <ClInclude Include="def\includes.hpp" />
     <ClInclude Include="def\utils\util.hpp" />
     <ClInclude Include="def\utils\vars.hpp" />
-    <ClInclude Include="includes.hpp" />
-    <ClInclude Include="menu\config\archivex.hpp" />
-    <ClInclude Include="menu\config\config.hpp" />
     <ClInclude Include="menu\ui.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -105,6 +119,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

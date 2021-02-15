@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../includes.hpp"
 #include "archivex.hpp"
+#include "../../def/includes.hpp"
 
 #include <ShlObj.h>
 #include <fstream>
@@ -23,6 +23,7 @@ public:
 	{
 		bool left_enabled { false };
 		bool right_enabled { false };
+
 		bool hotkey_enabled { false };
 		bool config_show { false };
 		bool blockhit { false };
