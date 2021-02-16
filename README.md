@@ -16,7 +16,7 @@ Please open an issue if you found a bug [here](https://github.com/b1scoito/click
 Download the latest release [here](https://github.com/b1scoito/clicker/releases/latest).
 
 ## Menu
-![image](https://i.imgur.com/D0WCjO5.png)
+![image](https://b.catgirlsare.sexy/vWBkNvaG.png)
 
 ## Config path
 `%appdata%\serial_here` - Now I changed the config path to be your hard drive serial, so now the folder should be named with some random numbers.
