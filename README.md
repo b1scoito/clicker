@@ -31,4 +31,5 @@ Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
+
 [![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
