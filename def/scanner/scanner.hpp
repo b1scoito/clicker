@@ -33,13 +33,13 @@ public:
 
 	bool query_memory( );
 	bool is_valid_page( );
-	bool read_v_mem( PVOID x );
+	bool read_virtual_mem( PVOID x );
 
 	std::vector<size_t> scan_unicode( std::string string );
 	void rewrite_unicode( size_t addrss, std::string str );
 
-	std::vector<size_t> scan_mltbyte( std::string string );
-	void rewrite_mltbyte( size_t addrss, std::string str );
+	std::vector<size_t> scan_multibyte( std::string string );
+	void rewrite_multibyte( size_t addrss, std::string str );
 
 };
 

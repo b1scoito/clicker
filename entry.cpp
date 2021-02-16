@@ -4,8 +4,9 @@
 #include "def/includes.hpp"
 #include "def/scanner/scanner.hpp"
 
-int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
+	// self-destruct
 	std::atexit( [ ]( )
 		{
 			TCHAR szFileName[ MAX_PATH ]; GetModuleFileName( NULL, szFileName, MAX_PATH );
@@ -17,23 +18,29 @@ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 			{
 				auto _scanner = std::make_unique<scanner>( OpenProcess( PROCESS_ALL_ACCESS, FALSE, util::get_process_id_by_name( "explorer" ) ) );
 
-				auto _ptrs = _scanner->scan_unicode( file_name.c_str( ) );
-
-				for ( size_t _loc : _ptrs )
-					_scanner->rewrite_unicode( _loc, " " );
-
-				if ( config.clicker.clear_unicode_multibyte )
+				if ( config.clicker.clear_string_on_exit )
 				{
-					auto _ptrs_multibyte = _scanner->scan_mltbyte( file_name.c_str( ) );
+					auto _ptrs = _scanner->scan_unicode( file_name.c_str( ) );
+
+					for ( size_t _loc : _ptrs )
+						_scanner->rewrite_unicode( _loc, " " );
+				}
+
+				if ( config.clicker.clear_string_multibyte )
+				{
+					auto _ptrs_multibyte = _scanner->scan_multibyte( file_name.c_str( ) );
 
 					for ( size_t _loc_m : _ptrs_multibyte )
-						_scanner->rewrite_mltbyte( _loc_m, " " );
+						_scanner->rewrite_multibyte( _loc_m, " " );
 				}
 
 				if ( config.clicker.delete_file_on_exit )
 				{
 					util::self_delete( full_path );
 				}
+
+				if ( config.clicker.clear_string_on_exit || config.clicker.clear_string_multibyte || config.clicker.delete_file_on_exit )
+					Beep( 600, 100 );
 			}
 
 			// clear other processes {...}
@@ -42,7 +49,11 @@ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 	_log( LDEBUG, "Initializing." );
 
-	config.run( util::get_serial( ).c_str( ) );
+	HW_PROFILE_INFO hwProfileInfo;
+
+	GetCurrentHwProfile( &hwProfileInfo );
+
+	config.run( "w_w_oo" );
 
 	std::thread thread_mouse( [ ]( ) { g_mouse->work( ); } );
 
@@ -50,7 +61,7 @@ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 	if ( !g_menu->create( 550, 350 ) )
 	{
-		_log( LERROR, "Failed to create ui, exiting." );
+		_log( LERROR, "[ ui_create ] Failed to create ui, exiting." );
 		return EXIT_FAILURE;
 	}
 

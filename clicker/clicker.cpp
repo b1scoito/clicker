@@ -18,11 +18,12 @@ void clicker::work( )
 				}
 				else
 				{
+					// Old meth logic, will change to something better later ;c
 					auto random_delay = util::random_int
 					(
 						1000 / ( config.clicker.l_min_cps + config.clicker.l_max_cps * ( int ) 0.2 ),
 						1000 / ( config.clicker.l_min_cps + config.clicker.l_max_cps * ( int ) 0.48 )
-					); // old meth logic, will change to something better later ;c
+					);
 
 					if ( ( std::clock( ) - vars::l_last_click_time ) > random_delay )
 					{

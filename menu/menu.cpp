@@ -15,71 +15,200 @@ void menu::render_objects( HWND hwnd, int width, int height )
 		if ( y >= 0 && y <= ImGui::GetTextLineHeight( ) + ImGui::GetStyle( ).FramePadding.y * 2.0f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
 			g_menu->set_position( x, y, width, height, false, hwnd );
 
-		ImGui::Text( "w_w" );
+		ImGui::Text( "clicker" );
 
-		ImGui::SameLine( 0, static_cast< float >( width ) - 70.f );
+		ImGui::SameLine( 0.0f, static_cast< float >( width ) - 80.0f );
 
 		ImGui::PushStyleColor( ImGuiCol_Button, color( 255, 255, 255, 0 ) );
 
 		if ( ImGui::Button( ICON_FA_TIMES ) )
 		{
-			::ShowWindow( hwnd, SW_HIDE ); // hiding for the string cleaning operation
-			std::exit( 0 ); // this will trigger atexit
+			::ShowWindow( hwnd, SW_HIDE );	// Hiding for the string cleaning operation
+			std::exit( 0 );					// This will trigger atexit
 		}
 
 		ImGui::PopStyleColor( );
 
-		ImGui::Separator( );
-		ImGui::Text( "Keybindings" );
-		ImGui::Separator( );
+		if ( ImGui::BeginTabBar( "##tabs", ImGuiTabBarFlags_None ) )
 		{
-			ImGui::Combo( "##cmb_kb_type", &config.clicker.activation_type, "Always On\0Hold\0Toggle\0\0" );
-			ImGui::SameLine( );
-			g_menu->key_bind_button( config.clicker.key, 155, 20 );
-			g_menu->activation_type( );
-		}
-
-		ImGui::Separator( );
-		ImGui::Text( "Clicker configuration" );
-		ImGui::Separator( );
-		{
-			ImGui::Checkbox( "Left clicker enabled##lc_enabled", &config.clicker.left_enabled );
-
-			ImGui::SliderInt( "##l_maxcps", &config.clicker.l_min_cps, 1, 20, "Maximum CPS %d" );
-			ImGui::SliderInt( "##l_mincps", &config.clicker.l_max_cps, 1, 20, "Minimum CPS %d" );
-
-			ImGui::Separator( );
-
-			ImGui::Checkbox( "Right clicker enabled##lr_enabled", &config.clicker.right_enabled );
-
-			ImGui::SliderInt( "##r_maxcps", &config.clicker.r_min_cps, 1, 20, "Maximum CPS %d" );
-			ImGui::SliderInt( "##r_mincps", &config.clicker.r_max_cps, 1, 20, "Minimum CPS %d" );
-
-			ImGui::Combo( "Client Version##cl_ver", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
-
-			static char buffer_w[ 16 ];
-			switch ( config.clicker.version_type )
+			if ( ImGui::BeginTabItem( "Clicker" ) )
 			{
-				case 0:
-					config.clicker.window_title = "Lunar";
-					break;
-				case 1:
-					config.clicker.window_title = "Badlion";
-					break;
-				case 2:
-					config.clicker.window_title = "Minecraft";
-					break;
-				case 3:
-					ImGui::InputText( "Window Title##wnd_title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
-					config.clicker.window_title = buffer_w;
-					break;
+				ImGui::Text( "Keybindings" );
+				ImGui::Separator( );
+				{
+					ImGui::Combo( "##cmb_kb_type", &config.clicker.activation_type, "Always On\0Hold\0Toggle\0\0" );
+
+					ImGui::SameLine( );
+
+					g_menu->key_bind_button( config.clicker.key, 155, 20 );
+					g_menu->activation_type( );
+				}
+
+				ImGui::Separator( );
+				ImGui::Text( "Clicker configuration" );
+				ImGui::Separator( );
+				{
+					ImGui::Checkbox( "Left clicker enabled##lc_enabled", &config.clicker.left_enabled );
+
+					ImGui::SliderInt( "##l_maxcps", &config.clicker.l_min_cps, 1, 20, "Maximum CPS %d" );
+					ImGui::SliderInt( "##l_mincps", &config.clicker.l_max_cps, 1, 20, "Minimum CPS %d" );
+
+					ImGui::Separator( );
+
+					ImGui::Checkbox( "Right clicker enabled##lr_enabled", &config.clicker.right_enabled );
+
+					ImGui::SliderInt( "##r_maxcps", &config.clicker.r_min_cps, 1, 20, "Maximum CPS %d" );
+					ImGui::SliderInt( "##r_mincps", &config.clicker.r_max_cps, 1, 20, "Minimum CPS %d" );
+
+					ImGui::Combo( "Client Version##cl_ver", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
+
+					static char buffer_w[ 16 ];
+					switch ( config.clicker.version_type )
+					{
+						case 0:
+							config.clicker.window_title = "Lunar";
+							break;
+						case 1:
+							config.clicker.window_title = "Badlion";
+							break;
+						case 2:
+							config.clicker.window_title = "Minecraft";
+							break;
+						case 3:
+							ImGui::InputText( "Window Title##wnd_title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
+							config.clicker.window_title = buffer_w;
+							break;
+					}
+
+					ImGui::Checkbox( "Blockhit", &config.clicker.blockhit );
+					if ( config.clicker.blockhit )
+					{
+						ImGui::SliderInt( "##blockhit_chance", &config.clicker.blockhit_chance, 1, 100, "Blockhit chance %d%%" );
+					}
+				}
+				ImGui::EndTabItem( );
 			}
 
-			ImGui::Checkbox( "Blockhit", &config.clicker.blockhit );
-			if ( config.clicker.blockhit )
+			if ( ImGui::BeginTabItem( "Config" ) )
 			{
-				ImGui::SliderInt( "##blockhit_chance", &config.clicker.blockhit_chance, 1, 100, "Blockhit chance %d%%" );
+				ImGui::Text( "Config settings" );
+				ImGui::Separator( );
+				{
+
+					if ( ImGui::Button( "Open config folder" ) )
+					{
+						PIDLIST_ABSOLUTE pidl;
+						if ( SUCCEEDED( SHParseDisplayName( util::string_to_wstring( config.config_path.c_str( ) ).c_str( ), 0, &pidl, 0, 0 ) ) )
+						{
+							ITEMIDLIST idNull = { 0 };
+							LPCITEMIDLIST pidlNull[ 1 ] = { &idNull };
+							SHOpenFolderAndSelectItems( pidl, 1, pidlNull, 0 );
+							ILFree( pidl );
+						}
+					}
+
+					constexpr auto &config_items = config.get_configs( );
+					static int current_config = -1;
+
+					if ( static_cast< size_t >( current_config ) >= config_items.size( ) )
+						current_config = -1;
+
+					static char buffer[ 16 ];
+
+					if ( ImGui::ListBox( "Configs", &current_config, [ ]( void *data, int idx, const char **out_text )
+						{
+							auto &vector = *static_cast< std::vector<std::string> * >( data );
+							*out_text = vector[ idx ].c_str( );
+							return true;
+						}, &config_items, config_items.size( ), 5 ) && current_config != -1 )
+
+						strcpy_s( buffer, config_items[ current_config ].c_str( ) );
+
+						if ( ImGui::InputText( "Config name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
+						{
+							if ( current_config != -1 )
+								config.rename( current_config, buffer );
+						}
+
+						if ( ImGui::Button( ( "Create" ), ImVec2( 75, 20 ) ) )
+						{
+							config.add( buffer );
+						}
+
+						ImGui::SameLine( );
+
+						if ( ImGui::Button( ( "Reset" ), ImVec2( 75, 20 ) ) )
+						{
+							config.reset( );
+						}
+
+						if ( current_config != -1 )
+						{
+							if ( ImGui::Button( ( "Load" ), ImVec2( 75, 20 ) ) )
+							{
+								config.load( current_config );
+							}
+
+							ImGui::SameLine( );
+
+							if ( ImGui::Button( ( "Save" ), ImVec2( 75, 20 ) ) )
+							{
+								config.save( current_config );
+							}
+
+							ImGui::SameLine( );
+
+							if ( ImGui::Button( ( "Delete" ), ImVec2( 75, 20 ) ) )
+							{
+								config.remove( current_config );
+							}
+						}
+				}
+
+				ImGui::EndTabItem( );
 			}
+
+			if ( ImGui::BeginTabItem( "Info" ) )
+			{
+				ImGui::Text( "Information" );
+				ImGui::Separator( );
+				{
+					ImGui::Text( "Is left button down: %s", vars::b_l_mouse_down ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
+					ImGui::Text( "Is right button down: %s", vars::b_r_mouse_down ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
+					ImGui::Text( "Is hotkey toggled: %s", config.clicker.hotkey_enabled ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
+					ImGui::Text( "Clicks this session: %d", vars::i_clicks_this_session );
+					ImGui::Text( "Application average %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
+				}
+				ImGui::EndTabItem( );
+			}
+
+			if ( ImGui::BeginTabItem( "Self-destruct" ) )
+			{
+				ImGui::Text( "Self-destruct settings" );
+				ImGui::Separator( );
+				{
+					ImGui::Text( "The self-destruct works when you close the program.\nIt will hide itself and exit when the cleaning process finishes.\nYou will hear a beep when it finishes." );
+
+					ImGui::Checkbox( "Delete file on exit", &config.clicker.delete_file_on_exit );
+
+					if ( ImGui::IsItemHovered( ) )
+						ImGui::SetTooltip( "Will self delete the executable on exit." );
+
+					ImGui::Checkbox( "Clear strings on exit", &config.clicker.clear_string_on_exit );
+
+					if ( ImGui::IsItemHovered( ) )
+						ImGui::SetTooltip( "Will clear strings on explorer matching filename." );
+
+					ImGui::Checkbox( "Clear multibyte strings (slow)", &config.clicker.clear_string_multibyte );
+
+					if ( ImGui::IsItemHovered( ) )
+						ImGui::SetTooltip( "Will delete more strings \nat the cost of taking longer to finish the process." );
+				}
+
+				ImGui::EndTabItem( );
+			}
+
+			ImGui::EndTabBar( );
 		}
 
 		if ( config.clicker.l_min_cps <= config.clicker.l_max_cps && !( config.clicker.l_max_cps > 19 ) )
@@ -88,112 +217,8 @@ void menu::render_objects( HWND hwnd, int width, int height )
 		if ( config.clicker.r_min_cps <= config.clicker.r_max_cps && !( config.clicker.r_max_cps > 19 ) )
 			config.clicker.r_min_cps += 1;
 
-		ImGui::Separator( );
-		ImGui::Text( "Information" );
-		ImGui::Separator( );
-		{
-			ImGui::Text( "Is left button down? %s", vars::b_l_mouse_down ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-			ImGui::Text( "Is right button down? %s", vars::b_r_mouse_down ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-			ImGui::Text( "Is hotkey toggled? %s", config.clicker.hotkey_enabled ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-			ImGui::Text( "Clicks this session: %d", vars::i_clicks_this_session );
-
-#if _DEBUG
-			ImGui::Text( "Application average %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO( ).Framerate, ImGui::GetIO( ).Framerate );
-#endif
-		}
-
-		ImGui::Separator( );
-		ImGui::Text( "Config settings" );
-		ImGui::Separator( );
-		{
-			ImGui::Checkbox( "Show config settings", &config.clicker.config_show );
-			if ( config.clicker.config_show )
-			{
-				if ( ImGui::Button( "Open config folder" ) )
-				{
-					PIDLIST_ABSOLUTE pidl;
-					if ( SUCCEEDED( SHParseDisplayName( util::string_to_wstring( config.config_path.c_str( ) ).c_str( ), 0, &pidl, 0, 0 ) ) )
-					{
-						ITEMIDLIST idNull = { 0 };
-						LPCITEMIDLIST pidlNull[ 1 ] = { &idNull };
-						SHOpenFolderAndSelectItems( pidl, 1, pidlNull, 0 );
-						ILFree( pidl );
-					}
-				}
-
-				constexpr auto &config_items = config.get_configs( );
-				static int current_config = -1;
-
-				if ( static_cast< size_t >( current_config ) >= config_items.size( ) )
-					current_config = -1;
-
-				static char buffer[ 16 ];
-
-				if ( ImGui::ListBox( "Configs", &current_config, [ ]( void *data, int idx, const char **out_text )
-					{
-						auto &vector = *static_cast< std::vector<std::string> * >( data );
-						*out_text = vector[ idx ].c_str( );
-						return true;
-					}, &config_items, config_items.size( ), 5 ) && current_config != -1 )
-
-					strcpy_s( buffer, config_items[ current_config ].c_str( ) );
-
-					if ( ImGui::InputText( "Config name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
-					{
-						if ( current_config != -1 )
-							config.rename( current_config, buffer );
-					}
-
-					if ( ImGui::Button( ( "Create " ICON_FA_PLUS ), ImVec2( 75, 20 ) ) )
-					{
-						config.add( buffer );
-					}
-
-					ImGui::SameLine( );
-
-					if ( ImGui::Button( ( "Reset " ICON_FA_REDO ), ImVec2( 75, 20 ) ) )
-					{
-						config.reset( );
-					}
-
-					ImGui::SameLine( );
-
-					if ( current_config != -1 )
-					{
-						if ( ImGui::Button( ( "Load " ICON_FA_LONG_ARROW_ALT_UP ), ImVec2( 75, 20 ) ) )
-						{
-							config.load( current_config );
-						}
-
-						ImGui::SameLine( );
-
-						if ( ImGui::Button( ( "Save " ICON_FA_SAVE ), ImVec2( 75, 20 ) ) )
-						{
-							config.save( current_config );
-						}
-
-						ImGui::SameLine( );
-
-						if ( ImGui::Button( ( "Delete " ICON_FA_TRASH ), ImVec2( 75, 20 ) ) )
-						{
-							config.remove( current_config );
-						}
-					}
-			}
-		}
-
-		ImGui::Text( "Self-destruct settings" );
-		ImGui::Separator( );
-		{
-			ImGui::Text( "The self-destruct works when you close the program. \nIt will hide itself and close when the cleaning process finishes." );
-			ImGui::Checkbox( "Delete file on exit?", &config.clicker.delete_file_on_exit );
-
-			ImGui::Checkbox( "Clear multibyte strings? (slow)", &config.clicker.clear_unicode_multibyte );
-			if ( ImGui::IsItemHovered( ) )
-				ImGui::SetTooltip( "Will delete more strings \nat the cost of taking longer to finish the process." );
-		}
+		ImGui::End( );
 	}
-	ImGui::End( );
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
@@ -247,6 +272,8 @@ bool menu::create( int width, int height )
 	ImGuiIO &io = ImGui::GetIO( ); ( void ) io;
 	ImGuiStyle &style = ImGui::GetStyle( ); ( void ) style;
 
+	ImVec4 *colors = style.Colors;
+
 	io.Fonts->AddFontDefault( );
 	io.IniFilename = nullptr;
 
@@ -263,35 +290,38 @@ bool menu::create( int width, int height )
 
 	io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.0f, &f_config, ranges );
 
+	style.ScrollbarSize = 5.0f;
 	style.ChildRounding = 1.0f;
 	style.FrameRounding = 3.0f;
 	style.GrabRounding = 3.0f;
 
 	// Use demo to see color documentation and stuff
-
-	style.Colors[ ImGuiCol_Text ] = color( 250, 250, 250 );
-	style.Colors[ ImGuiCol_TextDisabled ] = color( 204, 204, 204 );
-	style.Colors[ ImGuiCol_WindowBg ] = color( 25, 25, 25 );
-	style.Colors[ ImGuiCol_PopupBg ] = color( 31, 31, 31 );
-	style.Colors[ ImGuiCol_Border ] = color( 244, 154, 255 );
-	style.Colors[ ImGuiCol_BorderShadow ] = color( 241, 123, 255 );
-	style.Colors[ ImGuiCol_FrameBg ] = color( 32, 32, 32 );
-	style.Colors[ ImGuiCol_FrameBgHovered ] = color( 51, 51, 51 );
-	style.Colors[ ImGuiCol_FrameBgActive ] = color( 74, 74, 74 );
-	style.Colors[ ImGuiCol_Button ] = color( 239, 104, 255 );
-	style.Colors[ ImGuiCol_ButtonHovered ] = color( 240, 123, 254 );
-	style.Colors[ ImGuiCol_ButtonActive ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_ScrollbarGrab ] = color( 244, 154, 255 );
-	style.Colors[ ImGuiCol_ScrollbarBg ] = color( 25, 25, 25 );
-	style.Colors[ ImGuiCol_ScrollbarGrabHovered ] = color( 240, 123, 254 );
-	style.Colors[ ImGuiCol_ScrollbarGrabActive ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_SliderGrab ] = color( 239, 104, 255 );
-	style.Colors[ ImGuiCol_SliderGrabActive ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_CheckMark ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_Header ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_HeaderHovered ] = color( 240, 123, 254 );
-	style.Colors[ ImGuiCol_HeaderActive ] = color( 240, 142, 252 );
-	style.Colors[ ImGuiCol_Separator ] = color( 239, 104, 255, 150 );
+	colors[ ImGuiCol_Text ] = color( 250, 250, 250 );
+	colors[ ImGuiCol_TextDisabled ] = color( 204, 204, 204 );
+	colors[ ImGuiCol_WindowBg ] = color( 25, 25, 25 );
+	colors[ ImGuiCol_PopupBg ] = color( 31, 31, 31 );
+	colors[ ImGuiCol_Border ] = color( 244, 154, 255 );
+	colors[ ImGuiCol_BorderShadow ] = color( 241, 123, 255 );
+	colors[ ImGuiCol_FrameBg ] = color( 32, 32, 32 );
+	colors[ ImGuiCol_FrameBgHovered ] = color( 51, 51, 51 );
+	colors[ ImGuiCol_FrameBgActive ] = color( 74, 74, 74 );
+	colors[ ImGuiCol_Button ] = color( 239, 104, 255 );
+	colors[ ImGuiCol_ButtonHovered ] = color( 240, 123, 254 );
+	colors[ ImGuiCol_ButtonActive ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_ScrollbarGrab ] = color( 244, 154, 255 );
+	colors[ ImGuiCol_ScrollbarBg ] = color( 25, 25, 25 );
+	colors[ ImGuiCol_ScrollbarGrabHovered ] = color( 240, 123, 254 );
+	colors[ ImGuiCol_ScrollbarGrabActive ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_SliderGrab ] = color( 239, 104, 255 );
+	colors[ ImGuiCol_SliderGrabActive ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_CheckMark ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_Header ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_HeaderHovered ] = color( 240, 123, 254 );
+	colors[ ImGuiCol_HeaderActive ] = color( 240, 142, 252 );
+	colors[ ImGuiCol_Separator ] = color( 239, 104, 255, 150 );
+	colors[ ImGuiCol_Tab ] = color( 239, 104, 255 );
+	colors[ ImGuiCol_TabHovered ] = color( 240, 123, 254 );
+	colors[ ImGuiCol_TabActive ] = color( 240, 142, 252 );
 
 	ImGui_ImplWin32_Init( hwnd );
 	ImGui_ImplDX9_Init( g_pd3dDevice );

@@ -85,3 +85,12 @@ void util::self_delete( std::string file_path )
 	CloseHandle( pi.hThread );
 	CloseHandle( pi.hProcess );
 }
+
+template<typename ... args>
+static std::string util::format( const std::string &format, args ... arg )
+{
+	const size_t size = std::snprintf( nullptr, 0, format.c_str( ), arg ... ) + 1;
+	std::unique_ptr<char[]> buf( new char[ size ] );
+	std::snprintf( buf.get( ), size, format.c_str( ), arg ... );
+	return std::string( buf.get( ), buf.get( ) + size - 1 );
+}

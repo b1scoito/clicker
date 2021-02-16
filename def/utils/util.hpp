@@ -19,4 +19,6 @@ namespace util
 	std::string get_serial( );
 	DWORD get_process_id_by_name( const std::string &str_proc );
 	void self_delete( std::string file_path );
+	template<typename ...args>
+	static std::string format( const std::string &format, args ...arg );
 }

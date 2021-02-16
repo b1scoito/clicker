@@ -4,7 +4,7 @@ LRESULT CALLBACK m_hook( int nCode, WPARAM wParam, LPARAM lParam )
 {
 	auto *hook = reinterpret_cast< MSLLHOOKSTRUCT * > ( lParam );
 
-	if ( ( hook->flags == LLMHF_INJECTED ) ) // Don't inject on me please.
+	if ( ( hook->flags == LLMHF_INJECTED ) )
 	{
 		hook->flags &= ~LLMHF_INJECTED;
 		hook->flags &= ~LLMHF_LOWER_IL_INJECTED;
@@ -45,5 +45,6 @@ void mouse::work( )
 		TranslateMessage( &lpMsg );
 		DispatchMessageA( &lpMsg );
 	}
+
 	UnhookWindowsHookEx( g_mouse->hk_mouse );
 }

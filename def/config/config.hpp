@@ -26,11 +26,11 @@ public:
 		bool right_enabled { false };
 
 		bool hotkey_enabled { false };
-		bool config_show { false };
 		bool blockhit { false };
 
 		bool delete_file_on_exit { false };
-		bool clear_unicode_multibyte { false };
+		bool clear_string_on_exit { false };
+		bool clear_string_multibyte { false };
 
 		int key { 0 };
 		int activation_type { 0 };
