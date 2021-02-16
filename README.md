@@ -1,22 +1,28 @@
-# clicker
-C++ Autoclicker w/ modern cpp code, configs and ImGui mainly made for Minecraft.
+## Clicker
+C++ AutoClicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Lunar and Badlion.
 
-# Features
-- Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
-- Left mouse autoclicker with Maximum and Minimum CPS.
-- Right mouse autoclicker with Maximum and Minimum CPS.
-- Selectable Window name or preset ones.
-- Blockhit, and blockhit chance percentage.
-- Save, Load, Reset, Delete, Create any configs you want.
+## Features
+- AutoClicker Tab
+  - Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
+  - Left mouse autoclicker with smart customisable CPS values.
+  - Right mouse autoclicker with smart customisable CPS values.
+  - Spike chance percentage.
+  - Drop chance percentage.
+  - Selectable Window name or preset ones.
+  - Blockhit, and blockhit chance percentage.
+ - Config Tab
+  - Save, Load, Reset, Delete, Create any configs you want.
+- Self-destruct (Delete traces of executable)
+  - Clear unicode strings on `explorer.exe`
+  - Clear multibyte strings on `explorer.exe`
+  - Self-delete file on exit.
 
-Please open an issue if you found a bug [here](https://github.com/b1scoito/clicker/issues).
+## Bugs and suggestions
+Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues.
 
 ## Download
 Download the latest release [here](https://github.com/b1scoito/clicker/releases/latest).
 
-## Menu
+## Screenshot
 ![image](https://b.catgirlsare.sexy/vWBkNvaG.png)
-
-## Config path
-`%appdata%\serial_here` - Now I changed the config path to be your hard drive serial, so now the folder should be named with some random numbers.
