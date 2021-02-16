@@ -16,8 +16,8 @@ Tested on Lunar and Badlion.
   - Save, Load, Reset, Delete, Create any configs you want.
   
 - Self-destruct Tab (Delete traces of executable)
-  - Clear unicode strings on `explorer.exe`
-  - Clear multibyte strings on `explorer.exe`
+  - Clear unicode memory strings on `explorer.exe`
+  - Clear multibyte memory strings on `explorer.exe`
   - Self-delete file on exit.
 
 ## Download
