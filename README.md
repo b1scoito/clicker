@@ -11,9 +11,11 @@ Tested on Lunar and Badlion.
   - Drop chance percentage.
   - Selectable Window name or preset ones.
   - Blockhit, and blockhit chance percentage.
- - Config Tab
+  
+- Config Tab
   - Save, Load, Reset, Delete, Create any configs you want.
-- Self-destruct (Delete traces of executable)
+  
+- Self-destruct Tab (Delete traces of executable)
   - Clear unicode strings on `explorer.exe`
   - Clear multibyte strings on `explorer.exe`
   - Self-delete file on exit.
