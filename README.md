@@ -9,6 +9,7 @@ Tested on Lunar and Badlion.
   - Right mouse autoclicker with smart customisable CPS values.
   - Spike chance percentage.
   - Drop chance percentage.
+  - Blatant mode with exact cps value.
   - Selectable Window name or preset ones.
   - Blockhit, and blockhit chance percentage.
   
@@ -25,6 +26,13 @@ Download the latest release at https://github.com/b1scoito/clicker/releases/late
 
 ## Bugs and suggestions
 Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues.
+
+## It doesn't open!
+Please be calm, that's because you don't have the runtime and libraries required for this to run.
+Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime linked below.
+
+- https://aka.ms/vs/16/release/vc_redist.x86.exe
+- https://aka.ms/vs/16/release/vc_redist.x64.exe
 
 ## Screenshot
 ![image](https://b.catgirlsare.sexy/vWBkNvaG.png)
