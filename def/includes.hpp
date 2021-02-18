@@ -18,6 +18,6 @@
 // header files
 
 #include "config/config.hpp"
-#include "utils/vars.hpp"
 #include "utils/util.hpp"
+#include "vars.hpp"
 #include "console.hpp"

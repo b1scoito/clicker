@@ -12,8 +12,6 @@
 
 #include "../def/includes.hpp"
 
-#define DIRECTINPUT_VERSION 0x0800
-
 class menu
 {
 public:
@@ -126,14 +124,14 @@ private:
 		{
 			case 0:
 				if ( config.clicker.left_enabled || config.clicker.right_enabled )
-					config.clicker.hotkey_enabled = true;
+					vars::b_hotkey_enabled = true;
 				break;
 
 			case 1:
 				if ( GetAsyncKeyState( config.clicker.key ) )
-					config.clicker.hotkey_enabled = true;
+					vars::b_hotkey_enabled = true;
 				else
-					config.clicker.hotkey_enabled = false;
+					vars::b_hotkey_enabled = false;
 				break;
 
 			case 2:
@@ -154,7 +152,7 @@ private:
 				}
 
 				if ( vars::b_is_clicked )
-					config.clicker.hotkey_enabled = !config.clicker.hotkey_enabled;
+					vars::b_hotkey_enabled = !vars::b_hotkey_enabled;
 
 				break;
 		}

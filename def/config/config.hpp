@@ -25,8 +25,8 @@ public:
 		bool left_enabled { false };
 		bool right_enabled { false };
 
-		bool hotkey_enabled { false };
 		bool blockhit { false };
+		bool blatant { false };
 
 		bool delete_file_on_exit { false };
 		bool clear_string_on_exit { false };
@@ -36,13 +36,15 @@ public:
 		int activation_type { 0 };
 		int version_type { 0 };
 
-		int l_min_cps { 0 };
-		int l_max_cps { 0 };
-
-		int r_min_cps { 0 };
-		int r_max_cps { 0 };
+		int l_cps { 0 };
+		int r_cps { 0 };
 
 		int blockhit_chance { 0 };
+		int cps_spike_chance_val { 0 };
+		int cps_drop_chance_val { 0 };
+
+		bool cps_spike_chance { false };
+		bool cps_drop_chance { false };
 
 		std::string window_title;
 	}

@@ -11,7 +11,7 @@ namespace vars
 	inline bool b_is_clicked { false };
 	inline bool b_is_down { false };
 
-	inline int i_clicks_this_session { 0 };
+	inline bool b_hotkey_enabled { false };
 
-	inline long l_last_click_time;
+	inline int i_clicks_this_session { 0 };
 }

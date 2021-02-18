@@ -71,9 +71,6 @@
     <ClInclude Include="def\utils\util.hpp">
       <Filter>def\utils</Filter>
     </ClInclude>
-    <ClInclude Include="def\utils\vars.hpp">
-      <Filter>def\utils</Filter>
-    </ClInclude>
     <ClInclude Include="def\imgui\fonts\font_definitions.hpp">
       <Filter>def\include\imgui\fonts</Filter>
     </ClInclude>
@@ -113,5 +110,8 @@
       <Filter>menu</Filter>
     </ClInclude>
     <ClInclude Include="mouse\mouse.hpp" />
+    <ClInclude Include="def\vars.hpp">
+      <Filter>def\utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

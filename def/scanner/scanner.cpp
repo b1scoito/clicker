@@ -51,7 +51,7 @@ std::vector<size_t> scanner::scan_unicode( std::string string )
 				if ( y == ___length - 1 )
 				{
 					_mem_locations.push_back( this->_address + x * 2 );
-					_log( LDEBUG, "Read unicode: 0x%x", _address + x * 2 );
+					_log( LDEBUG, "[ string_scan ] Read unicode: 0x%x", _address + x * 2 );
 				}
 			}
 		}
@@ -84,7 +84,7 @@ std::vector<size_t> scanner::scan_multibyte( std::string string )
 				if ( y == ___length - 1 )
 				{
 					_mem_locations.push_back( this->_address + x );
-					_log( LDEBUG, "Read multibyte: 0x%x", _address + x );
+					_log( LDEBUG, "[ string_scan ] Read multibyte: 0x%x", _address + x );
 				}
 			}
 		}
@@ -100,7 +100,7 @@ void scanner::rewrite_unicode( size_t addr, std::string str )
 		ZwWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x * 2 ), &str[ x ], 1, nullptr );
 	}
 
-	_log( LDEBUG, "Write unicode: 0x%x", addr );
+	_log( LDEBUG, "[ string_scan ] Write unicode: 0x%x", addr );
 }
 
 
@@ -111,5 +111,5 @@ void scanner::rewrite_multibyte( size_t addr, std::string str )
 		ZwWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x ), &str[ x ], 1, nullptr );
 	}
 
-	_log( LDEBUG, "Write multibyte: 0x%x", addr );
+	_log( LDEBUG, "[ string_scan ] Write multibyte: 0x%x", addr );
 }

@@ -29,6 +29,7 @@ LRESULT CALLBACK m_hook( int nCode, WPARAM wParam, LPARAM lParam )
 				break;
 			case WM_RBUTTONUP:
 				vars::b_r_mouse_down = false;
+				break;
 		}
 	}
 

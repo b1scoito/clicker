@@ -36,14 +36,6 @@ std::string util::get_active_window_title( )
 	return title;
 }
 
-std::string util::get_serial( )
-{
-	DWORD disk_serial;
-	GetVolumeInformationA( R"(C:)", nullptr, 0, &disk_serial, nullptr, nullptr, nullptr, 0 );
-
-	return std::to_string( disk_serial );
-}
-
 DWORD util::get_process_id_by_name( const std::string &str_proc )
 {
 	if ( str_proc.empty( ) )
@@ -79,18 +71,9 @@ void util::self_delete( std::string file_path )
 	STARTUPINFO si = { 0 };
 	PROCESS_INFORMATION pi = { 0 };
 
-	StringCbPrintf( szCmd, 2 * MAX_PATH, "cmd.exe /C ping 1.1.1.1 -n 5 > nul & del /f /q \"%s\"", file_path.c_str( ) );
+	StringCbPrintf( szCmd, 2 * MAX_PATH, "cmd.exe /C timeout /t 5 > nul & del /f /q \"%s\"", file_path.c_str( ) );
 	CreateProcess( NULL, szCmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi );
 
 	CloseHandle( pi.hThread );
 	CloseHandle( pi.hProcess );
-}
-
-template<typename ... args>
-static std::string util::format( const std::string &format, args ... arg )
-{
-	const size_t size = std::snprintf( nullptr, 0, format.c_str( ), arg ... ) + 1;
-	std::unique_ptr<char[]> buf( new char[ size ] );
-	std::snprintf( buf.get( ), size, format.c_str( ), arg ... );
-	return std::string( buf.get( ), buf.get( ) + size - 1 );
 }
