@@ -7,8 +7,8 @@ Tested on Lunar and Badlion.
   - Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
   - Left mouse autoclicker with smart customisable CPS values.
   - Right mouse autoclicker with smart customisable CPS values.
-  - Spike chance percentage.
-  - Drop chance percentage.
+  - Spike chance percentage. (TODO)
+  - Drop chance percentage. (TODO)
   - Blatant mode with exact cps value.
   - Selectable Window name or preset ones.
   - Blockhit, and blockhit chance percentage.
