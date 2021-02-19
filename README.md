@@ -14,6 +14,7 @@ Tested on Lunar and Badlion.
   - Blockhit, and blockhit chance percentage.
   
 - Config Tab
+  - Open config folder.
   - Save, Load, Reset, Delete, Create any configs you want.
   
 - Self-destruct Tab (Delete traces of executable)
