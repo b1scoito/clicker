@@ -25,6 +25,20 @@ Tested on Lunar and Badlion.
 ## Download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
 
+## Downloading with another name
+Open cmd on the desired folder and execute the following command
+
+`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe AnyDesk.exe`
+
+Change `AnyDesk.exe` to whatever name you want.
+
+### Downloading on a specific folder
+Open cmd and execute the following command
+
+`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe C:\temp\AnyDesk.exe`
+
+Change the folder to whatever you want.
+
 ## Bugs and suggestions
 Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues.
 
