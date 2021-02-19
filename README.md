@@ -50,7 +50,7 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 - https://aka.ms/vs/16/release/vc_redist.x64.exe
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/Wa7SeSjr.png)
+![image](https://b.catgirlsare.sexy/-JYtqZRz.png)
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
