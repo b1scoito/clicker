@@ -35,7 +35,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 					}
 				}
 
-
 				if ( config.clicker.delete_file_on_exit )
 				{
 					util::self_delete( full_path );
@@ -47,6 +46,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			// clear other processes {...}
 		} );
+
+	config.run( "clicker" );
 
 	_log( LDEBUG, "[ clicker_thread ] Initializing clicker thread." );
 
@@ -63,8 +64,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		_log( LERROR, "[ ui_create ] Failed to create ui, exiting." );
 		return EXIT_FAILURE;
 	}
-
-	config.run( "clicker" );
 
 	return EXIT_SUCCESS;
 }

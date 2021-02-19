@@ -1,4 +1,5 @@
 #pragma once
+
 #include <shared_mutex>
 
 enum msg_type_t : std::uint32_t

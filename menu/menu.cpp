@@ -21,9 +21,9 @@ void menu::render_objects( HWND hwnd, int width, int height )
 
 		ImGui::PushStyleColor( ImGuiCol_Button, color( 255, 255, 255, 0 ) );
 
-		ImGui::SameLine( 0.0f, static_cast< float >( width ) - 150.0f );
+		ImGui::SameLine( 0.0f, static_cast< float >( width ) - 140.0f );
 
-		if ( ImGui::Button( "Github" ) )
+		if ( ImGui::Button( "git" ) )
 		{
 			ShellExecute( 0, 0, "https://github.com/b1scoito/clicker", 0, 0, SW_SHOW );
 		}
@@ -43,7 +43,6 @@ void menu::render_objects( HWND hwnd, int width, int height )
 			std::exit( 0 );					// This will trigger atexit
 		}
 
-
 		ImGui::PopStyleColor( );
 
 		if ( ImGui::BeginTabBar( "##tabs", ImGuiTabBarFlags_None ) )
@@ -53,29 +52,18 @@ void menu::render_objects( HWND hwnd, int width, int height )
 				ImGui::Text( "Keybindings" );
 				ImGui::Separator( );
 				ImGui::Combo( "##cmb_kb_type", &config.clicker.activation_type, "Always On\0Hold\0Toggle\0\0" );
-
 				ImGui::SameLine( );
-
 				g_menu->key_bind_button( config.clicker.key, 155, 20 );
-
 				ImGui::Separator( );
 				ImGui::Text( "Clicker configuration" );
 				ImGui::Separator( );
-
 				ImGui::Text( "Press Ctrl + Left click on the slider for custom values.\nValues between 9-12 are recommended for bypassing server-sided anti-cheats." );
-
 				ImGui::Checkbox( "Left clicker enabled##lc_enabled", &config.clicker.left_enabled );
-
 				ImGui::SliderInt( "##l_cps", &config.clicker.l_cps, 1, 20, "%d cps" );
-
 				ImGui::Separator( );
-
 				ImGui::Checkbox( "Right clicker enabled##lr_enabled", &config.clicker.right_enabled );
-
 				ImGui::SliderInt( "##r_cps", &config.clicker.r_cps, 1, 20, "%d cps" );
-
 				ImGui::Separator( );
-
 				ImGui::Checkbox( "Blatant", &config.clicker.blatant );
 
 				if ( ImGui::IsItemHovered( ) )
@@ -104,9 +92,7 @@ void menu::render_objects( HWND hwnd, int width, int height )
 					}
 					*/
 				}
-
 				ImGui::Separator( );
-
 				ImGui::Combo( "Client Version##cl_ver", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
 
 				if ( ImGui::IsItemHovered( ) )
@@ -129,7 +115,6 @@ void menu::render_objects( HWND hwnd, int width, int height )
 						config.clicker.window_title = buffer_w;
 						break;
 				}
-
 				ImGui::EndTabItem( );
 			}
 
@@ -208,7 +193,6 @@ void menu::render_objects( HWND hwnd, int width, int height )
 							config.remove( current_config );
 						}
 					}
-
 					ImGui::EndTabItem( );
 			}
 
@@ -229,7 +213,6 @@ void menu::render_objects( HWND hwnd, int width, int height )
 				ImGui::Text( "Self-destruct settings" );
 				ImGui::Separator( );
 				ImGui::Text( "The self-destruct works when you close the program.\nIt will hide itself and exit when the cleaning process finishes.\nYou will hear a beep when it finishes." );
-
 				ImGui::Checkbox( "Delete file on exit", &config.clicker.delete_file_on_exit );
 
 				if ( ImGui::IsItemHovered( ) )
@@ -247,14 +230,10 @@ void menu::render_objects( HWND hwnd, int width, int height )
 					if ( ImGui::IsItemHovered( ) )
 						ImGui::SetTooltip( "Will delete more strings \nat the cost of taking longer to finish the process." );
 				}
-
-
 				ImGui::EndTabItem( );
 			}
-
 			ImGui::EndTabBar( );
 		}
-
 		ImGui::End( );
 	}
 }
@@ -297,7 +276,6 @@ bool menu::create( int width, int height )
 	{
 		g_menu->cleanup_device_d3d( );
 		::UnregisterClass( wc.lpszClassName, wc.hInstance );
-
 		return false;
 	}
 
@@ -309,7 +287,6 @@ bool menu::create( int width, int height )
 
 	ImGuiIO &io = ImGui::GetIO( ); ( void ) io;
 	ImGuiStyle &style = ImGui::GetStyle( ); ( void ) style;
-
 	ImVec4 *colors = style.Colors;
 
 	io.IniFilename = nullptr;
@@ -331,7 +308,7 @@ bool menu::create( int width, int height )
 	style.ChildRounding = 1.0f;
 	style.FrameRounding = 3.0f;
 	style.GrabRounding = 3.0f;
-	// style.WindowRounding = 3.0f;
+	style.WindowRounding = 3.0f;
 
 	// Use demo to see color documentation and stuff.
 	colors[ ImGuiCol_Text ] = color( 250, 250, 250 );
@@ -384,22 +361,26 @@ bool menu::create( int width, int height )
 
 		ImGui_ImplDX9_NewFrame( );
 		ImGui_ImplWin32_NewFrame( );
+
 		ImGui::NewFrame( );
 
 		g_menu->render_objects( hwnd, width, height );
 
 		ImGui::EndFrame( );
+
 		g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
 		g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 		g_pd3dDevice->SetRenderState( D3DRS_SCISSORTESTENABLE, FALSE );
 		D3DCOLOR clear_col_dx = D3DCOLOR_RGBA( ( int ) ( clear_color.x * 255.0f ), ( int ) ( clear_color.y * 255.0f ), ( int ) ( clear_color.z * 255.0f ), ( int ) ( clear_color.w * 255.0f ) );
 		g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0 );
+
 		if ( g_pd3dDevice->BeginScene( ) >= 0 )
 		{
 			ImGui::Render( );
 			ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData( ) );
 			g_pd3dDevice->EndScene( );
 		}
+
 		HRESULT result = g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
 		if ( result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel( ) == D3DERR_DEVICENOTRESET )

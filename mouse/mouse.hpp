@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../def/includes.hpp"
 
 class mouse
@@ -41,9 +43,6 @@ public:
 
 	mouse( ) = default;
 	~mouse( ) = default;
-
-private:
-
 };
 
 inline auto g_mouse = std::make_unique<mouse>( );

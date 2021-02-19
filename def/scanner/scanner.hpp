@@ -1,3 +1,5 @@
+#pragma once
+
 // https://github.com/diegcrane/external-memory-scanner
 
 #include <windows.h>
