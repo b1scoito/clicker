@@ -109,7 +109,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>.\out\release\</OutDir>
     <IntDir>.\out\release\obj\</IntDir>
-    <TargetName>w_w</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

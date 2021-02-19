@@ -8,6 +8,8 @@ public:
 	HHOOK hk_mouse;
 
 	void work( );
+	void activation_type( );
+	void keybind_work( );
 
 	void left_down( )
 	{

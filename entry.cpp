@@ -57,6 +57,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	std::thread thread_mouse( [ ]( ) { g_mouse->work( ); } );
 
+	_log( LDEBUG, "[ keybind_thread ] Initializing keybind thread." );
+
+	std::thread thread_keybind( [ ]( ) { g_mouse->keybind_work( ); } );
+
 	_log( LDEBUG, "[ ui_create ] Initializing menu thread." );
 
 	if ( !g_menu->create( 550, 350 ) )

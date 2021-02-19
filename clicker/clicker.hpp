@@ -9,8 +9,8 @@ class clicker
 {
 public:
 	void work( );
-	void click( bool b_button, int i_cps, bool *b_first_click );
-	void click_mouse( bool down, bool button );
+	void click( bool button, int cps, bool &is_first_click );
+	void click_mouse( bool is_down, bool button );
 
 	~clicker( ) = default;
 	clicker( ) = default;
@@ -18,13 +18,14 @@ public:
 private:
 	int delay = 0; // delay for the sleep
 	int random = 0; // random cps
-	bool if_blockhitted = false;
 
-	bool RBUTTON = false;
-	bool LBUTTON = true;
+	bool blockhitted = false;
 
-	bool INPUT_UP = false;
-	bool INPUT_DOWN = true;
+	bool right_mb = false;
+	bool left_mb = true;
+
+	bool input_down = true;
+	bool input_up = false;
 };
 
 inline auto g_clicker = std::make_unique<clicker>( );

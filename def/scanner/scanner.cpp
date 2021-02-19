@@ -23,7 +23,7 @@ bool scanner::is_valid_page( )
 
 bool scanner::read_virtual_mem( PVOID x )
 {
-	return NT_SUCCESS( ZwReadVirtualMemory(
+	return NT_SUCCESS( NtReadVirtualMemory(
 		this->p_handle, ( LPVOID ) this->_address, x, this->_mbi.RegionSize, nullptr ) );
 }
 
@@ -97,7 +97,7 @@ void scanner::rewrite_unicode( size_t addr, std::string str )
 {
 	for ( size_t x = 0; x < str.length( ); ++x )
 	{
-		ZwWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x * 2 ), &str[ x ], 1, nullptr );
+		NtWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x * 2 ), &str[ x ], 1, nullptr );
 	}
 
 	_log( LDEBUG, "[ string_scan ] Write unicode: 0x%x", addr );
@@ -108,7 +108,7 @@ void scanner::rewrite_multibyte( size_t addr, std::string str )
 {
 	for ( size_t x = 0; x < str.length( ); ++x )
 	{
-		ZwWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x ), &str[ x ], 1, nullptr );
+		NtWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x ), &str[ x ], 1, nullptr );
 	}
 
 	_log( LDEBUG, "[ string_scan ] Write multibyte: 0x%x", addr );

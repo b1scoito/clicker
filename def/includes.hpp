@@ -16,7 +16,6 @@
 #include <thread>
 
 // header files
-
 #include "config/config.hpp"
 #include "utils/util.hpp"
 #include "vars.hpp"

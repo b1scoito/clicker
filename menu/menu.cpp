@@ -10,8 +10,6 @@ void menu::render_objects( HWND hwnd, int width, int height )
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
 		g_menu->get_mouse_offset( x, y, hwnd );
 
-	g_menu->activation_type( );
-
 	ImGui::Begin( "##clicker_title", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
 	{
 		if ( y >= 0 && y <= ImGui::GetTextLineHeight( ) + ImGui::GetStyle( ).FramePadding.y * 2.0f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
@@ -299,7 +297,7 @@ bool menu::create( int width, int height )
 		const std::filesystem::path path { path_to_fonts };
 		CoTaskMemFree( path_to_fonts );
 
-		io.Fonts->AddFontFromFileTTF( ( path / "tahoma.ttf" ).string( ).c_str( ), 15.0f, NULL );
+		io.Fonts->AddFontFromFileTTF( ( path / "tahoma.ttf" ).string( ).c_str( ), 16.0f, NULL );
 	}
 
 	io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.0f, &f_config, ranges );
@@ -315,27 +313,27 @@ bool menu::create( int width, int height )
 	colors[ ImGuiCol_TextDisabled ] = color( 204, 204, 204 );
 	colors[ ImGuiCol_WindowBg ] = color( 25, 25, 25 );
 	colors[ ImGuiCol_PopupBg ] = color( 31, 31, 31 );
-	colors[ ImGuiCol_Border ] = color( 130, 61, 184 );
-	colors[ ImGuiCol_BorderShadow ] = color( 130, 61, 184 );
+	colors[ ImGuiCol_Border ] = color( 157, 103, 219 );
+	colors[ ImGuiCol_BorderShadow ] = color( 157, 103, 219 );
 	colors[ ImGuiCol_FrameBg ] = color( 32, 32, 32 );
 	colors[ ImGuiCol_FrameBgHovered ] = color( 51, 51, 51 );
 	colors[ ImGuiCol_FrameBgActive ] = color( 74, 74, 74 );
-	colors[ ImGuiCol_Button ] = color( 75, 0, 130 );
-	colors[ ImGuiCol_ButtonHovered ] = color( 130, 61, 184 );
-	colors[ ImGuiCol_ButtonActive ] = color( 130, 81, 187 );
+	colors[ ImGuiCol_Button ] = color( 157, 103, 219 );
+	colors[ ImGuiCol_ButtonHovered ] = color( 181, 134, 236 );
+	colors[ ImGuiCol_ButtonActive ] = color( 157, 103, 219 );
 	colors[ ImGuiCol_ScrollbarGrab ] = color( 130, 61, 184 );
 	colors[ ImGuiCol_ScrollbarBg ] = color( 25, 25, 25 );
-	colors[ ImGuiCol_ScrollbarGrabHovered ] = color( 75, 0, 130 );
+	colors[ ImGuiCol_ScrollbarGrabHovered ] = color( 157, 103, 219 );
 	colors[ ImGuiCol_ScrollbarGrabActive ] = color( 130, 61, 184 );
 	colors[ ImGuiCol_SliderGrab ] = color( 130, 81, 187 );
 	colors[ ImGuiCol_SliderGrabActive ] = color( 157, 103, 219 );
 	colors[ ImGuiCol_CheckMark ] = color( 130, 81, 187 );
-	colors[ ImGuiCol_Header ] = color( 130, 81, 187 );
-	colors[ ImGuiCol_HeaderHovered ] = color( 130, 81, 187 );
-	colors[ ImGuiCol_HeaderActive ] = color( 130, 81, 187 );
+	colors[ ImGuiCol_Header ] = color( 157, 103, 219 );
+	colors[ ImGuiCol_HeaderHovered ] = color( 157, 103, 219 );
+	colors[ ImGuiCol_HeaderActive ] = color( 157, 103, 219 );
 	colors[ ImGuiCol_Separator ] = color( 239, 104, 255, 150 );
-	colors[ ImGuiCol_Tab ] = color( 75, 0, 130 );
-	colors[ ImGuiCol_TabHovered ] = color( 130, 81, 187 );
+	colors[ ImGuiCol_Tab ] = color( 157, 103, 219 );
+	colors[ ImGuiCol_TabHovered ] = color( 181, 134, 236 );
 	colors[ ImGuiCol_TabActive ] = color( 157, 103, 219 );
 
 	ImGui_ImplWin32_Init( hwnd );

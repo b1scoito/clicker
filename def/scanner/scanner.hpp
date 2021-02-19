@@ -5,12 +5,15 @@
 #include <windows.h>
 #include <vector>
 #include <iostream>
+#include <winternl.h>
 #pragma comment(lib, "ntdll.lib")
 
-#include <winternl.h> 
 #include "../console.hpp"
 
 #define NT_SUCCESS(x) ((NTSTATUS)(x) >= NULL)
+
+extern "C" NTSTATUS NtReadVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );
+extern "C" NTSTATUS NtWriteVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );
 
 struct scanner
 {
@@ -42,8 +45,4 @@ public:
 
 	std::vector<size_t> scan_multibyte( std::string string );
 	void rewrite_multibyte( size_t addrss, std::string str );
-
 };
-
-extern "C" NTSTATUS ZwReadVirtualMemory( HANDLE, PVOID, PVOID, SIZE_T, SIZE_T * );
-extern "C" NTSTATUS ZwWriteVirtualMemory( HANDLE, PVOID, PVOID, SIZE_T, SIZE_T * );

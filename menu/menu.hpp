@@ -118,46 +118,6 @@ private:
 		return key_names[ id ];
 	}
 
-	void activation_type( )
-	{
-		switch ( config.clicker.activation_type )
-		{
-			case 0:
-				if ( config.clicker.left_enabled || config.clicker.right_enabled )
-					vars::b_hotkey_enabled = true;
-				break;
-
-			case 1:
-				if ( GetAsyncKeyState( config.clicker.key ) )
-					vars::b_hotkey_enabled = true;
-				else
-					vars::b_hotkey_enabled = false;
-				break;
-
-			case 2:
-				if ( GetAsyncKeyState( config.clicker.key ) )
-				{
-					vars::b_is_clicked = false;
-					vars::b_is_down = true;
-				}
-				else if ( !GetAsyncKeyState( config.clicker.key ) && vars::b_is_down )
-				{
-					vars::b_is_clicked = true;
-					vars::b_is_down = false;
-				}
-				else
-				{
-					vars::b_is_clicked = false;
-					vars::b_is_down = false;
-				}
-
-				if ( vars::b_is_clicked )
-					vars::b_hotkey_enabled = !vars::b_hotkey_enabled;
-
-				break;
-		}
-	}
-
 public:
 	LPDIRECT3D9 g_pD3D = NULL;
 	LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;

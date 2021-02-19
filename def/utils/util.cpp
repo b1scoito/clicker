@@ -19,11 +19,11 @@ std::wstring util::string_to_wstring( std::string str )
 	return ret;
 }
 
-int util::random_int( int i_start, int i_end )
+int util::random_int( int start, int end )
 {
 	std::random_device rd;
 	std::mt19937 rng( rd( ) );
-	const std::uniform_int_distribution<int> uni( i_start, i_end );
+	const std::uniform_int_distribution<int> uni( start, end );
 
 	return static_cast< int >( uni( rng ) );
 }
@@ -36,12 +36,12 @@ std::string util::get_active_window_title( )
 	return title;
 }
 
-DWORD util::get_process_id_by_name( const std::string &str_proc )
+DWORD util::get_process_id_by_name( const std::string &p_name )
 {
-	if ( str_proc.empty( ) )
+	if ( p_name.empty( ) )
 		return false;
 
-	auto str_fl = str_proc;
+	auto str_fl = p_name;
 	if ( str_fl.find_last_of( "." ) != std::string::npos )
 		str_fl.erase( str_fl.find_last_of( "." ), std::string::npos );
 
