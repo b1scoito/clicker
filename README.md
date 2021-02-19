@@ -7,13 +7,14 @@ Tested on Lunar and Badlion.
   - Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
   - Left mouse autoclicker with smart customisable CPS values.
   - Right mouse autoclicker with smart customisable CPS values.
-  - Spike chance percentage.
-  - Drop chance percentage.
+  - Spike chance percentage. (TODO)
+  - Drop chance percentage. (TODO)
   - Blatant mode with exact cps value.
   - Selectable Window name or preset ones.
   - Blockhit, and blockhit chance percentage.
   
 - Config Tab
+  - Open config folder.
   - Save, Load, Reset, Delete, Create any configs you want.
   
 - Self-destruct Tab (Delete traces of executable)
@@ -23,6 +24,20 @@ Tested on Lunar and Badlion.
 
 ## Download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
+
+## Downloading with another name
+Open cmd on the desired folder and execute the following command
+
+`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe AnyDesk.exe`
+
+Change `AnyDesk.exe` to whatever name you want.
+
+### Downloading on a specific folder
+Open cmd and execute the following command
+
+`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe C:\temp\AnyDesk.exe`
+
+Change the folder to whatever you want.
 
 ## Bugs and suggestions
 Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues.
@@ -35,7 +50,7 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 - https://aka.ms/vs/16/release/vc_redist.x64.exe
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/vWBkNvaG.png)
+![image](https://b.catgirlsare.sexy/Wa7SeSjr.png)
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
