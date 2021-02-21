@@ -39,8 +39,8 @@ Open cmd and execute the following command
 
 Change the folder to whatever you want.
 
-## Bugs and suggestions
-Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues.
+## Bugs, suggestions and detections.
+Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix.
 
 ## It doesn't open!
 Please be calm, that's because you don't have the runtime and libraries required for this to run.
