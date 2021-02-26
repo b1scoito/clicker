@@ -43,11 +43,16 @@ Change the folder to whatever you want.
 Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix.
 
 ## It doesn't open!
+
+### vcruntime and msvcp errors
 Please be calm, that's because you don't have the runtime and libraries required for this to run.
 Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime linked below.
 
 - https://aka.ms/vs/16/release/vc_redist.x86.exe
 - https://aka.ms/vs/16/release/vc_redist.x64.exe
+
+### d3dx9 error
+- https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
 ## Screenshot
 ![image](https://b.catgirlsare.sexy/-JYtqZRz.png)
