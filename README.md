@@ -61,6 +61,9 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 ## Screenshot
 ![image](https://b.catgirlsare.sexy/3huQA2-a.png)
 
+## Randomization
+Little video showing it: https://u.biscoit.in/cJCuyH1P.mp4
+
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
 
