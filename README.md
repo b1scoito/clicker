@@ -1,14 +1,15 @@
-## Clicker
-C++ AutoClicker with modern coding style and techniques. Mainly made for Minecraft.
+## clicker
+C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Lunar and Badlion.
 
 ## Features
 - AutoClicker Tab
   - Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
-  - Left mouse autoclicker with smart customisable CPS values.
-  - Right mouse autoclicker with smart customisable CPS values.
-  - Spike chance percentage. (TODO)
-  - Drop chance percentage. (TODO)
+  - Left mouse autoclicker with smart customizable cps values.
+  - Right mouse autoclicker with smart customizable cps values.
+  - Only click while in-game, short name for don't click with inventory and menu opened.
+  - Spike chance percentage.
+  - Drop chance percentage.
   - Blatant mode with exact cps value.
   - Selectable Window name or preset ones.
   - Blockhit, and blockhit chance percentage.
@@ -20,6 +21,7 @@ Tested on Lunar and Badlion.
 - Self-destruct Tab (Delete traces of executable)
   - Clear unicode memory strings on `explorer.exe`
   - Clear multibyte memory strings on `explorer.exe`
+  - Delete config folder on exit.
   - Self-delete file on exit.
 
 ## Download
@@ -28,18 +30,20 @@ Download the latest release at https://github.com/b1scoito/clicker/releases/late
 ## Downloading with another name
 Open cmd on the desired folder and execute the following command
 
-`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe AnyDesk.exe`
+`certutil -urlcache -split -f "target url here" AnyDesk.exe`
 
 Change `AnyDesk.exe` to whatever name you want.
+Change `target url here` for the release .exe url.
 
 ### Downloading on a specific folder
 Open cmd and execute the following command
 
-`certutil -urlcache -split -f https://github.com/b1scoito/clicker/releases/download/1.04/clicker.exe C:\temp\AnyDesk.exe`
+`certutil -urlcache -split -f "target url here" C:\temp\AnyDesk.exe`
 
 Change the folder to whatever you want.
+Change `target url here` for the release .exe url.
 
-## Bugs, suggestions and detections.
+## Bugs and suggestions
 Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix.
 
 ## It doesn't open!
@@ -55,7 +59,7 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/-JYtqZRz.png)
+![image](https://b.catgirlsare.sexy/3huQA2-a.png)
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
