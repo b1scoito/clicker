@@ -11,55 +11,70 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="clicker\clicker.cpp" />
-    <ClCompile Include="def\config\config.cpp" />
-    <ClCompile Include="def\imgui\imgui.cpp">
+    <ClCompile Include="clicker.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="def\imgui\imgui_demo.cpp" />
-    <ClCompile Include="def\imgui\imgui_draw.cpp">
+    <ClCompile Include="imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="def\imgui\imgui_tables.cpp" />
-    <ClCompile Include="def\imgui\imgui_widgets.cpp">
+    <ClCompile Include="imgui_widgets.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="def\imgui\impl\imgui_impl_dx9.cpp">
+    <ClCompile Include="imgui_impl_dx9.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="def\imgui\impl\imgui_impl_win32.cpp">
+    <ClCompile Include="imgui_impl_win32.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="def\scanner\scanner.cpp" />
-    <ClCompile Include="def\utils\util.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="scanner.cpp" />
+    <ClCompile Include="util.cpp" />
     <ClCompile Include="entry.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="mouse\mouse.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="hooks.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="clicker\clicker.hpp" />
-    <ClInclude Include="def\config\archivex.hpp" />
-    <ClInclude Include="def\config\config.hpp" />
-    <ClInclude Include="def\console.hpp" />
-    <ClInclude Include="def\imgui\fonts\fontawesome.hpp" />
-    <ClInclude Include="def\imgui\fonts\font_definitions.hpp" />
-    <ClInclude Include="def\imgui\imconfig.h" />
-    <ClInclude Include="def\imgui\imgui.h" />
-    <ClInclude Include="def\imgui\imgui_internal.h" />
-    <ClInclude Include="def\imgui\impl\imgui_impl_dx9.h" />
-    <ClInclude Include="def\imgui\impl\imgui_impl_win32.h" />
-    <ClInclude Include="def\imgui\imstb_rectpack.h" />
-    <ClInclude Include="def\imgui\imstb_textedit.h" />
-    <ClInclude Include="def\imgui\imstb_truetype.h" />
-    <ClInclude Include="def\includes.hpp" />
-    <ClInclude Include="def\scanner\scanner.hpp" />
-    <ClInclude Include="def\utils\util.hpp" />
-    <ClInclude Include="def\vars.hpp" />
-    <ClInclude Include="menu\menu.hpp" />
-    <ClInclude Include="mouse\mouse.hpp" />
+    <ClInclude Include="clicker.hpp" />
+    <ClInclude Include="archivex.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="console.hpp" />
+    <ClInclude Include="font_awesome.hpp" />
+    <ClInclude Include="font_definitions.hpp" />
+    <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imgui.h" />
+    <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="imgui_impl_dx9.h" />
+    <ClInclude Include="imgui_impl_win32.h" />
+    <ClInclude Include="imstb_rectpack.h" />
+    <ClInclude Include="imstb_textedit.h" />
+    <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="pch.hpp" />
+    <ClInclude Include="scanner.hpp" />
+    <ClInclude Include="util.hpp" />
+    <ClInclude Include="vars.hpp" />
+    <ClInclude Include="menu.hpp" />
+    <ClInclude Include="hooks.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -100,7 +115,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>.\out\debug\</OutDir>
     <IntDir>.\out\debug\obj\</IntDir>
-    <TargetName>w_w</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
@@ -113,8 +128,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -122,7 +136,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,8 +151,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -149,6 +162,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

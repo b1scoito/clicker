@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "scanner.hpp"
 
 scanner::scanner( HANDLE p_handle )
@@ -96,9 +97,7 @@ std::vector<size_t> scanner::scan_multibyte( std::string string )
 void scanner::rewrite_unicode( size_t addr, std::string str )
 {
 	for ( size_t x = 0; x < str.length( ); ++x )
-	{
 		NtWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x * 2 ), &str[ x ], 1, nullptr );
-	}
 
 	_log( LDEBUG, "[ string_scan ] Write unicode: 0x%x", addr );
 }
@@ -107,9 +106,7 @@ void scanner::rewrite_unicode( size_t addr, std::string str )
 void scanner::rewrite_multibyte( size_t addr, std::string str )
 {
 	for ( size_t x = 0; x < str.length( ); ++x )
-	{
 		NtWriteVirtualMemory( this->p_handle, ( LPVOID ) ( addr + x ), &str[ x ], 1, nullptr );
-	}
 
 	_log( LDEBUG, "[ string_scan ] Write multibyte: 0x%x", addr );
 }

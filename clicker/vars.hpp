@@ -14,4 +14,5 @@ namespace vars
 	inline bool b_hotkey_enabled { false };
 
 	inline int i_clicks_this_session { 0 };
+
 }

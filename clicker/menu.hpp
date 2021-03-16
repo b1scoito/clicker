@@ -1,33 +1,46 @@
 #pragma once
 
-#include "../def/imgui/imgui.h"
-#include "../def/imgui/impl/imgui_impl_dx9.h"
-#include "../def/imgui/impl/imgui_impl_win32.h"
-
-#include <d3d9.h>
-#pragma comment(lib, "d3d9.lib")
-
-#include "../def/imgui/fonts/font_definitions.hpp"
-#include "../def/imgui/fonts/fontawesome.hpp"
-
-#include "../def/includes.hpp"
-
 class menu
 {
 public:
+	/// <summary>
+	/// Render imgui menu objects, takes window handle for the closing process and width, height, for setting the imgui window sizes.
+	/// </summary>
+	/// <param name="hwnd"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
 	void render_objects( HWND hwnd, int width, int height );
+
+	/// <summary>
+	/// Creates the window itself, takes width and height for the window size.
+	/// </summary>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <returns></returns>
 	bool create( int width, int height );
 
 	~menu( ) = default;
 	menu( ) = default;
 
 private:
+	/// <summary>
+	/// RGBA color space to ImVec4
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="r"></param>
+	/// <param name="g"></param>
+	/// <param name="b"></param>
+	/// <param name="a"></param>
+	/// <returns></returns>
 	template <typename T>
-	ImVec4 color( T r, T g, T b, T a = 255 )
-	{
-		return ImColor( r, g, b, a );
-	}
+	ImVec4 color( T r, T g, T b, T a = 255 ) { return ImColor( r, g, b, a ); }
 
+	/// <summary>
+	/// ImGui widget for keybind button
+	/// </summary>
+	/// <param name="key"></param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
 	void key_bind_button( int &key, int width, int height )
 	{
 		static auto b_get = false;
@@ -54,12 +67,17 @@ private:
 		else if ( !b_get && key == 0 )
 			sz_text = "Click to bind";
 		else if ( !b_get && key != 0 )
-			sz_text = "Bound to " + util::to_lower( get_key_name_by_id( key ) );
+			sz_text = "Bound to " + get_key_name_by_id( key );
 	}
 
+	/// <summary>
+	/// Returns the key name from keycode
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
 	std::string get_key_name_by_id( int id )
 	{
-		static std::unordered_map< int, std::string > key_names = {
+		static std::unordered_map<int, std::string> key_names = {
 			{ 0, "None" },
 			{ VK_LBUTTON, "Mouse 1" },
 			{ VK_RBUTTON, "Mouse 2" },
@@ -121,8 +139,17 @@ private:
 public:
 	LPDIRECT3D9 g_pD3D = NULL;
 	LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
-	D3DPRESENT_PARAMETERS g_d3dpp = {};
+	D3DPRESENT_PARAMETERS g_d3dpp = { 0 };
 
+	/// <summary>
+	/// Sets window handle position
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="w"></param>
+	/// <param name="h"></param>
+	/// <param name="b_center"></param>
+	/// <param name="hwnd"></param>
 	void set_position( int x, int y, int w, int h, bool b_center, HWND hwnd )
 	{
 		POINT point;
@@ -141,7 +168,7 @@ public:
 
 		if ( b_center )
 		{
-			RECT rect;
+			RECT rect {};
 			if ( w != 0 && h != 0 )
 			{
 				rect.right = w;
@@ -159,6 +186,12 @@ public:
 		SetWindowPos( hwnd, nullptr, x, y, w, h, flags );
 	}
 
+	/// <summary>
+	/// Gets the mouse offset
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="hwnd"></param>
 	void get_mouse_offset( int &x, int &y, HWND hwnd )
 	{
 		POINT point;
@@ -171,6 +204,11 @@ public:
 		y = point.y - rect.top;
 	}
 
+	/// <summary>
+	/// Creates the d3d device
+	/// </summary>
+	/// <param name="hWnd"></param>
+	/// <returns></returns>
 	bool create_device_d3d( HWND hWnd )
 	{
 		if ( ( g_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) == NULL )
@@ -189,12 +227,18 @@ public:
 		return true;
 	}
 
+	/// <summary>
+	/// Cleanups the d3d device
+	/// </summary>
 	void cleanup_device_d3d( )
 	{
 		if ( g_pd3dDevice ) { g_pd3dDevice->Release( ); g_pd3dDevice = NULL; }
 		if ( g_pD3D ) { g_pD3D->Release( ); g_pD3D = NULL; }
 	}
 
+	/// <summary>
+	/// Resets de d3d device
+	/// </summary>
 	void reset_device( )
 	{
 		ImGui_ImplDX9_InvalidateDeviceObjects( );

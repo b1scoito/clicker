@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="entry.cpp" />
+    <ClCompile Include="config.cpp">
+      <Filter>defined\config</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx9.cpp">
+      <Filter>defined\imgui\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>defined\imgui\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>defined\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>defined\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>defined\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>defined\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>defined\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="scanner.cpp">
+      <Filter>defined\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>defined\util</Filter>
+    </ClCompile>
+    <ClCompile Include="clicker.cpp">
+      <Filter>clicker</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks.cpp">
+      <Filter>hooking</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="archivex.hpp">
+      <Filter>defined\config</Filter>
+    </ClInclude>
+    <ClInclude Include="config.hpp">
+      <Filter>defined\config</Filter>
+    </ClInclude>
+    <ClInclude Include="font_definitions.hpp">
+      <Filter>defined\imgui\font</Filter>
+    </ClInclude>
+    <ClInclude Include="font_awesome.hpp">
+      <Filter>defined\imgui\font</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx9.h">
+      <Filter>defined\imgui\implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>defined\imgui\implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>defined\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="scanner.hpp">
+      <Filter>defined\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="util.hpp">
+      <Filter>defined\util</Filter>
+    </ClInclude>
+    <ClInclude Include="clicker.hpp">
+      <Filter>clicker</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.hpp">
+      <Filter>hooking</Filter>
+    </ClInclude>
+    <ClInclude Include="console.hpp">
+      <Filter>defined\console</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="vars.hpp">
+      <Filter>defined\vars</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.hpp">
+      <Filter>pch</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="clicker">
+      <UniqueIdentifier>{adb63845-0177-441e-9364-fa1e56c3ca0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interface">
+      <UniqueIdentifier>{8b91c8de-f6af-4a2b-a298-3e9ff7e7c7a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{4b318143-ea30-4b46-875b-edfdf4ad9267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined">
+      <UniqueIdentifier>{c41c5192-ab59-4852-a069-6824104d4951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\config">
+      <UniqueIdentifier>{db5815df-39f6-4970-9940-2b0e3529fae7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\imgui">
+      <UniqueIdentifier>{349f63a4-a7d8-4b68-9b53-95109342cc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\imgui\font">
+      <UniqueIdentifier>{6c0f0566-dc7e-4feb-aa0a-e5940d14d809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\imgui\implementation">
+      <UniqueIdentifier>{1f4c996b-63fc-4895-81a5-6e6a2b3d4684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\memory">
+      <UniqueIdentifier>{7f0a6b15-c983-4683-b857-f8e732d8f212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\util">
+      <UniqueIdentifier>{40cd9742-07b4-40cf-b1be-d3baf0050cf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\console">
+      <UniqueIdentifier>{74c48a25-e31a-4ae6-aeb0-576b22bc1cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defined\vars">
+      <UniqueIdentifier>{c87a7cbb-b9a7-4307-b963-a65bc9292368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hooking">
+      <UniqueIdentifier>{3a1273db-db93-4ec3-a26d-cf5a695bc596}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

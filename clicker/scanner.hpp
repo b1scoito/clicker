@@ -2,13 +2,8 @@
 
 // https://github.com/diegcrane/external-memory-scanner
 
-#include <windows.h>
-#include <vector>
-#include <iostream>
 #include <winternl.h>
 #pragma comment(lib, "ntdll.lib")
-
-#include "../console.hpp"
 
 #define NT_SUCCESS(x) ((NTSTATUS)(x) >= NULL)
 

@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "menu.hpp"
 
 void menu::render_objects( HWND hwnd, int width, int height )
@@ -8,36 +9,32 @@ void menu::render_objects( HWND hwnd, int width, int height )
 	ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_Always );
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-		g_menu->get_mouse_offset( x, y, hwnd );
+		get_mouse_offset( x, y, hwnd );
 
 	ImGui::Begin( "##clicker_title", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
 	{
 		if ( y >= 0 && y <= ImGui::GetTextLineHeight( ) + ImGui::GetStyle( ).FramePadding.y * 2.0f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
-			g_menu->set_position( x, y, width, height, false, hwnd );
+			set_position( x, y, width, height, false, hwnd );
 
 		ImGui::Text( "clicker" );
-
 		ImGui::PushStyleColor( ImGuiCol_Button, color( 255, 255, 255, 0 ) );
 
 		ImGui::SameLine( 0.0f, static_cast< float >( width ) - 140.0f );
 
+		// You going to change this? o.o
 		if ( ImGui::Button( "git" ) )
-		{
 			ShellExecute( 0, 0, "https://github.com/b1scoito/clicker", 0, 0, SW_SHOW );
-		}
 
 		ImGui::SameLine( );
 
 		if ( ImGui::Button( ICON_FA_CLONE ) )
-		{
-			::ShowWindow( hwnd, SW_MINIMIZE );
-		}
+			ShowWindow( hwnd, SW_MINIMIZE );
 
 		ImGui::SameLine( );
 
 		if ( ImGui::Button( ICON_FA_TIMES ) )
 		{
-			::ShowWindow( hwnd, SW_HIDE );	// Hiding for the string cleaning operation
+			ShowWindow( hwnd, SW_HIDE );	// Hiding for the string cleaning operation
 			std::exit( 0 );					// This will trigger atexit
 		}
 
@@ -49,21 +46,35 @@ void menu::render_objects( HWND hwnd, int width, int height )
 			{
 				ImGui::Text( "Keybindings" );
 				ImGui::Separator( );
+
 				ImGui::Combo( "##cmb_kb_type", &config.clicker.activation_type, "Always On\0Hold\0Toggle\0\0" );
 				ImGui::SameLine( );
+
 				g_menu->key_bind_button( config.clicker.key, 155, 20 );
+
 				ImGui::Separator( );
+
 				ImGui::Text( "Clicker configuration" );
+
 				ImGui::Separator( );
+
 				ImGui::Text( "Press Ctrl + Left click on the slider for custom values.\nValues between 9-12 are recommended for bypassing server-sided anti-cheats." );
+
 				ImGui::Checkbox( "Left clicker enabled##lc_enabled", &config.clicker.left_enabled );
 				ImGui::SliderInt( "##l_cps", &config.clicker.l_cps, 1, 20, "%d cps" );
+
 				ImGui::Separator( );
+
 				ImGui::Checkbox( "Right clicker enabled##lr_enabled", &config.clicker.right_enabled );
 				ImGui::SliderInt( "##r_cps", &config.clicker.r_cps, 1, 20, "%d cps" );
-				ImGui::Separator( );
-				ImGui::Checkbox( "Blatant", &config.clicker.blatant );
 
+				ImGui::Separator( );
+
+				ImGui::Checkbox( "Only in-game", &config.clicker.only_in_game );
+				if ( ImGui::IsItemHovered( ) )
+					ImGui::SetTooltip( "If enabled, clicker will only work while in-game.\nUseful for clicking in inventory." );
+
+				ImGui::Checkbox( "Blatant", &config.clicker.blatant );
 				if ( ImGui::IsItemHovered( ) )
 					ImGui::SetTooltip( "If this is checked no randomization\nwill be added. Use it at your own risk." );
 
@@ -71,27 +82,19 @@ void menu::render_objects( HWND hwnd, int width, int height )
 				{
 					ImGui::Checkbox( "Blockhit", &config.clicker.blockhit );
 					if ( config.clicker.blockhit )
-					{
 						ImGui::SliderInt( "##blockhit_chance", &config.clicker.blockhit_chance, 1, 100, "blockhit chance %d%%" );
-					}
 
-					// TODO:
-					/*
 					ImGui::Checkbox( "Spike chance", &config.clicker.cps_spike_chance );
 					if ( config.clicker.cps_spike_chance )
-					{
 						ImGui::SliderInt( "##cps_spike_chance", &config.clicker.cps_spike_chance_val, 1, 100, "cps spike chance %d%%" );
-					}
 
 					ImGui::Checkbox( "Drop chance", &config.clicker.cps_drop_chance );
 					if ( config.clicker.cps_drop_chance )
-					{
 						ImGui::SliderInt( "##cps_drop_chance", &config.clicker.cps_drop_chance_val, 1, 100, "cps drop chance %d%%" );
-					}
-					*/
 				}
+
 				ImGui::Separator( );
-				ImGui::Combo( "Client Version##cl_ver", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
+				ImGui::Combo( "Window", &config.clicker.version_type, "Lunar\0Badlion\0Minecraft / Forge\0Custom\0\0" );
 
 				if ( ImGui::IsItemHovered( ) )
 					ImGui::SetTooltip( "Select custom and leave it blank for it to work anywhere." );
@@ -109,10 +112,11 @@ void menu::render_objects( HWND hwnd, int width, int height )
 						config.clicker.window_title = "Minecraft";
 						break;
 					case 3:
-						ImGui::InputText( "Window Title##wnd_title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
+						ImGui::InputText( "Window Title", buffer_w, IM_ARRAYSIZE( buffer_w ) );
 						config.clicker.window_title = buffer_w;
 						break;
 				}
+
 				ImGui::EndTabItem( );
 			}
 
@@ -124,7 +128,7 @@ void menu::render_objects( HWND hwnd, int width, int height )
 				if ( ImGui::Button( "Open config folder" ) )
 				{
 					PIDLIST_ABSOLUTE pidl;
-					if ( SUCCEEDED( SHParseDisplayName( util::string_to_wstring( config.config_path.c_str( ) ).c_str( ), 0, &pidl, 0, 0 ) ) )
+					if ( SUCCEEDED( SHParseDisplayName( util::string::string_to_wstring( config.config_path.c_str( ) ).c_str( ), 0, &pidl, 0, 0 ) ) )
 					{
 						ITEMIDLIST idNull = { 0 };
 						LPCITEMIDLIST pidlNull[ 1 ] = { &idNull };
@@ -164,32 +168,24 @@ void menu::render_objects( HWND hwnd, int width, int height )
 					ImGui::SameLine( );
 
 					if ( ImGui::Button( ( "Reset" ), ImVec2( 60, 25 ) ) )
-					{
 						config.reset( );
-					}
 
 					ImGui::SameLine( );
 
 					if ( current_config != -1 )
 					{
 						if ( ImGui::Button( ( "Load" ), ImVec2( 60, 25 ) ) )
-						{
 							config.load( current_config );
-						}
 
 						ImGui::SameLine( );
 
 						if ( ImGui::Button( ( "Save" ), ImVec2( 60, 25 ) ) )
-						{
 							config.save( current_config );
-						}
 
 						ImGui::SameLine( );
 
 						if ( ImGui::Button( ( "Delete" ), ImVec2( 60, 25 ) ) )
-						{
 							config.remove( current_config );
-						}
 					}
 					ImGui::EndTabItem( );
 			}
@@ -212,18 +208,20 @@ void menu::render_objects( HWND hwnd, int width, int height )
 				ImGui::Separator( );
 				ImGui::Text( "The self-destruct works when you close the program.\nIt will hide itself and exit when the cleaning process finishes.\nYou will hear a beep when it finishes." );
 				ImGui::Checkbox( "Delete file on exit", &config.clicker.delete_file_on_exit );
-
 				if ( ImGui::IsItemHovered( ) )
 					ImGui::SetTooltip( "Will self delete the executable on exit." );
 
-				ImGui::Checkbox( "Clear strings on exit", &config.clicker.clear_string_on_exit );
+				ImGui::Checkbox( "Delete config folder on exit", &config.clicker.delete_config_folder_on_exit );
+				if ( ImGui::IsItemHovered( ) )
+					ImGui::SetTooltip( "Will self delete the config folder on exit." );
 
+				ImGui::Checkbox( "Clear strings on exit", &config.clicker.clear_strings_on_exit );
 				if ( ImGui::IsItemHovered( ) )
 					ImGui::SetTooltip( "Will clear strings on explorer matching filename." );
 
-				if ( config.clicker.clear_string_on_exit )
+				if ( config.clicker.clear_strings_on_exit )
 				{
-					ImGui::Checkbox( "Clear multibyte strings (slow)", &config.clicker.clear_string_multibyte );
+					ImGui::Checkbox( "Clear multibyte strings (slow!)", &config.clicker.clear_string_multibyte );
 
 					if ( ImGui::IsItemHovered( ) )
 						ImGui::SetTooltip( "Will delete more strings \nat the cost of taking longer to finish the process." );
@@ -258,27 +256,27 @@ LRESULT WINAPI wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 				return 0;
 			break;
 		case WM_DESTROY:
-			::PostQuitMessage( 0 );
+			PostQuitMessage( 0 );
 			return 0;
 	}
-	return ::DefWindowProc( hWnd, msg, wParam, lParam );
+	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
 bool menu::create( int width, int height )
 {
-	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, wndproc, 0L, 0L, GetModuleHandle( NULL ), NULL, NULL, NULL, NULL, _T( "w_w" ), NULL };
-	::RegisterClassEx( &wc );
-	HWND hwnd = ::CreateWindow( wc.lpszClassName, _T( "" ), WS_POPUP, 100, 100, width, height, NULL, NULL, wc.hInstance, NULL );
+	WNDCLASSEX wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, wndproc, 0L, 0L, GetModuleHandle( NULL ), NULL, NULL, NULL, NULL, _T( "w" ), NULL };
+	RegisterClassEx( &wc );
+	HWND hwnd = CreateWindow( wc.lpszClassName, _T( "" ), WS_POPUP, 100, 100, width, height, NULL, NULL, wc.hInstance, NULL );
 
 	if ( !g_menu->create_device_d3d( hwnd ) )
 	{
 		g_menu->cleanup_device_d3d( );
-		::UnregisterClass( wc.lpszClassName, wc.hInstance );
+		UnregisterClass( wc.lpszClassName, wc.hInstance );
 		return false;
 	}
 
-	::ShowWindow( hwnd, SW_SHOWDEFAULT );
-	::UpdateWindow( hwnd );
+	ShowWindow( hwnd, SW_SHOWDEFAULT );
+	UpdateWindow( hwnd );
 
 	IMGUI_CHECKVERSION( );
 	ImGui::CreateContext( );
@@ -301,6 +299,8 @@ bool menu::create( int width, int height )
 	}
 
 	io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.0f, &f_config, ranges );
+
+	// Hello, if you're a copy man, please take some time to do some fancy things here!
 
 	style.ScrollbarSize = 5.0f;
 	style.ChildRounding = 1.0f;
@@ -350,10 +350,10 @@ bool menu::create( int width, int height )
 	ZeroMemory( &msg, sizeof( msg ) );
 	while ( msg.message != WM_QUIT )
 	{
-		if ( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+		if ( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
-			::TranslateMessage( &msg );
-			::DispatchMessage( &msg );
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
 			continue;
 		}
 
@@ -369,6 +369,7 @@ bool menu::create( int width, int height )
 		g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
 		g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 		g_pd3dDevice->SetRenderState( D3DRS_SCISSORTESTENABLE, FALSE );
+
 		D3DCOLOR clear_col_dx = D3DCOLOR_RGBA( ( int ) ( clear_color.x * 255.0f ), ( int ) ( clear_color.y * 255.0f ), ( int ) ( clear_color.z * 255.0f ), ( int ) ( clear_color.w * 255.0f ) );
 		g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0 );
 
@@ -390,8 +391,8 @@ bool menu::create( int width, int height )
 	ImGui::DestroyContext( );
 
 	g_menu->cleanup_device_d3d( );
-	::DestroyWindow( hwnd );
-	::UnregisterClass( wc.lpszClassName, wc.hInstance );
+	DestroyWindow( hwnd );
+	UnregisterClass( wc.lpszClassName, wc.hInstance );
 
 	return true;
 }
