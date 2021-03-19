@@ -1,4 +1,4 @@
-## clicker
+# clicker
 C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
@@ -28,7 +28,7 @@ Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 ## download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
 
-## downloading with another name
+### downloading with another name
 On cmd: `certutil -urlcache -split -f "https://target_url/here.exe" "target_file_name_here.exe"`
 
 ## bugs and suggestions
@@ -43,17 +43,14 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 - https://aka.ms/vs/16/release/vc_redist.x86.exe
 - https://aka.ms/vs/16/release/vc_redist.x64.exe
 
-### D3D9 error
+### d3d9 error
 Install the following:
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
-## Screenshot
+## screenshot
 ![image](https://b.catgirlsare.sexy/otPHnTwM.png)
 
-## Randomization
-Little video showing it: https://u.biscoit.in/cJCuyH1P.mp4
-
-## Discord
+## discord
 Our little community if you want to join. Please read FAQ before anything!
 
 [![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
