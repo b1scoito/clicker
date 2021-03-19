@@ -1,20 +1,21 @@
 #pragma once
 
 #include <TlHelp32.h>
+#include <winioctl.h>
 
 namespace util
 {
 	namespace string
 	{
 		/// <summary>
-		/// String to lower
+		/// Converts a string to lower format
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
 		std::string to_lower( std::string str );
 
 		/// <summary>
-		/// Converts string to wide string
+		/// Converts a string to wide string
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
@@ -34,12 +35,12 @@ namespace util
 	namespace numbers
 	{
 		/// <summary>
-		/// Random number between start and end using mersenne
+		/// Random number between start and end using mersenne twister and random_device, returns and receives a float number.
 		/// </summary>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
 		/// <returns></returns>
-		int random( int start, int end );
+		float random( float start, float end );
 	}
 
 	namespace other
@@ -48,7 +49,7 @@ namespace util
 		/// Returns the active window title
 		/// </summary>
 		/// <returns></returns>
-		std::string get_active_window_title( );
+		std::string get_active_window_title();
 
 		/// <summary>
 		/// Returns the process id by name
@@ -61,18 +62,30 @@ namespace util
 		/// Self deletes something
 		/// </summary>
 		/// <param name="file_path"></param>
-		void self_delete( std::string path, bool is_folder );
+		void self_delete( std::string name, bool is_folder = false );
 
 		/// <summary>
 		/// Returns if the current application is focused or not
 		/// </summary>
 		/// <returns></returns>
-		bool application_focused( );
+		bool application_focused();
 
 		/// <summary>
 		/// Returns true when the cursor is visible, used to check if person is in game.
 		/// </summary>
 		/// <returns></returns>
-		bool is_cursor_visible( );
+		bool is_cursor_visible();
+
+		/// <summary>
+		/// Clear specified strings on the selected processes
+		/// </summary>
+		/// <param name="process"></param>
+		void clear_strings( std::vector<std::pair<std::string, std::string>> info );
+
+		/// <summary>
+		/// Returns disk id
+		/// </summary>
+		/// <returns></returns>
+		std::string get_disk_id();
 	}
 }

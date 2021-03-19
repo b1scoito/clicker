@@ -24,20 +24,19 @@ private:
 		NULL,
 		NULL,
 		NULL
-
 	};
 
 public:
 	scanner( HANDLE p_handle );
-	~scanner( );
+	~scanner();
 
-	bool query_memory( );
-	bool is_valid_page( );
+	bool query_memory();
+	bool is_valid_page();
 	bool read_virtual_mem( PVOID x );
 
 	std::vector<size_t> scan_unicode( std::string string );
-	void rewrite_unicode( size_t addrss, std::string str );
+	void rewrite_unicode( size_t addr, std::string str );
 
 	std::vector<size_t> scan_multibyte( std::string string );
-	void rewrite_multibyte( size_t addrss, std::string str );
+	void rewrite_multibyte( size_t addr, std::string str );
 };

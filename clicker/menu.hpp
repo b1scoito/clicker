@@ -19,12 +19,12 @@ public:
 	/// <returns></returns>
 	bool create( int width, int height );
 
-	~menu( ) = default;
-	menu( ) = default;
+	~menu() = default;
+	menu() = default;
 
 private:
 	/// <summary>
-	/// RGBA color space to ImVec4
+	/// RGBA color space to ImVec4 (float)
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="r"></param>
@@ -46,16 +46,16 @@ private:
 		static auto b_get = false;
 		static std::string sz_text = "Click to bind";
 
-		if ( ImGui::Button( sz_text.c_str( ), ImVec2( static_cast< float >( width ), static_cast< float >( height ) ) ) )
+		if (ImGui::Button( sz_text.c_str(), ImVec2( static_cast<float>(width), static_cast<float>(height) ) ))
 			b_get = true;
 
-		if ( b_get )
+		if (b_get)
 		{
-			for ( auto i = 1; i < 256; i++ )
+			for (auto i = 1; i < 256; i++)
 			{
-				if ( GetAsyncKeyState( i ) & 0x8000 )
+				if (GetAsyncKeyState( i ) & 0x8000)
 				{
-					if ( i != 12 )
+					if (i != 12)
 					{
 						key = i == VK_ESCAPE ? 0 : i;
 						b_get = false;
@@ -64,9 +64,9 @@ private:
 			}
 			sz_text = "Press a key";
 		}
-		else if ( !b_get && key == 0 )
+		else if (!b_get && key == 0)
 			sz_text = "Click to bind";
-		else if ( !b_get && key != 0 )
+		else if (!b_get && key != 0)
 			sz_text = "Bound to " + get_key_name_by_id( key );
 	}
 
@@ -124,22 +124,27 @@ private:
 			{ VK_RMENU, "Right Alt" },
 		};
 
-		if ( id >= 0x30 && id <= 0x5A )
-			return std::string( 1, ( char ) id );
+		if (id >= 0x30 && id <= 0x5A)
+			return std::string( 1, (char) id );
 
-		if ( id >= 0x60 && id <= 0x69 )
+		if (id >= 0x60 && id <= 0x69)
 			return "Num " + std::to_string( id - 0x60 );
 
-		if ( id >= 0x70 && id <= 0x87 )
-			return "F" + std::to_string( ( id - 0x70 ) + 1 );
+		if (id >= 0x70 && id <= 0x87)
+			return "F" + std::to_string( (id - 0x70) + 1 );
 
-		return key_names[ id ];
+		return key_names[id];
 	}
 
+	bool is_toggled = false;
+
 public:
-	LPDIRECT3D9 g_pD3D = NULL;
-	LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
-	D3DPRESENT_PARAMETERS g_d3dpp = { 0 };
+	// DirectX9
+	LPDIRECT3D9 g_pD3D {};
+	// DirectX9 device
+	LPDIRECT3DDEVICE9 g_pd3dDevice {};
+	// DirectX9 present parameters
+	D3DPRESENT_PARAMETERS g_d3dpp {};
 
 	/// <summary>
 	/// Sets window handle position
@@ -152,24 +157,24 @@ public:
 	/// <param name="hwnd"></param>
 	void set_position( int x, int y, int w, int h, bool b_center, HWND hwnd )
 	{
-		POINT point;
+		POINT point {};
 		GetCursorPos( &point );
 
 		auto flags = SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE;
-		if ( x != 0 && y != 0 )
+		if (x != 0 && y != 0)
 		{
 			x = point.x - x;
 			y = point.y - y;
 			flags &= ~SWP_NOMOVE;
 		}
 
-		if ( w != 0 && h != 0 )
+		if (w != 0 && h != 0)
 			flags &= ~SWP_NOSIZE;
 
-		if ( b_center )
+		if (b_center)
 		{
 			RECT rect {};
-			if ( w != 0 && h != 0 )
+			if (w != 0 && h != 0)
 			{
 				rect.right = w;
 				rect.bottom = h;
@@ -177,8 +182,8 @@ public:
 			else
 				GetWindowRect( hwnd, &rect );
 
-			x = ( GetSystemMetrics( SM_CXSCREEN ) - rect.right ) / 2;
-			y = ( GetSystemMetrics( SM_CYSCREEN ) - rect.bottom ) / 2;
+			x = (GetSystemMetrics( SM_CXSCREEN ) - rect.right) / 2;
+			y = (GetSystemMetrics( SM_CYSCREEN ) - rect.bottom) / 2;
 
 			flags &= ~SWP_NOMOVE;
 		}
@@ -194,8 +199,8 @@ public:
 	/// <param name="hwnd"></param>
 	void get_mouse_offset( int &x, int &y, HWND hwnd )
 	{
-		POINT point;
-		RECT rect;
+		POINT point {};
+		RECT rect {};
 
 		GetCursorPos( &point );
 		GetWindowRect( hwnd, &rect );
@@ -211,7 +216,7 @@ public:
 	/// <returns></returns>
 	bool create_device_d3d( HWND hWnd )
 	{
-		if ( ( g_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) == NULL )
+		if ((g_pD3D = Direct3DCreate9( D3D_SDK_VERSION )) == NULL)
 			return false;
 
 		ZeroMemory( &g_d3dpp, sizeof( g_d3dpp ) );
@@ -221,7 +226,7 @@ public:
 		g_d3dpp.EnableAutoDepthStencil = TRUE;
 		g_d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 		g_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-		if ( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &g_d3dpp, &g_pd3dDevice ) < 0 )
+		if (g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &g_d3dpp, &g_pd3dDevice ) < 0)
 			return false;
 
 		return true;
@@ -230,25 +235,25 @@ public:
 	/// <summary>
 	/// Cleanups the d3d device
 	/// </summary>
-	void cleanup_device_d3d( )
+	void cleanup_device_d3d()
 	{
-		if ( g_pd3dDevice ) { g_pd3dDevice->Release( ); g_pd3dDevice = NULL; }
-		if ( g_pD3D ) { g_pD3D->Release( ); g_pD3D = NULL; }
+		if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = NULL; }
+		if (g_pD3D) { g_pD3D->Release(); g_pD3D = NULL; }
 	}
 
 	/// <summary>
-	/// Resets de d3d device
+	/// Resets the d3d device
 	/// </summary>
-	void reset_device( )
+	void reset_device()
 	{
-		ImGui_ImplDX9_InvalidateDeviceObjects( );
+		ImGui_ImplDX9_InvalidateDeviceObjects();
 
 		HRESULT hr = g_pd3dDevice->Reset( &g_d3dpp );
-		if ( hr == D3DERR_INVALIDCALL )
+		if (hr == D3DERR_INVALIDCALL)
 			IM_ASSERT( 0 );
 
-		ImGui_ImplDX9_CreateDeviceObjects( );
+		ImGui_ImplDX9_CreateDeviceObjects();
 	}
 };
 
-inline auto g_menu = std::make_unique<menu>( );
+inline auto g_menu = std::make_unique<menu>();

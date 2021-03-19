@@ -15,18 +15,17 @@
 #include <thread>
 #include <shellapi.h>
 
+#include <d3d9.h>
+
 // config
 #include "config.hpp"
 // imgui
-#include "imgui.h"
-#include "imgui_impl_dx9.h"
-#include "imgui_impl_win32.h"
-// directx9 library
-#include <d3d9.h>
-#pragma comment(lib, "d3d9.lib")
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx9.h"
+#include "imgui/imgui_impl_win32.h"
 // imgui fonts
-#include "font_definitions.hpp"
-#include "font_awesome.hpp"
+#include "imgui/font_definitions.hpp"
+#include "imgui/font_awesome.hpp"
 // memory scanner
 #include "scanner.hpp"
 // console logger

@@ -1,13 +1,11 @@
 #pragma once
 
-#include <bitset>
-
 namespace hooks
 {
 	/// <summary>
 	/// Initialize hook callbacks
 	/// </summary>
-	void init_callbacks( );
+	void init_callbacks();
 
 	namespace mouse
 	{
@@ -22,47 +20,18 @@ namespace hooks
 		LRESULT CALLBACK m_hook_callback( int nCode, WPARAM wParam, LPARAM lParam );
 
 		/// <summary>
-		/// Click left down
+		/// Clicks a mouse button
 		/// </summary>
-		inline void left_down( )
+		inline void send_mouse_input( bool down, bool button )
 		{
-			INPUT input {};
-			input.type = INPUT_MOUSE;
-			input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-			SendInput( 1, &input, sizeof( INPUT ) );
-		}
+			POINT pos { 0, 0 }; GetCursorPos( &pos );
 
-		/// <summary>
-		/// Click left up
-		/// </summary>
-		inline void left_up( )
-		{
-			INPUT input {};
-			input.type = INPUT_MOUSE;
-			input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-			SendInput( 1, &input, sizeof( INPUT ) );
-		}
+			down ? (button ? SendMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+				SendMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) )) :
+				(button ? SendMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+					SendMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ));
 
-		/// <summary>
-		/// Click right down
-		/// </summary>
-		inline void right_down( )
-		{
-			INPUT input {};
-			input.type = INPUT_MOUSE;
-			input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
-			SendInput( 1, &input, sizeof( INPUT ) );
-		}
-
-		/// <summary>
-		/// Click right up
-		/// </summary>
-		inline void right_up( )
-		{
-			INPUT input {};
-			input.type = INPUT_MOUSE;
-			input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
-			SendInput( 1, &input, sizeof( INPUT ) );
+			++var::i_clicks_this_session;
 		}
 	}
 
@@ -88,11 +57,11 @@ namespace hooks
 		/// <summary>
 		/// Init keybind loop
 		/// </summary>
-		void init( );
+		void init();
 
 		/// <summary>
 		/// Keybind activation type, not very good way of doing this.
 		/// </summary>
-		void activation_type( );
+		void activation_type();
 	}
 }

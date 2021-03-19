@@ -30,19 +30,19 @@ template <typename t_stream>
 class archx final
 {
 public:
-	constexpr explicit archx( t_stream &stream ) : stream { stream } { }
+	constexpr explicit archx( t_stream &stream ): stream { stream } {}
 
 	template <typename T>
 	constexpr const auto &operator<<( const T &item ) const
 	{
-		stream.write( reinterpret_cast< const char * >( &item ), sizeof( item ) );
+		stream.write( reinterpret_cast<const char *>(&item), sizeof( item ) );
 		return *this;
 	}
 
 	template <typename T>
 	constexpr const auto &operator>>( T &item ) const
 	{
-		stream.read( reinterpret_cast< char * >( &item ), sizeof( item ) );
+		stream.read( reinterpret_cast<char *>(&item), sizeof( item ) );
 		return *this;
 	}
 

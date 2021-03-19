@@ -1,125 +1,120 @@
 #include "pch.hpp"
 #include "clicker.hpp"
 
-void clicker::init( )
+void clicker::init()
 {
-	while ( true )
+	while (true)
 	{
-		// https://randomascii.wordpress.com/2020/10/04/windows-timer-resolution-the-great-rule-change/
-		// Not sure if this will affect anything.
-		timeBeginPeriod( 1 );
-
 		// Sleep for saving CPU cycles, affects just a little on the algorithm.
 		std::this_thread::sleep_for( 1ms );
 
-		const auto get_cursor_status = [ ]( )
+		const auto get_cursor_status = []()
 		{
-			return config.clicker.only_in_game ? !util::other::is_cursor_visible( ) : util::other::is_cursor_visible( );
+			return config.clicker.only_in_game ? !util::other::is_cursor_visible() : util::other::is_cursor_visible();
 		};
 
-		if ( vars::b_hotkey_enabled )
+		if (var::b_hotkey_enabled)
 		{
 			// check if window is active and current window is not focused
-			if ( util::other::get_active_window_title( ).find( config.clicker.window_title ) != std::string::npos && !util::other::application_focused( ) )
+			if (util::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos
+				&& !util::other::application_focused())
 			{
 				// check if cursor is visible, in-game.
-				if ( get_cursor_status( ) || !config.clicker.only_in_game )
+				if (get_cursor_status() || config.clicker.work_on_inventory && (var::b_inventory_opened || !config.clicker.only_in_game))
 				{
-					if ( config.clicker.left_enabled && vars::b_l_mouse_down && !vars::b_r_mouse_down )
-						g_clicker->click( left_mb, config.clicker.l_cps, vars::b_l_first_click );
+					if (config.clicker.left_enabled && var::b_l_mouse_down && !var::b_r_mouse_down)
+						click( left_mb, config.clicker.l_cps, var::b_l_first_click );
 
-					if ( config.clicker.right_enabled && vars::b_r_mouse_down )
-						g_clicker->click( right_mb, config.clicker.r_cps, vars::b_r_first_click );
+					if (config.clicker.right_enabled && var::b_r_mouse_down)
+						click( right_mb, config.clicker.r_cps, var::b_r_first_click );
 				}
 			}
 		}
-
-		timeEndPeriod( 1 );
 	}
 }
 
-void clicker::click( bool button, int cps, bool &is_first_click )
+void clicker::click( bool button, float cps, bool &is_first_click )
 {
-	// used to measure the time that it takes for one click precisely
-#ifdef _DEBUG
-	auto start = std::chrono::high_resolution_clock::now( );
-#endif
-
-	if ( cps <= 0 ) // return if our cps is 0. let's not divide it by 0.
+	// return if our cps is 0. let's not divide it by 0.
+	if (cps <= 0.f)
 		return;
 
-	if ( !config.clicker.blatant )
+	if (!config.clicker.blatant)
+		// applying persistent randomization before delay calculation
 		cps += random;
 
-	delay = ( 1000 / cps ) / 2 - cps / 2; // delay is half because we'll be calling it two times, on mouse down and up.
+	// pretty weird, what might be happening here?! I had to subtract the cps divided by 2 otherwise it wouldn't go as accurate.
+	// delay is half because we'll be calling it two times, on mouse down and up.
+	delay = (1000.f / cps) / 2.f - cps / 2.f;
 
-	if ( !config.clicker.blatant )
-		delay += util::numbers::random( 2, 5 ); // apply randomization naturally.
+	if (!config.clicker.blatant)
+		// apply randomization by default.
+		delay += util::numbers::random( -5.0f, 5.0f );
 
-	if ( is_first_click ) // if it's our first click, delay and send a up input to our function.
+	// if it's our first click, delay and send a up input to our function.
+	if (is_first_click)
 	{
-		std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-		g_clicker->click_mouse( input_up, button );
+		std::this_thread::sleep_for( floating_point_ms( delay ) );
+		hooks::mouse::send_mouse_input( input_up, button );
 		is_first_click = false;
-		_log( LDEBUG, "[ clicker ] first click." );
+		_logd( "first click." );
 	}
 
-	std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-	g_clicker->click_mouse( input_down, button );
+	// sleep
+	std::this_thread::sleep_for( floating_point_ms( delay ) );
 
-	if ( config.clicker.blockhit && config.clicker.blockhit_chance > 0 && std::rand( ) % ( 100 / config.clicker.blockhit_chance ) == 0 )
+	// click
+	hooks::mouse::send_mouse_input( input_down, button );
+
+	if (config.clicker.blockhit && config.clicker.blockhit_chance > 0 && std::rand() % (100 / config.clicker.blockhit_chance) == 0)
 	{
 		blockhitted = true;
-		g_clicker->click_mouse( input_down, right_mb );
+		hooks::mouse::send_mouse_input( input_down, right_mb );
 	}
 
-	std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
-	g_clicker->click_mouse( input_up, button );
+	// sleep
+	std::this_thread::sleep_for( floating_point_ms( delay ) );
 
-	if ( blockhitted )
+	// click
+	hooks::mouse::send_mouse_input( input_up, button );
+
+	// if we blockhitted before, let's set input to up and set variable back to false
+	if (blockhitted)
 	{
-		g_clicker->click_mouse( input_up, right_mb );
+		hooks::mouse::send_mouse_input( input_up, right_mb );
 		blockhitted = false;
 	}
 
-#ifdef _DEBUG
-	auto end = std::chrono::high_resolution_clock::now( );
-	std::chrono::duration<double, std::milli> elapsed = end - start;
-#endif
-
-	_log( LDEBUG, "[ clicker ] cps: %d delay %d time elapsed %.3f.", cps, delay, elapsed.count( ) );
+	_logd( "cps: %.1f delay: %.1f.", cps, delay );
 }
 
-void clicker::randomization_thread( int delay )
+void clicker::randomization_thread( float delay )
 {
 	bool should_update = false;
-	while ( true )
+	while (true)
 	{
-		if ( should_update )
+		if (should_update)
 		{
-			random = util::numbers::random( -2, 2 );
+			// persistent cps values
+			random = util::numbers::random( -1.5f, 1.5f );
 
-			if ( config.clicker.cps_drop_chance
-				&& config.clicker.cps_drop_chance_val > 0
-				&& std::rand( ) % ( 100 / config.clicker.cps_drop_chance_val ) == 0 )
-				random -= 3;
+			// cps drop chance
+			if (config.clicker.cps_drop_chance && config.clicker.cps_drop_chance_val > 0
+				&& std::rand() % (100 / config.clicker.cps_drop_chance_val) == 0)
+				// add up 2.5 cps
+				random -= 2.5f;
 
-			if ( config.clicker.cps_spike_chance
-				&& config.clicker.cps_spike_chance_val > 0
-				&& std::rand( ) % ( 100 / config.clicker.cps_spike_chance_val ) == 0 )
-				random += 3;
+			// cps spike chance
+			if (config.clicker.cps_spike_chance && config.clicker.cps_spike_chance_val > 0
+				&& std::rand() % (100 / config.clicker.cps_spike_chance_val) == 0)
+				// add up 2.5 cps
+				random += 2.5f;
 
 			should_update = false;
 		}
 
-		std::this_thread::sleep_for( std::chrono::milliseconds( util::numbers::random( -delay, delay ) ) );
-
+		// random delay between before defined values on entrypoint, this adds to more randomization of the persistent values.
+		std::this_thread::sleep_for( floating_point_ms( util::numbers::random( -delay, delay ) ) );
 		should_update = true;
 	}
-}
-
-void clicker::click_mouse( bool is_down, bool button )
-{
-	is_down ? ( button ? hooks::mouse::left_down( ) : hooks::mouse::right_down( ) ) : ( button ? hooks::mouse::left_up( ) : hooks::mouse::right_up( ) );
-	++vars::i_clicks_this_session;
 }

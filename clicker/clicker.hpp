@@ -1,10 +1,7 @@
 #pragma once
 
-// For timeBeginPeriod
-#include <timeapi.h>
-#pragma comment(lib, "Winmm.lib")
-
 using namespace std::chrono_literals;
+using floating_point_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
 
 class clicker
 {
@@ -12,12 +9,17 @@ private:
 	/// <summary>
 	/// Delay for the sleep
 	/// </summary>
-	int delay = 0;
+	float delay = 0.f;
 
 	/// <summary>
-	/// Random cps values
+	/// Random cps values to add up to current cps
 	/// </summary>
-	int random = 0;
+	float random = 0.f;
+
+	/// <summary>
+	/// Global definition of our current cps
+	/// </summary>
+	/// float cps = 0.f;
 
 	/// <summary>
 	/// Has blockhitted at the time
@@ -33,7 +35,7 @@ public:
 	/// <summary>
 	/// Initializes main loop
 	/// </summary>
-	void init( );
+	void init();
 
 	/// <summary>
 	/// Clicks mouse with randomization
@@ -41,23 +43,16 @@ public:
 	/// <param name="button"></param>
 	/// <param name="cps"></param>
 	/// <param name="is_first_click"></param>
-	void click( bool button, int cps, bool &is_first_click );
-
-	/// <summary>
-	/// Clicks a mouse button
-	/// </summary>
-	/// <param name="is_down"></param>
-	/// <param name="button"></param>
-	void click_mouse( bool is_down, bool button );
+	void click( bool button, float cps, bool &is_first_click );
 
 	/// <summary>
 	/// Separate randomization thread for more accurate randomization algorithm
 	/// </summary>
 	/// <param name="delay"></param>
-	void randomization_thread( int delay );
+	void randomization_thread( float delay );
 
-	~clicker( ) = default;
-	clicker( ) = default;
+	~clicker() = default;
+	clicker() = default;
 };
 
-inline auto g_clicker = std::make_unique<clicker>( );
+inline auto g_clicker = std::make_unique<clicker>();

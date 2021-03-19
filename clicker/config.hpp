@@ -54,13 +54,13 @@ public:
 	/// <summary>
 	/// Resets a config
 	/// </summary>
-	void reset( );
+	void reset();
 
 	/// <summary>
 	/// Returns config list
 	/// </summary>
 	/// <returns></returns>
-	constexpr auto &get_configs( ) { return configs; }
+	constexpr auto &get_configs() { return configs; }
 
 	/// <summary>
 	/// Definition of the config variables
@@ -82,8 +82,8 @@ public:
 		int activation_type { 0 };
 		int version_type { 0 };
 
-		int l_cps { 1 };
-		int r_cps { 1 };
+		float l_cps { 1.f };
+		float r_cps { 1.f };
 
 		int blockhit_chance { 5 };
 		int cps_spike_chance_val { 5 };
@@ -93,6 +93,9 @@ public:
 		bool cps_drop_chance { false };
 
 		bool only_in_game { false };
+		bool work_on_inventory { false };
+
+		int hide_window_key { 0 };
 
 		std::string window_title;
 	} clicker;
