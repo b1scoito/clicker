@@ -38,12 +38,12 @@ Bugs and suggestions should be reported at https://github.com/b1scoito/clicker/i
 
 ## Compiling
 ### Prerequisites
-Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142 and Windows SDK 10.0.x.x are required in order to compile it.
+Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142, DirectX Development Kit and Windows SDK 10.0.x.x are required in order to compile it.
 ### Compiling from the source
 Open the solution file (`clicker.sln`)
 Then select `Release | x64` on the Build configuration, and press Build solution.
 You should be good to go.
-If you get an error related to DirectX, please install the Development SDK.
+Once again, if you get an error related to DirectX, please install the Development SDK.
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=6812
 
 ## Errors
