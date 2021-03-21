@@ -2,7 +2,7 @@
 C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
-## features
+## Features
 - Clicker tab
   - Bindable toggle, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
   - Left mouse autoclicker with smart customizable cps values.
@@ -25,16 +25,28 @@ Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
   - Delete config folder on exit.
   - Self-delete file on exit.
 
-## download
+# Getting started
+
+## Download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
 
-### downloading with another name
+### Downloading with other name
 On cmd: `certutil -urlcache -split -f "https://target_url/here.exe" "target_file_name_here.exe"`
 
-## bugs and suggestions
+## Bugs and suggestions
 Bugs and suggestions should be reported at https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix (e.g. server-sided detections).
 
-## errors
+## Compiling
+### Prerequisites
+Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142 and Windows SDK 10.0.x.x are required in order to compile it.
+### Compiling from the source
+Open the solution file (`clicker.sln`)
+Then select `Release | x64` on the Build configuration, and press Build solution.
+You should be good to go.
+If you get an error related to DirectX, please install the Development SDK.
+- https://www.microsoft.com/en-us/download/confirmation.aspx?id=6812
+
+## Errors
 
 ### VCRUNTIME and MSVCP errors
 That happens because you don't have the runtime and libraries required for this to run.
@@ -47,10 +59,10 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 Install the following:
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
-## screenshot
+## Screenshot
 ![image](https://b.catgirlsare.sexy/otPHnTwM.png)
 
-## discord
+## Discord
 Our little community if you want to join. Please read FAQ before anything!
 
 [![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
