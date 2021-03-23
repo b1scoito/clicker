@@ -1,68 +1,66 @@
-## clicker
+# clicker
 C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
-Tested on Lunar and Badlion.
+Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
 ## Features
-- AutoClicker Tab
-  - Bindable keys, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
+- Clicker tab
+  - Bindable toggle, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
   - Left mouse autoclicker with smart customizable cps values.
   - Right mouse autoclicker with smart customizable cps values.
   - Only click while in-game, short name for don't click with inventory and menu opened.
-  - Spike chance percentage.
-  - Drop chance percentage.
-  - Blatant mode with exact cps value.
+  - Only click while in-game and with inventory opened.
+  - Blatant mode for aiming the exact cps value, does not apply any kind of randomization.
+  - CPS Spike chance percentage.
+  - CPS Drop chance percentage.
   - Selectable Window name or preset ones.
-  - Blockhit, and blockhit chance percentage.
+  - Blockhit, with blockhit chance percentage.
   
-- Config Tab
+- Config tab
   - Open config folder.
   - Save, Load, Reset, Delete, Create any configs you want.
+  - Configs are stored in a folder with your hwid name.
   
-- Self-destruct Tab (Delete traces of executable)
-  - Clear unicode memory strings on `explorer.exe`
-  - Clear multibyte memory strings on `explorer.exe`
+- Self-destruct tab (delete traces of executable)
+  - Clear strings on processes,  currently clears `name`, `full_path`, `clicker` on `explorer.exe` can be changed on the project configuration.
   - Delete config folder on exit.
   - Self-delete file on exit.
+
+# Getting started
 
 ## Download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
 
-## Downloading with another name
-Open cmd on the desired folder and execute the following command
-
-`certutil -urlcache -split -f "target url here" AnyDesk.exe`
-
-Change `AnyDesk.exe` to whatever name you want.
-Change `target url here` for the release .exe url.
-
-### Downloading on a specific folder
-Open cmd and execute the following command
-
-`certutil -urlcache -split -f "target url here" C:\temp\AnyDesk.exe`
-
-Change the folder to whatever you want.
-Change `target url here` for the release .exe url.
+### Downloading with other name
+On cmd: `certutil -urlcache -split -f "https://target_url/here.exe" "target_file_name_here.exe"`
 
 ## Bugs and suggestions
-Bugs and suggestions should be reported at: https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix.
+Bugs and suggestions should be reported at https://github.com/b1scoito/clicker/issues. Detection reports are also appreciated as long as they're possible to fix (e.g. server-sided detections).
 
-## It doesn't open!
+## Compiling
+### Prerequisites
+Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142, DirectX Development Kit and Windows SDK 10.0.x.x are required in order to compile it.
+### Compiling from the source
+Open the solution file (`clicker.sln`)
+Then select `Release | x64` on the Build configuration, and press Build solution.
+You should be good to go.
+Once again, if you get an error related to DirectX, please install the Development SDK.
+- https://www.microsoft.com/en-us/download/confirmation.aspx?id=6812
 
-### vcruntime and msvcp errors
-Please be calm, that's because you don't have the runtime and libraries required for this to run.
+## Errors
+
+### VCRUNTIME and MSVCP errors
+That happens because you don't have the runtime and libraries required for this to run.
 Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime linked below.
 
 - https://aka.ms/vs/16/release/vc_redist.x86.exe
 - https://aka.ms/vs/16/release/vc_redist.x64.exe
 
-### d3dx9 error
+### d3d9 error
+Install the following:
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/3huQA2-a.png)
-
-## Randomization
-Little video showing it: https://u.biscoit.in/cJCuyH1P.mp4
+![image](https://b.catgirlsare.sexy/otPHnTwM.png)
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
