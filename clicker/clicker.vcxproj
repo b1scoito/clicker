@@ -47,7 +47,7 @@
     </ClCompile>
     <ClCompile Include="scanner.cpp" />
     <ClCompile Include="util.cpp" />
-    <ClCompile Include="entry.cpp">
+    <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeader>
     </ClCompile>

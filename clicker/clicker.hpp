@@ -17,11 +17,6 @@ private:
 	float random = 0.f;
 
 	/// <summary>
-	/// Global definition of our current cps
-	/// </summary>
-	/// float cps = 0.f;
-
-	/// <summary>
 	/// Has blockhitted at the time
 	/// </summary>
 	bool blockhitted = false;

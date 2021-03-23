@@ -5,10 +5,11 @@ LRESULT CALLBACK hooks::mouse::m_hook_callback( int nCode, WPARAM wParam, LPARAM
 {
 	auto *m_hook = reinterpret_cast<MSLLHOOKSTRUCT *> (lParam);
 
-	if (m_hook->flags & LLMHF_INJECTED || m_hook->flags & LLMHF_LOWER_IL_INJECTED)
+	if ((m_hook->flags & LLMHF_INJECTED) || (m_hook->flags & LLMHF_LOWER_IL_INJECTED))
 	{
 		m_hook->flags &= ~LLMHF_INJECTED;
 		m_hook->flags &= ~LLMHF_LOWER_IL_INJECTED;
+
 		return false;
 	}
 
@@ -17,52 +18,50 @@ LRESULT CALLBACK hooks::mouse::m_hook_callback( int nCode, WPARAM wParam, LPARAM
 		switch (wParam)
 		{
 			case WM_LBUTTONDOWN:
-				var::b_l_first_click = true;
-				var::b_l_mouse_down = true;
+				var::mouse::left_first_click = true;
+				var::mouse::left_mouse_down = true;
 				break;
 			case WM_LBUTTONUP:
-				var::b_l_mouse_down = false;
+				var::mouse::left_mouse_down = false;
 				break;
 			case WM_RBUTTONDOWN:
-				var::b_r_first_click = true;
-				var::b_r_mouse_down = true;
+				var::mouse::right_first_click = true;
+				var::mouse::right_mouse_down = true;
 				break;
 			case WM_RBUTTONUP:
-				var::b_r_mouse_down = false;
+				var::mouse::right_mouse_down = false;
 				break;
 			default: break;
 		}
 	}
 
-	return CallNextHookEx( hooks::mouse::mouse_hook, nCode, wParam, lParam );
+	return CallNextHookEx( hooks::mouse::h_hook, nCode, wParam, lParam );
 }
 
 LRESULT CALLBACK hooks::keyboard::k_hook_callback( int nCode, WPARAM wParam, LPARAM lParam )
 {
 	auto *k_hook = reinterpret_cast<KBDLLHOOKSTRUCT *>(lParam);
 
-	auto in_minecraft = util::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos;
+	auto in_window = util::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos;
 
-	if (nCode == HC_ACTION && wParam == WM_KEYDOWN && in_minecraft)
+	if (nCode == HC_ACTION && wParam == WM_KEYDOWN)
 	{
-		if (!util::other::is_cursor_visible() && k_hook->vkCode == 69)
-			var::b_inventory_opened = !var::b_inventory_opened;
+		if (in_window)
+		{
+			if (k_hook->vkCode == 69) /*E*/
+				var::key::is_inventory_opened = !var::key::is_inventory_opened;
 
-		if (k_hook->vkCode == 69 && util::other::is_cursor_visible())
-			var::b_inventory_opened = !var::b_inventory_opened;
-
-		if (util::other::is_cursor_visible() && k_hook->vkCode == VK_ESCAPE)
-			var::b_inventory_opened = false;
-
-		_logd( "Is inv opened: %d", var::b_inventory_opened );
+			if (k_hook->vkCode == VK_ESCAPE)
+				var::key::is_inventory_opened = false;
+		}
 	}
 
-	return CallNextHookEx( hooks::keyboard::keyboard_hook, nCode, wParam, lParam );
+	return CallNextHookEx( hooks::keyboard::h_hook, nCode, wParam, lParam );
 }
 
 void hooks::init_callbacks()
 {
-	hooks::mouse::mouse_hook = SetWindowsHookEx
+	hooks::mouse::h_hook = SetWindowsHookEx
 	(
 		WH_MOUSE_LL,
 		hooks::mouse::m_hook_callback,
@@ -70,7 +69,7 @@ void hooks::init_callbacks()
 		NULL
 	);
 
-	hooks::keyboard::keyboard_hook = SetWindowsHookEx
+	hooks::keyboard::h_hook = SetWindowsHookEx
 	(
 		WH_KEYBOARD_LL,
 		hooks::keyboard::k_hook_callback,
@@ -90,8 +89,8 @@ void hooks::init_callbacks()
 		DispatchMessage( &msg );
 	}
 
-	UnhookWindowsHookEx( hooks::mouse::mouse_hook );
-	// UnhookWindowsHookEx( hooks::keyboard::keyboard_hook );
+	UnhookWindowsHookEx( hooks::mouse::h_hook );
+	UnhookWindowsHookEx( hooks::keyboard::h_hook );
 }
 
 void hooks::keybinds::init()
@@ -103,41 +102,44 @@ void hooks::keybinds::init()
 	}
 }
 
+// Let the gambiarra begin
 void hooks::keybinds::activation_type()
 {
 	switch (config.clicker.activation_type)
 	{
 		case 0:
 			if (config.clicker.left_enabled || config.clicker.right_enabled)
-				var::b_hotkey_enabled = true;
+				var::key::is_hotkey_enabled = true;
+			else
+				var::key::is_hotkey_enabled = false;
 			break;
 
 		case 1:
 			if (GetAsyncKeyState( config.clicker.key ))
-				var::b_hotkey_enabled = true;
+				var::key::is_hotkey_enabled = true;
 			else
-				var::b_hotkey_enabled = false;
+				var::key::is_hotkey_enabled = false;
 			break;
 
 		case 2:
 			if (GetAsyncKeyState( config.clicker.key ))
 			{
-				var::b_is_clicked = false;
-				var::b_is_down = true;
+				var::key::is_clicked = false;
+				var::key::is_down = true;
 			}
-			else if (!GetAsyncKeyState( config.clicker.key ) && var::b_is_down)
+			else if (!GetAsyncKeyState( config.clicker.key ) && var::key::is_down)
 			{
-				var::b_is_clicked = true;
-				var::b_is_down = false;
+				var::key::is_clicked = true;
+				var::key::is_down = false;
 			}
 			else
 			{
-				var::b_is_clicked = false;
-				var::b_is_down = false;
+				var::key::is_clicked = false;
+				var::key::is_down = false;
 			}
 
-			if (var::b_is_clicked)
-				var::b_hotkey_enabled = !var::b_hotkey_enabled;
+			if (var::key::is_clicked)
+				var::key::is_hotkey_enabled = !var::key::is_hotkey_enabled;
 
 			break;
 	}

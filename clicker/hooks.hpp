@@ -12,10 +12,11 @@ namespace hooks
 		/// <summary>
 		/// Definition of our mouse hook struct
 		/// </summary>
-		inline HHOOK mouse_hook {};
+		inline HHOOK h_hook {};
 
 		/// <summary>
-		/// Mouse hook callback
+		/// Mouse hook callback, this hook is replaced by the Windows
+		/// so everything that happens on the mouse get's passed through this function when the hook is used.
 		/// </summary>
 		LRESULT CALLBACK m_hook_callback( int nCode, WPARAM wParam, LPARAM lParam );
 
@@ -31,7 +32,7 @@ namespace hooks
 				(button ? SendMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 					SendMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ));
 
-			++var::i_clicks_this_session;
+			++var::stats::clicks_this_session;
 		}
 	}
 
@@ -40,10 +41,10 @@ namespace hooks
 		/// <summary>
 		/// Definition of our keyboard hook struct
 		/// </summary>
-		inline HHOOK keyboard_hook {};
+		inline HHOOK h_hook {};
 
 		/// <summary>
-		/// Keyboard hook callback function
+		/// Keyboard hook callback function, everything that keyboard does gets passed here.
 		/// </summary>
 		/// <param name="nCode"></param>
 		/// <param name="wParam"></param>

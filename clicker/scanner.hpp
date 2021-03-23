@@ -7,9 +7,6 @@
 
 #define NT_SUCCESS(x) ((NTSTATUS)(x) >= NULL)
 
-extern "C" NTSTATUS NtReadVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );
-extern "C" NTSTATUS NtWriteVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );
-
 struct scanner
 {
 private:
@@ -35,8 +32,11 @@ public:
 	bool read_virtual_mem( PVOID x );
 
 	std::vector<size_t> scan_unicode( std::string string );
-	void rewrite_unicode( size_t addr, std::string str );
+	void rewrite_unicode( size_t address, std::string string );
 
 	std::vector<size_t> scan_multibyte( std::string string );
-	void rewrite_multibyte( size_t addr, std::string str );
+	void rewrite_multibyte( size_t address, std::string string );
 };
+
+extern "C" NTSTATUS NtReadVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );
+extern "C" NTSTATUS NtWriteVirtualMemory( HANDLE, PVOID, PVOID, ULONG, PULONG );

@@ -62,7 +62,7 @@ namespace util
 		/// Self deletes something
 		/// </summary>
 		/// <param name="file_path"></param>
-		void self_delete( std::string name, bool is_folder = false );
+		bool self_delete( std::string name, bool is_folder = false );
 
 		/// <summary>
 		/// Returns if the current application is focused or not

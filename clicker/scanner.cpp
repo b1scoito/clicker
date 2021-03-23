@@ -13,8 +13,7 @@ scanner::~scanner()
 
 bool scanner::query_memory()
 {
-	return VirtualQueryEx(
-		this->p_handle, (LPVOID) this->_address, &this->_mbi, sizeof( this->_mbi ) );
+	return VirtualQueryEx( this->p_handle, (LPVOID) this->_address, &this->_mbi, sizeof( this->_mbi ) );
 }
 
 bool scanner::is_valid_page()
@@ -24,8 +23,7 @@ bool scanner::is_valid_page()
 
 bool scanner::read_virtual_mem( PVOID x )
 {
-	return NT_SUCCESS( NtReadVirtualMemory(
-		this->p_handle, (LPVOID) this->_address, x, this->_mbi.RegionSize, nullptr ) );
+	return NT_SUCCESS( NtReadVirtualMemory( this->p_handle, (LPVOID) this->_address, x, this->_mbi.RegionSize, nullptr ) );
 }
 
 std::vector<size_t> scanner::scan_unicode( std::string string )
@@ -50,10 +48,7 @@ std::vector<size_t> scanner::scan_unicode( std::string string )
 					break;
 
 				if (y == ___length - 1)
-				{
 					_mem_locations.push_back( this->_address + x * 2 );
-					_logd( "Read unicode: 0x%x", _address + x * 2 );
-				}
 			}
 		}
 	}
@@ -83,10 +78,7 @@ std::vector<size_t> scanner::scan_multibyte( std::string string )
 					break;
 
 				if (y == ___length - 1)
-				{
 					_mem_locations.push_back( this->_address + x );
-					_logd( "Read multibyte: 0x%x", _address + x );
-				}
 			}
 		}
 	}
@@ -94,19 +86,15 @@ std::vector<size_t> scanner::scan_multibyte( std::string string )
 	return _mem_locations;
 }
 
-void scanner::rewrite_unicode( size_t addr, std::string str )
+void scanner::rewrite_unicode( size_t address, std::string string )
 {
-	for (size_t x = 0; x < str.length(); ++x)
-		NtWriteVirtualMemory( this->p_handle, (LPVOID) (addr + x * 2), &str[x], 1, nullptr );
-
-	_logd( "Write unicode: 0x%x", addr );
+	for (size_t x = 0; x < string.length(); ++x)
+		NtWriteVirtualMemory( this->p_handle, (LPVOID) (address + x * 2), &string[x], 1, nullptr );
 }
 
 
-void scanner::rewrite_multibyte( size_t addr, std::string str )
+void scanner::rewrite_multibyte( size_t address, std::string string )
 {
-	for (size_t x = 0; x < str.length(); ++x)
-		NtWriteVirtualMemory( this->p_handle, (LPVOID) (addr + x), &str[x], 1, nullptr );
-
-	_logd( "Write multibyte: 0x%x", addr );
+	for (size_t x = 0; x < string.length(); ++x)
+		NtWriteVirtualMemory( this->p_handle, (LPVOID) (address + x), &string[x], 1, nullptr );
 }

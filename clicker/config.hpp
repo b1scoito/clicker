@@ -76,14 +76,13 @@ public:
 		bool delete_file_on_exit { false };
 		bool delete_config_folder_on_exit { false };
 		bool clear_strings_on_exit { false };
-		bool clear_string_multibyte { false };
 
 		int key { 0 };
 		int activation_type { 0 };
 		int version_type { 0 };
 
-		float l_cps { 1.f };
-		float r_cps { 1.f };
+		float left_cps { 1.f };
+		float right_cps { 1.f };
 
 		int blockhit_chance { 5 };
 		int cps_spike_chance_val { 5 };
@@ -93,7 +92,7 @@ public:
 		bool cps_drop_chance { false };
 
 		bool only_in_game { false };
-		bool work_on_inventory { false };
+		bool work_in_inventory { false };
 
 		int hide_window_key { 0 };
 

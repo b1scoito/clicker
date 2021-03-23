@@ -40,7 +40,7 @@ float util::numbers::random( float start, float end )
 
 std::string util::other::get_active_window_title()
 {
-	char title[256] = {};
+	char title[256] {};
 	HWND hwnd = GetForegroundWindow();
 	GetWindowText( hwnd, title, sizeof( title ) );
 	return title;
@@ -75,25 +75,43 @@ DWORD util::other::get_process_id_by_name( const std::string &p_name )
 	return 0;
 }
 
-void util::other::self_delete( std::string name, bool is_folder )
+bool util::other::self_delete( std::string name, bool is_folder )
 {
 	STARTUPINFO si {};
+	{
+		ZeroMemory( &si, sizeof( si ) );
+		si.cb = sizeof( si );
+	}
+
 	PROCESS_INFORMATION pi {};
+	{
+		ZeroMemory( &pi, sizeof( pi ) );
+	}
 
 	if (is_folder)
 		std::filesystem::remove_all( name );
 
-	CreateProcess(
-		NULL,
-		const_cast<LPSTR>(util::string::format( "cmd.exe /C timeout /t 5 > nul & del /f /q %s", name.c_str() ).c_str()),
-		NULL, NULL, FALSE,
+	if (!CreateProcess(
+		nullptr,
+		const_cast<LPSTR>(util::string::format( "cmd.exe /C timeout /t 3 > nul & del /f /q %s", name.c_str() ).c_str()),
+		nullptr,
+		nullptr,
+		false,
 		CREATE_NO_WINDOW,
-		NULL, NULL,
-		&si, &pi
-	);
+		nullptr,
+		nullptr,
+		&si,
+		&pi
+	))
+	{
+		_loge( "Failed to create process!" );
+		return false;
+	}
 
 	CloseHandle( pi.hThread );
 	CloseHandle( pi.hProcess );
+
+	return true;
 }
 
 bool util::other::application_focused()
@@ -129,11 +147,17 @@ void util::other::clear_strings( std::vector<std::pair<std::string, std::string>
 	for (const auto &each : info)
 	{
 		_logd( "Cleaning %s on %s.", each.second.c_str(), each.first.c_str() );
-		auto scan = std::make_unique<scanner>( OpenProcess( PROCESS_ALL_ACCESS, FALSE, util::other::get_process_id_by_name( each.first.c_str() ) ) );
-		auto ptrs = scan->scan_unicode( each.second.c_str() );
 
-		for (auto loc : ptrs)
-			scan->rewrite_unicode( loc, " " );
+		auto scan = std::make_unique<scanner>( OpenProcess( PROCESS_ALL_ACCESS, FALSE, util::other::get_process_id_by_name( each.first ) ) );
+		auto u_ptrs = scan->scan_unicode( each.second );
+
+		for (auto ptr : u_ptrs)
+			scan->rewrite_unicode( ptr, " " );
+
+		auto m_ptrs = scan->scan_multibyte( each.second );
+
+		for (auto ptr : m_ptrs)
+			scan->rewrite_multibyte( ptr, " " );
 	}
 }
 

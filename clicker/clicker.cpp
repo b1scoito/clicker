@@ -10,23 +10,49 @@ void clicker::init()
 
 		const auto get_cursor_status = []()
 		{
-			return config.clicker.only_in_game ? !util::other::is_cursor_visible() : util::other::is_cursor_visible();
+			if (config.clicker.only_in_game)
+			{
+				// this is so overcomplicated.
+				if (config.clicker.work_in_inventory)
+					return !util::other::is_cursor_visible() || (config.clicker.work_in_inventory && var::key::is_inventory_opened && util::other::is_cursor_visible());
+
+				// return if the cursor is not visible
+				return !util::other::is_cursor_visible();
+			}
+
+			// return true if none of these are activated, so we click anywhere.
+			return true;
 		};
 
-		if (var::b_hotkey_enabled)
+		const auto focused_situation = []()
+		{
+			switch (config.clicker.version_type)
+			{
+				case 0:
+					return GetForegroundWindow() == FindWindow( "LWJGL", nullptr );
+					break;
+				case 1:
+					return util::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos;
+					break;
+			}
+
+			// return false so we don't click where we don't want
+			return false;
+		};
+
+		if (var::key::is_hotkey_enabled)
 		{
 			// check if window is active and current window is not focused
-			if (util::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos
-				&& !util::other::application_focused())
+			if (focused_situation() && !util::other::application_focused())
 			{
-				// check if cursor is visible, in-game.
-				if (get_cursor_status() || config.clicker.work_on_inventory && (var::b_inventory_opened || !config.clicker.only_in_game))
+				// check if player is in-game.
+				if (get_cursor_status())
 				{
-					if (config.clicker.left_enabled && var::b_l_mouse_down && !var::b_r_mouse_down)
-						click( left_mb, config.clicker.l_cps, var::b_l_first_click );
+					if (config.clicker.left_enabled && var::mouse::left_mouse_down && !var::mouse::right_mouse_down)
+						click( left_mb, config.clicker.left_cps, var::mouse::left_first_click );
 
-					if (config.clicker.right_enabled && var::b_r_mouse_down)
-						click( right_mb, config.clicker.r_cps, var::b_r_first_click );
+					if (config.clicker.right_enabled && var::mouse::right_mouse_down)
+						click( right_mb, config.clicker.right_cps, var::mouse::right_first_click );
 				}
 			}
 		}
@@ -45,7 +71,7 @@ void clicker::click( bool button, float cps, bool &is_first_click )
 
 	// pretty weird, what might be happening here?! I had to subtract the cps divided by 2 otherwise it wouldn't go as accurate.
 	// delay is half because we'll be calling it two times, on mouse down and up.
-	delay = (1000.f / cps) / 2.f - cps / 2.f;
+	delay = (1000.f / cps) / 2.f;
 
 	if (!config.clicker.blatant)
 		// apply randomization by default.
@@ -102,13 +128,13 @@ void clicker::randomization_thread( float delay )
 			if (config.clicker.cps_drop_chance && config.clicker.cps_drop_chance_val > 0
 				&& std::rand() % (100 / config.clicker.cps_drop_chance_val) == 0)
 				// add up 2.5 cps
-				random -= 2.5f;
+				random -= util::numbers::random( 2.5f, 3.5f );
 
 			// cps spike chance
 			if (config.clicker.cps_spike_chance && config.clicker.cps_spike_chance_val > 0
 				&& std::rand() % (100 / config.clicker.cps_spike_chance_val) == 0)
 				// add up 2.5 cps
-				random += 2.5f;
+				random += util::numbers::random( 2.5f, 3.5f );
 
 			should_update = false;
 		}

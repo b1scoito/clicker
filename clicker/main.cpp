@@ -1,6 +1,5 @@
 #include "pch.hpp"
 
-// WinMain definition as-is.
 int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 {
 	// Self-destruct on exit
@@ -8,15 +7,14 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	{
 		_logd( "atexit triggered, initiating self-destruct." );
 
-		TCHAR szFileName[MAX_PATH]; GetModuleFileName( NULL, szFileName, MAX_PATH );
-
-		std::string full_path = szFileName;
-		std::string file_name = full_path.substr( full_path.find_last_of( "\\/" ) + 1, full_path.find_last_of( "\\/" ) );
-
-		_logd( "file name: %s", file_name.c_str() );
+		TCHAR mod_name[MAX_PATH] {};
+		GetModuleFileName( NULL, mod_name, MAX_PATH );
+		std::string full_path = mod_name;
+		std::string file_name = full_path.substr( full_path.find_last_of( "/\\" ) + 1 );
 
 		if (config.clicker.clear_strings_on_exit)
 		{
+			// Please note that only PROCESSES are accepted.
 			util::other::clear_strings( {
 					{ "explorer", file_name.c_str() },
 					{ "explorer", full_path.c_str() },
@@ -32,16 +30,15 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		// oh my lord
 		if (config.clicker.clear_strings_on_exit
-			|| config.clicker.clear_string_multibyte
 			|| config.clicker.delete_file_on_exit
 			|| config.clicker.delete_config_folder_on_exit)
 			Beep( 350, 200 );
 	} );
 
-	std::string diskserial = util::other::get_disk_id().c_str();
-	diskserial.erase( std::remove_if( diskserial.begin(), diskserial.end(), ::isspace ), diskserial.end() );
+	std::string disk_serial = util::other::get_disk_id();
+	disk_serial.erase( std::remove_if( disk_serial.begin(), disk_serial.end(), ::isspace ), disk_serial.end() );
 
-	config.run( diskserial.c_str() );
+	config.run( disk_serial.c_str() );
 
 	_logd( "Initializing clicker thread." );
 	std::thread clicker( []() { g_clicker->init(); } );
