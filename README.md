@@ -60,7 +60,7 @@ Install the following:
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/otPHnTwM.png)
+![image](https://b.catgirlsare.sexy/aPEDQiVv.png)
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
