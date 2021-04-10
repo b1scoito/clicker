@@ -3,7 +3,7 @@ C++ auto-clicker with modern coding style and techniques. Mainly made for Minecr
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
 ## Screenshot
-![image](https://b.catgirlsare.sexy/aPEDQiVv.png)
+![image](https://b.catgirlsare.sexy/9DOTud8b.png)
 
 ## Features
 - Clicker tab
