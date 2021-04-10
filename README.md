@@ -2,6 +2,9 @@
 C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
+## Screenshot
+![image](https://b.catgirlsare.sexy/aPEDQiVv.png)
+
 ## Features
 - Clicker tab
   - Bindable toggle, *Hold*, *Toggle*, *Always On*. Works on any key even on mouse keys.
@@ -12,7 +15,7 @@ Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
   - Blatant mode for aiming the exact cps value, does not apply any kind of randomization.
   - CPS Spike chance percentage.
   - CPS Drop chance percentage.
-  - Selectable Window name or preset ones.
+  - Selectable Minecraft (LWJGL) or a window name.
   - Blockhit, with blockhit chance percentage.
   
 - Config tab
@@ -26,7 +29,6 @@ Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
   - Self-delete file on exit.
 
 # Getting started
-
 ## Download
 Download the latest release at https://github.com/b1scoito/clicker/releases/latest.
 
@@ -47,8 +49,7 @@ Once again, if you get an error related to DirectX, please install the Developme
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=6812
 
 ## Errors
-
-### VCRUNTIME and MSVCP errors
+### vcruntime140.dll and msvcp140.dll errors
 That happens because you don't have the runtime and libraries required for this to run.
 Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime linked below.
 
@@ -59,10 +60,11 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 Install the following:
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
-## Screenshot
-![image](https://b.catgirlsare.sexy/otPHnTwM.png)
-
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
 
 [![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
+
+## Licenses
+- Under legal proceedings the unlicense license is going to be applied.
+- Under free use of this software the WTFPL license is going to be applied.
