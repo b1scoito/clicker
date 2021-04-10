@@ -1,6 +1,6 @@
 #pragma once
 
-namespace var
+namespace vars
 {
 	namespace mouse
 	{
@@ -11,13 +11,15 @@ namespace var
 		inline bool right_first_click { false };
 	}
 
+	namespace window
+	{
+		inline bool is_focused { false };
+		inline bool is_cursor_visible { false };
+	}
+
 	namespace key
 	{
-		inline bool is_clicked { false };
-		inline bool is_down { false };
-
 		inline bool is_inventory_opened { false };
-
 		inline bool is_hotkey_enabled { false };
 	}
 

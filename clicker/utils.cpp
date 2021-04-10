@@ -1,35 +1,35 @@
 #include "pch.hpp"
-#include "util.hpp"
+#include "utils.hpp"
 
-std::string util::string::to_lower( std::string str )
+std::string utils::string::to_lower( std::string string )
 {
-	std::transform( str.begin(), str.end(), str.begin(), static_cast<int(*)(int)>(::tolower) );
-	return str;
+	std::transform( string.begin(), string.end(), string.begin(), static_cast<int(*)(int)>(::tolower) );
+	return string;
 }
 
-std::wstring util::string::string_to_wstring( std::string str )
+std::wstring utils::string::string_to_wstring( std::string string )
 {
-	if (str.empty())
-		return std::wstring();
+	if (string.empty())
+		return {};
 
-	const auto len = str.length() + 1;
+	const auto len = string.length() + 1;
 	auto ret = std::wstring( len, 0 );
-	const auto size = MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, &str[0], str.size(), &ret[0], len );
+	const auto size = MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, &string[0], static_cast<int>(string.size()), &ret[0], static_cast<int>(len) );
 	ret.resize( size );
 
 	return ret;
 }
 
 template<typename ... args>
-static std::string util::string::format( const std::string &format, args ... arg )
+static std::string utils::string::format( const std::string &format, args ... arg )
 {
-	const size_t size = std::snprintf( nullptr, 0, format.c_str(), arg ... ) + 1;
+	const size_t size = std::snprintf( nullptr, 0, format.c_str(), arg ... ) + static_cast<size_t>(1);
 	std::unique_ptr<char[]> buf( new char[size] );
 	std::snprintf( buf.get(), size, format.c_str(), arg ... );
 	return std::string( buf.get(), buf.get() + size - 1 );
 }
 
-float util::numbers::random( float start, float end )
+float utils::floating::random( float start, float end )
 {
 	// https://github.com/EternalRift/clicker/blob/main/source/utils/utils.hpp#L55
 	// mersenne twister engine with a random seed based on the clock (once at system startup) 
@@ -38,7 +38,7 @@ float util::numbers::random( float start, float end )
 	return distribution( mersenne );
 }
 
-std::string util::other::get_active_window_title()
+std::string utils::other::get_active_window_title()
 {
 	char title[256] {};
 	HWND hwnd = GetForegroundWindow();
@@ -46,10 +46,10 @@ std::string util::other::get_active_window_title()
 	return title;
 }
 
-DWORD util::other::get_process_id_by_name( const std::string &p_name )
+DWORD utils::other::get_process_id_by_name( const std::string &p_name )
 {
 	if (p_name.empty())
-		return false;
+		return {};
 
 	auto str_fl = p_name;
 	if (str_fl.find_last_of( "." ) != std::string::npos)
@@ -61,21 +61,21 @@ DWORD util::other::get_process_id_by_name( const std::string &p_name )
 	PROCESSENTRY32 m_entry {}; m_entry.dwSize = sizeof( m_entry );
 
 	if (!Process32First( handle, &m_entry ))
-		return 0;
+		return {};
 
 	while (Process32Next( handle, &m_entry ))
 	{
-		if (util::string::to_lower( m_entry.szExeFile ).compare( util::string::to_lower( str_fl ) ) == 0)
+		if (utils::string::to_lower( m_entry.szExeFile ).compare( utils::string::to_lower( str_fl ) ) == 0)
 		{
 			CloseHandle( handle );
 			return m_entry.th32ProcessID;
 		}
 	}
 
-	return 0;
+	return {};
 }
 
-bool util::other::self_delete( std::string name, bool is_folder )
+bool utils::other::self_delete( std::string name, bool is_folder )
 {
 	STARTUPINFO si {};
 	{
@@ -93,7 +93,7 @@ bool util::other::self_delete( std::string name, bool is_folder )
 
 	if (!CreateProcess(
 		nullptr,
-		const_cast<LPSTR>(util::string::format( "cmd.exe /C timeout /t 3 > nul & del /f /q %s", name.c_str() ).c_str()),
+		const_cast<LPSTR>(utils::string::format( "cmd.exe /C timeout /t 3 > nul & del /f /q %s", name.c_str() ).c_str()),
 		nullptr,
 		nullptr,
 		false,
@@ -104,7 +104,7 @@ bool util::other::self_delete( std::string name, bool is_folder )
 		&pi
 	))
 	{
-		_loge( "Failed to create process!" );
+		log_err( "Failed to create process!" );
 		return false;
 	}
 
@@ -114,41 +114,41 @@ bool util::other::self_delete( std::string name, bool is_folder )
 	return true;
 }
 
-bool util::other::application_focused()
+bool utils::other::application_focused()
 {
-	HWND hwnd = GetForegroundWindow();
-	DWORD dw_current_process_id = GetCurrentProcessId();
+	auto hwnd = GetForegroundWindow();
+	auto dw_current_process_id = GetCurrentProcessId();
 	DWORD dw_thread_process_id {};
 
 	if (!hwnd)
-		return false;
+		return {};
 
 	GetWindowThreadProcessId( hwnd, &dw_thread_process_id );
 	return (dw_current_process_id == dw_thread_process_id);
 }
 
-bool util::other::is_cursor_visible()
+bool utils::other::is_cursor_visible()
 {
 	CURSORINFO ci { sizeof( CURSORINFO ) };
 
 	if (GetCursorInfo( &ci ))
 	{
-		HCURSOR handle { ci.hCursor };
+		auto handle = ci.hCursor;
 
-		if (int( handle ) > 50000 && int( handle ) < 100000)
+		if ((int( handle ) > 50000) & (int( handle ) < 100000))
 			return true;
 	}
 
 	return false;
 }
 
-void util::other::clear_strings( std::vector<std::pair<std::string, std::string>> info )
+void utils::other::clear_strings( std::vector<std::pair<std::string, std::string>> info )
 {
 	for (const auto &each : info)
 	{
-		_logd( "Cleaning %s on %s.", each.second.c_str(), each.first.c_str() );
+		log_debug( "Cleaning [ %s ] on [ %s ].", each.second.c_str(), each.first.c_str() );
 
-		auto scan = std::make_unique<scanner>( OpenProcess( PROCESS_ALL_ACCESS, FALSE, util::other::get_process_id_by_name( each.first ) ) );
+		auto scan = std::make_unique<scanner>( OpenProcess( PROCESS_ALL_ACCESS, FALSE, utils::other::get_process_id_by_name( each.first ) ) );
 		auto u_ptrs = scan->scan_unicode( each.second );
 
 		for (auto ptr : u_ptrs)
@@ -161,7 +161,7 @@ void util::other::clear_strings( std::vector<std::pair<std::string, std::string>
 	}
 }
 
-std::string util::other::get_disk_id()
+std::string utils::other::get_disk_id()
 {
 	// I don't know where this code comes from, so I cannot really mention it here.
 
@@ -210,4 +210,34 @@ std::string util::other::get_disk_id()
 		reinterpret_cast<const char *>(p_out_buffer.get() + dw_serial_number_offset);
 
 	return serial_number;
+}
+
+bool utils::other::focused_situation()
+{
+	switch (config.clicker.version_type)
+	{
+		case 0: return GetForegroundWindow() == FindWindow( "LWJGL", nullptr );
+		case 1: return utils::other::get_active_window_title().find( config.clicker.window_title ) != std::string::npos;
+		default: return false;
+	}
+
+	// return false so we don't click where we don't want
+	return false;
+}
+
+bool utils::other::get_cursor_status()
+{
+	/* ~~ If only in game is enabled, return if the cursor is not visible */
+	if (config.clicker.only_in_game)
+	{
+		/* ~~ If work in inventory is enabled,
+		 * ~~ return if cursor is not visible or inventory opened and cursor is visible */
+		if (config.clicker.work_in_inventory)
+			return !utils::other::is_cursor_visible() || (vars::key::is_inventory_opened && utils::other::is_cursor_visible());
+
+		return !utils::other::is_cursor_visible();
+	}
+
+	/* ~~ Return true if none of those are passed so we click anywhere! */
+	return true;
 }

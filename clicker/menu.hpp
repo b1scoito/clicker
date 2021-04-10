@@ -1,39 +1,42 @@
 #pragma once
 
-class menu
+#include <unordered_map>
+#include <d3d9.h>
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx9.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/font_definitions.hpp"
+#include "imgui/font_awesome.hpp"
+
+/// <summary>
+/// Forward declaring functions and extern functions
+/// </summary>
+/// DirectX9
+static LPDIRECT3D9 g_pD3D {};
+/// DirectX9 Device
+static LPDIRECT3DDEVICE9 g_pd3dDevice {};
+/// DirectX9 Device Parameters
+static D3DPRESENT_PARAMETERS g_d3dpp {};
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
+class menu: public singleton<menu>
 {
-public:
+private:
+	/// <summary>
+	/// Converts float to ImVec4
+	/// </summary>
+	/// <param name="color"></param>
+	/// <returns></returns>
+	auto fl_to_imvec4( float *color ) { return ImVec4( color[0], color[1], color[2], color[3] ); }
 	/// <summary>
 	/// Render imgui menu objects, takes window handle for the closing process and width, height, for setting the imgui window sizes.
 	/// </summary>
 	/// <param name="hwnd"></param>
 	/// <param name="width"></param>
 	/// <param name="height"></param>
-	void render_objects( HWND hwnd, int width, int height );
-
-	/// <summary>
-	/// Creates the window itself, takes width and height for the window size.
-	/// </summary>
-	/// <param name="width"></param>
-	/// <param name="height"></param>
-	/// <returns></returns>
-	bool create( int width, int height );
-
-	~menu() = default;
-	menu() = default;
-
-private:
-	/// <summary>
-	/// RGBA color space to ImVec4 (float)
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="r"></param>
-	/// <param name="g"></param>
-	/// <param name="b"></param>
-	/// <param name="a"></param>
-	/// <returns></returns>
-	template <typename T>
-	ImVec4 color( T r, T g, T b, T a = 255 ) { return ImColor( r, g, b, a ); }
+	void render_items( HWND hwnd, int width, int height );
 
 	/// <summary>
 	/// ImGui widget for keybind button
@@ -41,7 +44,7 @@ private:
 	/// <param name="key"></param>
 	/// <param name="width"></param>
 	/// <param name="height"></param>
-	void key_bind_button( int &key, int width, int height )
+	void keybind_button( int &key, int width, int height )
 	{
 		static auto b_get = false;
 		static std::string sz_text = "Click to bind";
@@ -136,16 +139,6 @@ private:
 		return key_names[id];
 	}
 
-	bool is_toggled = false;
-
-public:
-	// DirectX9
-	LPDIRECT3D9 g_pD3D {};
-	// DirectX9 device
-	LPDIRECT3DDEVICE9 g_pd3dDevice {};
-	// DirectX9 present parameters
-	D3DPRESENT_PARAMETERS g_d3dpp {};
-
 	/// <summary>
 	/// Sets window handle position
 	/// </summary>
@@ -180,7 +173,9 @@ public:
 				rect.bottom = h;
 			}
 			else
+			{
 				GetWindowRect( hwnd, &rect );
+			}
 
 			x = (GetSystemMetrics( SM_CXSCREEN ) - rect.right) / 2;
 			y = (GetSystemMetrics( SM_CYSCREEN ) - rect.bottom) / 2;
@@ -207,6 +202,41 @@ public:
 
 		x = point.x - rect.left;
 		y = point.y - rect.top;
+	}
+
+	/// <summary>
+	/// Window proc handler
+	/// </summary>
+	/// <param name="hWnd"></param>
+	/// <param name="msg"></param>
+	/// <param name="wParam"></param>
+	/// <param name="lParam"></param>
+	/// <returns></returns>
+	static LRESULT WINAPI wnd_proc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+	{
+		if (ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam ))
+			return true;
+
+		switch (msg)
+		{
+			case WM_SIZE:
+				if (g_pd3dDevice != NULL && wParam != SIZE_MINIMIZED)
+				{
+					g_d3dpp.BackBufferWidth = LOWORD( lParam );
+					g_d3dpp.BackBufferHeight = HIWORD( lParam );
+					menu::get().reset_device();
+				}
+				return 0;
+			case WM_SYSCOMMAND:
+				if ((wParam & 0xfff0) == SC_KEYMENU)
+					return 0;
+				break;
+			case WM_DESTROY:
+				PostQuitMessage( 0 );
+				return 0;
+		}
+
+		return DefWindowProc( hWnd, msg, wParam, lParam );
 	}
 
 	/// <summary>
@@ -265,6 +295,191 @@ public:
 
 		ImGui_ImplDX9_CreateDeviceObjects();
 	}
-};
+public:
+	~menu() = default;
+	menu() = default;
 
-inline auto g_menu = std::make_unique<menu>();
+	/// <summary>
+	/// Creates the window itself, takes width and height for the window size.
+	/// </summary>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <returns></returns>
+	bool render( int width, int height ) noexcept
+	{
+		// Creating window class
+		WNDCLASSEX wc = {
+			sizeof( WNDCLASSEX ),
+			CS_CLASSDC,
+			this->wnd_proc,
+			0L,
+			0L,
+			GetModuleHandle( NULL ),
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			"w",
+			NULL
+		};
+
+		// Registering that same class
+		RegisterClassEx( &wc );
+
+		// Creating the actual window
+		auto hwnd = CreateWindow(
+			wc.lpszClassName,
+			"",
+			WS_POPUP,
+			100,
+			100,
+			width, height,
+			NULL,
+			NULL,
+			wc.hInstance,
+			NULL
+		);
+
+		// Creating the d3d device
+		if (!create_device_d3d( hwnd ))
+		{
+			cleanup_device_d3d();
+			UnregisterClass( wc.lpszClassName, wc.hInstance );
+			return 1;
+		}
+
+		// Showing window and updating it
+		ShowWindow( hwnd, SW_SHOWDEFAULT );
+		UpdateWindow( hwnd );
+
+		// Creating ImGui context
+		ImGui::CreateContext();
+
+		// Declarations for the imgui configuration
+		auto &io = ImGui::GetIO();
+		auto &style = ImGui::GetStyle();
+
+		// Getting the path for fonts and setting a default font
+		if (PWSTR path_to_fonts; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path_to_fonts ) ))
+		{
+			const std::filesystem::path path { path_to_fonts };
+			CoTaskMemFree( path_to_fonts );
+			io.Fonts->AddFontFromFileTTF( (path / "SegoeUI.ttf").string().c_str(), 17.f, NULL, io.Fonts->GetGlyphRangesDefault() );
+		}
+
+		static const ImWchar ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+		ImFontConfig f_config; f_config.MergeMode = true; f_config.PixelSnapH = true;
+
+		io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.0f, &f_config, ranges );
+
+
+		// Item configs
+		style.ScrollbarSize = 5.0f;
+		style.GrabRounding = 5.0f;
+		style.GrabMinSize = 10.0f;
+		style.FrameRounding = 3.0f;
+		style.TabRounding = 3.0f;
+
+		// To not create the .ini file.
+		io.IniFilename = nullptr;
+
+		// Initialise win32 implementation
+		ImGui_ImplWin32_Init( hwnd );
+
+		// Initialise dx9 implementation
+		ImGui_ImplDX9_Init( g_pd3dDevice );
+
+		ImVec4 clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
+
+		// Main application loop
+
+		bool done = false;
+		while (!done)
+		{
+			MSG msg {};
+			while (PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ))
+			{
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+
+				if (msg.message == WM_QUIT)
+					done = true;
+			}
+
+			if (done)
+				break;
+
+			// Creating new frame
+			ImGui_ImplDX9_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			// Colors
+			ImVec4 *colors = style.Colors;
+			colors[ImGuiCol_Text] = fl_to_imvec4( config.clicker.color_accent_text );
+			colors[ImGuiCol_WindowBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
+			colors[ImGuiCol_PopupBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
+			colors[ImGuiCol_Border] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_FrameBg] = ImVec4( 0.15f, 0.15f, 0.15f, 0.54f );
+			colors[ImGuiCol_FrameBgHovered] = ImVec4( 0.19f, 0.19f, 0.19f, 0.54f );
+			colors[ImGuiCol_FrameBgActive] = ImVec4( 0.26f, 0.26f, 0.26f, 0.54f );
+			colors[ImGuiCol_ScrollbarBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
+			colors[ImGuiCol_ScrollbarGrab] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_TextSelectedBg] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_CheckMark] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_SliderGrab] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_SliderGrabActive] = fl_to_imvec4( config.clicker.color_accent_active );
+			colors[ImGuiCol_Button] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_ButtonHovered] = fl_to_imvec4( config.clicker.color_accent_hovered );
+			colors[ImGuiCol_ButtonActive] = fl_to_imvec4( config.clicker.color_accent_active );
+			colors[ImGuiCol_Header] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_HeaderHovered] = fl_to_imvec4( config.clicker.color_accent_hovered );
+			colors[ImGuiCol_HeaderActive] = fl_to_imvec4( config.clicker.color_accent_active );
+			colors[ImGuiCol_Separator] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_Tab] = fl_to_imvec4( config.clicker.color_accent );
+			colors[ImGuiCol_TabHovered] = fl_to_imvec4( config.clicker.color_accent_hovered );
+			colors[ImGuiCol_TabActive] = fl_to_imvec4( config.clicker.color_accent_active );
+
+			// Rendering our imgui items
+			render_items( hwnd, width, height );
+
+			ImGui::EndFrame();
+			g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+			g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+			g_pd3dDevice->SetRenderState( D3DRS_SCISSORTESTENABLE, FALSE );
+			D3DCOLOR clear_col_dx = D3DCOLOR_RGBA( (int) (clear_color.x * clear_color.w * 255.0f), (int) (clear_color.y * clear_color.w * 255.0f), (int) (clear_color.z * clear_color.w * 255.0f), (int) (clear_color.w * 255.0f) );
+			g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0 );
+
+			if (g_pd3dDevice->BeginScene() >= 0)
+			{
+				ImGui::Render();
+				ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData() );
+				g_pd3dDevice->EndScene();
+			}
+
+			// Reset device if anything happened
+			HRESULT result = g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+
+			if (result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+				reset_device();
+		}
+
+		// Shutting down everything
+		ImGui_ImplDX9_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+
+		// Destroying imgui's context
+		ImGui::DestroyContext();
+
+		// Cleaning the d3d device
+		cleanup_device_d3d();
+
+		// Destroying windows
+		DestroyWindow( hwnd );
+
+		// Unregistering before defined window class
+		UnregisterClass( wc.lpszClassName, wc.hInstance );
+
+		return 0;
+	}
+};

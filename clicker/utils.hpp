@@ -3,7 +3,9 @@
 #include <TlHelp32.h>
 #include <winioctl.h>
 
-namespace util
+#include "scanner.hpp"
+
+namespace utils
 {
 	namespace string
 	{
@@ -32,7 +34,7 @@ namespace util
 		static std::string format( const std::string &format, args ...arg );
 	}
 
-	namespace numbers
+	namespace floating
 	{
 		/// <summary>
 		/// Random number between start and end using mersenne twister and random_device, returns and receives a float number.
@@ -87,5 +89,17 @@ namespace util
 		/// </summary>
 		/// <returns></returns>
 		std::string get_disk_id();
+
+		/// <summary>
+		/// Returns if the user has the window focused
+		/// </summary>
+		/// <returns></returns>
+		bool focused_situation();
+
+		/// <summary>
+		/// Used to check if the cursor is visible or not
+		/// </summary>
+		/// <returns></returns>
+		bool get_cursor_status();
 	}
 }

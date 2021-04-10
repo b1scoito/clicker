@@ -1,5 +1,7 @@
 #pragma once
 
+#include "keybind.hpp"
+
 namespace hooks
 {
 	/// <summary>
@@ -25,14 +27,12 @@ namespace hooks
 		/// </summary>
 		inline void send_mouse_input( bool down, bool button )
 		{
-			POINT pos { 0, 0 }; GetCursorPos( &pos );
+			POINT pos {}; GetCursorPos( &pos );
 
 			down ? (button ? SendMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 				SendMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) )) :
 				(button ? SendMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 					SendMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ));
-
-			++var::stats::clicks_this_session;
 		}
 	}
 
@@ -56,13 +56,13 @@ namespace hooks
 	namespace keybinds
 	{
 		/// <summary>
-		/// Init keybind loop
+		/// Clicker keybind class spawn
 		/// </summary>
-		void init();
+		inline keybind clicker = keybind( true, config.clicker.activation_type, config.clicker.clicker_key );
 
 		/// <summary>
-		/// Keybind activation type, not very good way of doing this.
+		/// Hide window class spawn
 		/// </summary>
-		void activation_type();
+		inline keybind hide_window = keybind( false, 2, config.clicker.hide_window_key );
 	}
 }

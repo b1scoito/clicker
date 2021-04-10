@@ -5,8 +5,7 @@ c_config config;
 
 void c_config::run( const char *name )
 {
-	PWSTR path_to_appdata;
-	if (SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &path_to_appdata ) ))
+	if (PWSTR path_to_appdata; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &path_to_appdata ) ))
 	{
 		path = path_to_appdata;
 		path /= name;
@@ -16,19 +15,16 @@ void c_config::run( const char *name )
 
 	config_path = path.u8string();
 
-	if (!std::filesystem::is_directory( path ))
+	if (std::filesystem::is_directory( path ))
 	{
-		std::filesystem::remove( path );
-		std::filesystem::create_directory( path );
+		std::transform
+		(
+			std::filesystem::directory_iterator { path },
+			std::filesystem::directory_iterator { },
+			std::back_inserter( configs ),
+			[]( const auto &entry ) { return entry.path().filename().string(); }
+		);
 	}
-
-	std::transform
-	(
-		std::filesystem::directory_iterator { path },
-		std::filesystem::directory_iterator { },
-		std::back_inserter( configs ),
-		[]( const auto &entry ) { return entry.path().filename().string(); }
-	);
 }
 
 void c_config::load( size_t id )
@@ -44,7 +40,7 @@ void c_config::load( size_t id )
 	if (!in.good())
 		return;
 
-	archx<std::ifstream>{ in } >> clicker;
+	archivex<std::ifstream>{ in } >> clicker;
 	in.close();
 }
 
@@ -61,7 +57,7 @@ void c_config::save( size_t id ) const
 	if (!out.good())
 		return;
 
-	archx<std::ofstream>{ out } << clicker;
+	archivex<std::ofstream>{ out } << clicker;
 	out.close();
 }
 

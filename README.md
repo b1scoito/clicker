@@ -66,7 +66,3 @@ Install the following:
 Our little community if you want to join. Please read FAQ before anything!
 
 [![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
-
-## Licenses
-- Under legal proceedings the unlicense license is going to be applied.
-- Under free use of this software the WTFPL license is going to be applied.

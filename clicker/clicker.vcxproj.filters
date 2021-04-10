@@ -6,10 +6,10 @@
       <Filter>helpers\config</Filter>
     </ClCompile>
     <ClCompile Include="scanner.cpp">
-      <Filter>helpers\memory</Filter>
+      <Filter>helpers\scanner</Filter>
     </ClCompile>
-    <ClCompile Include="util.cpp">
-      <Filter>helpers\util</Filter>
+    <ClCompile Include="utils.cpp">
+      <Filter>helpers\utils</Filter>
     </ClCompile>
     <ClCompile Include="clicker.cpp">
       <Filter>clicker</Filter>
@@ -53,10 +53,10 @@
       <Filter>helpers\config</Filter>
     </ClInclude>
     <ClInclude Include="scanner.hpp">
-      <Filter>helpers\memory</Filter>
+      <Filter>helpers\scanner</Filter>
     </ClInclude>
-    <ClInclude Include="util.hpp">
-      <Filter>helpers\util</Filter>
+    <ClInclude Include="utils.hpp">
+      <Filter>helpers\utils</Filter>
     </ClInclude>
     <ClInclude Include="clicker.hpp">
       <Filter>clicker</Filter>
@@ -106,6 +106,12 @@
     <ClInclude Include="imgui\font_definitions.hpp">
       <Filter>helpers\imgui\impl\fonts</Filter>
     </ClInclude>
+    <ClInclude Include="keybind.hpp">
+      <Filter>helpers\keybind</Filter>
+    </ClInclude>
+    <ClInclude Include="singleton.hpp">
+      <Filter>helpers\singleton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="clicker">
@@ -122,12 +128,6 @@
     </Filter>
     <Filter Include="helpers\config">
       <UniqueIdentifier>{db5815df-39f6-4970-9940-2b0e3529fae7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="helpers\memory">
-      <UniqueIdentifier>{7f0a6b15-c983-4683-b857-f8e732d8f212}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="helpers\util">
-      <UniqueIdentifier>{40cd9742-07b4-40cf-b1be-d3baf0050cf2}</UniqueIdentifier>
     </Filter>
     <Filter Include="helpers\console">
       <UniqueIdentifier>{74c48a25-e31a-4ae6-aeb0-576b22bc1cd3}</UniqueIdentifier>
@@ -152,6 +152,18 @@
     </Filter>
     <Filter Include="helpers\pch">
       <UniqueIdentifier>{4b318143-ea30-4b46-875b-edfdf4ad9267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helpers\utils">
+      <UniqueIdentifier>{40cd9742-07b4-40cf-b1be-d3baf0050cf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helpers\keybind">
+      <UniqueIdentifier>{c6989783-89d7-4e8d-92f6-9cb3d878bc9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helpers\singleton">
+      <UniqueIdentifier>{0f7df642-50e6-4d74-8dd6-f5e28ac63567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helpers\scanner">
+      <UniqueIdentifier>{7f0a6b15-c983-4683-b857-f8e732d8f212}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "archivex.hpp"
+#include "imgui/imgui.h"
 
 #include <ShlObj.h>
 #include <fstream>
@@ -8,6 +9,16 @@
 
 class c_config final
 {
+private:
+	/// <summary>
+	/// Configuration path
+	/// </summary>
+	std::filesystem::path path;
+
+	/// <summary>
+	/// List of configs
+	/// </summary>
+	std::vector<std::string> configs;
 public:
 	/// <summary>
 	/// Global definition of the configuration path
@@ -67,17 +78,18 @@ public:
 	/// </summary>
 	struct
 	{
-		bool left_enabled { false };
-		bool right_enabled { false };
+		bool left_clicker_enabled { false };
+		bool right_clicker_enabled { false };
 
-		bool blockhit { false };
-		bool blatant { false };
+		bool blockhit_enabled { false };
+		bool blatant_enabled { false };
 
 		bool delete_file_on_exit { false };
 		bool delete_config_folder_on_exit { false };
 		bool clear_strings_on_exit { false };
 
-		int key { 0 };
+		int clicker_key { 0 };
+		int hide_window_key { 0 };
 		int activation_type { 0 };
 		int version_type { 0 };
 
@@ -85,8 +97,15 @@ public:
 		float right_cps { 1.f };
 
 		int blockhit_chance { 5 };
-		int cps_spike_chance_val { 5 };
-		int cps_drop_chance_val { 5 };
+
+		bool persistent_values_enabled { true };
+		float default_persistent_randomization { 2.f };
+
+		int cps_spike_chance_val { 15 };
+		float cps_spike_chance_value_addition { 3.5f };
+
+		int cps_drop_chance_val { 10 };
+		float cps_drop_chance_value_removal { 3.5f };
 
 		bool cps_spike_chance { false };
 		bool cps_drop_chance { false };
@@ -94,21 +113,14 @@ public:
 		bool only_in_game { false };
 		bool work_in_inventory { false };
 
-		int hide_window_key { 0 };
+		float color_accent[4] { 0.41f, 0.41f, 0.86f, 1.00f };
+		float color_accent_hovered[4] { 0.53f, 0.53f, 0.91f, 1.00f };
+		float color_accent_active[4] { 0.40f, 0.39f, 0.90f, 1.00f };
+		float color_accent_text[4] { 0.94f, 0.94f, 0.94f, 1.00f };
 
 		std::string window_title;
-	} clicker;
-
-private:
-	/// <summary>
-	/// Configuration path
-	/// </summary>
-	std::filesystem::path path;
-
-	/// <summary>
-	/// List of configs
-	/// </summary>
-	std::vector<std::string> configs;
+	}
+	clicker;
 };
 
 extern c_config config;
