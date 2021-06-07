@@ -69,8 +69,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="scanner.cpp" />
-    <ClCompile Include="utils.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeader>
@@ -78,7 +76,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="menu.cpp" />
-    <ClCompile Include="hooks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clicker.hpp" />
@@ -97,12 +94,9 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="keybind.hpp" />
     <ClInclude Include="pch.hpp" />
-    <ClInclude Include="scanner.hpp" />
-    <ClInclude Include="singleton.hpp" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="vars.hpp" />
     <ClInclude Include="menu.hpp" />
-    <ClInclude Include="hooks.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -116,27 +110,27 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -160,8 +154,8 @@
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>.\out\debug\</OutDir>
-    <IntDir>.\out\debug\obj\</IntDir>
+    <OutDir>.\out\debug\x64\</OutDir>
+    <IntDir>.\out\debug\x64\obj\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -169,16 +163,16 @@
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>.\out\debug\</OutDir>
-    <IntDir>.\out\debug\obj\</IntDir>
+    <OutDir>.\out\debug\x86\</OutDir>
+    <IntDir>.\out\debug\x86\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <GenerateManifest>true</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>.\out\release\</OutDir>
-    <IntDir>.\out\release\obj\</IntDir>
+    <OutDir>.\out\release\x64\</OutDir>
+    <IntDir>.\out\release\x64\obj\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -187,8 +181,8 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <GenerateManifest>true</GenerateManifest>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>.\out\release\</OutDir>
-    <IntDir>.\out\release\obj\</IntDir>
+    <OutDir>.\out\release\x86\</OutDir>
+    <IntDir>.\out\release\x86\obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -203,7 +197,7 @@
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -231,7 +225,7 @@
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -262,7 +256,7 @@
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <UseFullPaths>false</UseFullPaths>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -295,7 +289,7 @@
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <UseFullPaths>false</UseFullPaths>
       <CompileAs>CompileAsCpp</CompileAs>

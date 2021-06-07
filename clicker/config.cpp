@@ -1,35 +1,31 @@
 #include "pch.hpp"
 #include "config.hpp"
 
-c_config config;
-
-void c_config::run( const char *name )
+auto c_config::run( std::string name ) -> void
 {
-	if (PWSTR path_to_appdata; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &path_to_appdata ) ))
+	if ( PWSTR appdata_path; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &appdata_path ) ) )
 	{
-		path = path_to_appdata;
+		path = appdata_path;
 		path /= name;
 
-		CoTaskMemFree( path_to_appdata );
+		CoTaskMemFree( appdata_path );
 	}
 
-	config_path = path.u8string();
-
-	if (std::filesystem::is_directory( path ))
+	if ( std::filesystem::is_directory( path ) )
 	{
 		std::transform
 		(
 			std::filesystem::directory_iterator { path },
 			std::filesystem::directory_iterator { },
 			std::back_inserter( configs ),
-			[]( const auto &entry ) { return entry.path().filename().string(); }
+			[]( const auto& entry ) { return entry.path().filename().string(); }
 		);
 	}
 }
 
-void c_config::load( size_t id )
+auto c_config::load( size_t id ) -> void
 {
-	if (!std::filesystem::is_directory( path ))
+	if ( !std::filesystem::is_directory( path ) )
 	{
 		std::filesystem::remove( path );
 		std::filesystem::create_directory( path );
@@ -37,16 +33,16 @@ void c_config::load( size_t id )
 
 	std::ifstream in { path / configs[id] };
 
-	if (!in.good())
+	if ( !in.good() )
 		return;
 
 	archivex<std::ifstream>{ in } >> clicker;
 	in.close();
 }
 
-void c_config::save( size_t id ) const
+auto c_config::save( size_t id ) const -> void
 {
-	if (!std::filesystem::is_directory( path ))
+	if ( !std::filesystem::is_directory( path ) )
 	{
 		std::filesystem::remove( path );
 		std::filesystem::create_directory( path );
@@ -54,32 +50,32 @@ void c_config::save( size_t id ) const
 
 	std::ofstream out { path / configs[id] };
 
-	if (!out.good())
+	if ( !out.good() )
 		return;
 
 	archivex<std::ofstream>{ out } << clicker;
 	out.close();
 }
 
-void c_config::add( const char *name )
+auto c_config::add( std::string name ) -> void
 {
-	if (*name && std::find( std::cbegin( configs ), std::cend( configs ), name ) == std::cend( configs ))
+	if ( !( name.empty() ) && std::find( std::cbegin( configs ), std::cend( configs ), name ) == std::cend( configs ) )
 		configs.emplace_back( name );
 }
 
-void c_config::remove( size_t id )
+auto c_config::remove( size_t id ) -> void
 {
 	std::filesystem::remove( path / configs[id] );
 	configs.erase( configs.cbegin() + id );
 }
 
-void c_config::rename( size_t item, const char *new_name )
+auto c_config::rename( size_t item, std::string new_name ) -> void
 {
 	std::filesystem::rename( path / configs[item], path / new_name );
 	configs[item] = new_name;
 }
 
-void c_config::reset()
+auto c_config::reset() -> void
 {
 	clicker = { };
 }

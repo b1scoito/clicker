@@ -1,30 +1,21 @@
 #pragma once
 
-namespace vars
+#include "keybind.hpp"
+
+// ~ these variables aren't saved to configuration, only changed at runtime.
+namespace var
 {
-	namespace mouse
-	{
-		inline bool left_mouse_down { false };
-		inline bool left_first_click { false };
-
-		inline bool right_mouse_down { false };
-		inline bool right_first_click { false };
-	}
-
-	namespace window
-	{
-		inline bool is_focused { false };
-		inline bool is_cursor_visible { false };
-	}
-
 	namespace key
 	{
-		inline bool is_inventory_opened { false };
-		inline bool is_hotkey_enabled { false };
+		inline auto clicker_enabled = keybind( true, config.clicker.i_key_type, config.clicker.i_clicker_key );
+		inline auto left_clicker_down = keybind( false, keybind_state::HOLD, VK_LBUTTON );
+		inline auto right_clicker_down = keybind( false, keybind_state::HOLD, VK_RBUTTON );
+		inline auto hide_window = keybind( false, keybind_state::TOGGLE, config.clicker.i_hide_window_key );
+		inline auto inventory_opened = false;
 	}
 
 	namespace stats
 	{
-		inline int clicks_this_session { 0 };
+		inline auto i_clicks_this_session { 0 };
 	}
 }

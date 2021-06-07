@@ -1,105 +1,132 @@
 #pragma once
 
-#include <TlHelp32.h>
-#include <winioctl.h>
-
-#include "scanner.hpp"
-
-namespace utils
+namespace util
 {
 	namespace string
 	{
-		/// <summary>
-		/// Converts a string to lower format
-		/// </summary>
-		/// <param name="str"></param>
-		/// <returns></returns>
-		std::string to_lower( std::string str );
+		inline auto to_upper( std::string str ) -> std::string
+		{
+			std::transform( str.begin(), str.end(), str.begin(), static_cast<int( * )( int )>( ::toupper ) );
+			return str;
+		}
 
-		/// <summary>
-		/// Converts a string to wide string
-		/// </summary>
-		/// <param name="str"></param>
-		/// <returns></returns>
-		std::wstring string_to_wstring( std::string str );
+		inline auto to_lower( std::string str ) -> std::string
+		{
+			std::transform( str.begin(), str.end(), str.begin(), static_cast<int( * )( int )>( ::tolower ) );
+			return str;
+		}
 
-		/// <summary>
-		/// Formats a string
-		/// </summary>
-		/// <typeparam name="...args"></typeparam>
-		/// <param name="format"></param>
-		/// <param name="...arg"></param>
-		/// <returns></returns>
-		template<typename ...args>
-		static std::string format( const std::string &format, args ...arg );
+		inline auto to_upper( std::wstring wstr ) -> std::wstring
+		{
+			std::transform( wstr.begin(), wstr.end(), wstr.begin(), static_cast<int( * )( int )>( ::toupper ) );
+			return wstr;
+		}
+
+		inline auto to_lower( std::wstring wstr ) -> std::wstring
+		{
+			std::transform( wstr.begin(), wstr.end(), wstr.begin(), static_cast<int( * )( int )>( ::tolower ) );
+			return wstr;
+		}
+
+		inline auto to_utf8( std::wstring wstr ) -> std::string
+		{
+			if ( wstr.empty() )
+				return {};
+
+			const auto size = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), 0, 0, 0, 0 );
+			auto ret = std::string( size, 0 );
+
+			WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), ret.data(), size, 0, 0 );
+
+			return ret;
+		}
+
+		inline auto to_unicode( std::string str ) -> std::wstring
+		{
+			if ( str.empty() )
+				return {};
+
+			const auto size = MultiByteToWideChar( CP_UTF8, 0, str.data(), str.size(), 0, 0 );
+			auto ret = std::wstring( size, 0 );
+
+			MultiByteToWideChar( CP_UTF8, 0, str.data(), str.size(), ret.data(), size );
+
+			return ret;
+		}
 	}
 
-	namespace floating
+	namespace random
 	{
-		/// <summary>
-		/// Random number between start and end using mersenne twister and random_device, returns and receives a float number.
-		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="end"></param>
-		/// <returns></returns>
-		float random( float start, float end );
+		inline auto number( float start, float end ) -> float
+		{
+			static std::mt19937 mersenne { static_cast<std::mt19937::result_type>( std::time( {} ) ) };
+			const std::uniform_real_distribution<float> distribution( start, end );
+			return distribution( mersenne );
+		}
 	}
 
-	namespace other
+	namespace extra
 	{
-		/// <summary>
-		/// Returns the active window title
-		/// </summary>
-		/// <returns></returns>
-		std::string get_active_window_title();
+		inline auto get_active_window_title() -> std::wstring
+		{
+			wchar_t title[256];
+			auto hwnd = GetForegroundWindow();
+			GetWindowText( hwnd, title + 1, sizeof( title ) );
+			return title;
+		}
 
-		/// <summary>
-		/// Returns the process id by name
-		/// </summary>
-		/// <param name="p_name"></param>
-		/// <returns></returns>
-		DWORD get_process_id_by_name( const std::string &p_name );
+		inline auto is_application_focused() -> bool
+		{
+			auto hwnd = GetForegroundWindow();
+			if ( !hwnd )
+				return {};
 
-		/// <summary>
-		/// Self deletes something
-		/// </summary>
-		/// <param name="file_path"></param>
-		bool self_delete( std::string name, bool is_folder = false );
+			DWORD dw_thread_process_id;
+			GetWindowThreadProcessId( hwnd, &dw_thread_process_id );
+			return ( GetCurrentProcessId() == dw_thread_process_id );
+		}
 
-		/// <summary>
-		/// Returns if the current application is focused or not
-		/// </summary>
-		/// <returns></returns>
-		bool application_focused();
+		inline auto cursor_handle_status() -> bool
+		{
+			CURSORINFO ci { sizeof( CURSORINFO ) };
 
-		/// <summary>
-		/// Returns true when the cursor is visible, used to check if person is in game.
-		/// </summary>
-		/// <returns></returns>
-		bool is_cursor_visible();
+			if ( GetCursorInfo( &ci ) )
+			{
+				auto handle = ci.hCursor;
 
-		/// <summary>
-		/// Clear specified strings on the selected processes
-		/// </summary>
-		/// <param name="process"></param>
-		void clear_strings( std::vector<std::pair<std::string, std::string>> info );
+				if ( ( handle > (HCURSOR) 50000 ) & ( handle < (HCURSOR) 100000 ) )
+					return true;
+			}
 
-		/// <summary>
-		/// Returns disk id
-		/// </summary>
-		/// <returns></returns>
-		std::string get_disk_id();
+			return false;
+		}
 
-		/// <summary>
-		/// Returns if the user has the window focused
-		/// </summary>
-		/// <returns></returns>
-		bool focused_situation();
+		inline auto is_window_focused() -> bool
+		{
+			switch ( config.clicker.i_version_type )
+			{
+				case 0:
+					return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
+				case 1:
+					return get_active_window_title().find( util::string::to_unicode( config.clicker.window_title ) ) != std::string::npos;
+				default:
+					return {};
+			}
 
-		/// <summary>
-		/// Used to check if the cursor is visible or not
-		/// </summary>
-		/// <returns></returns>
-		bool get_cursor_status();
+			return false;
+		}
+
+		inline auto is_cursor_visible() -> bool
+		{
+			if ( config.clicker.b_only_in_game )
+			{
+				if ( config.clicker.b_work_in_inventory )
+					return !( cursor_handle_status() ) || ( var::key::inventory_opened && cursor_handle_status() );
+
+				return !( cursor_handle_status() );
+			}
+
+			return true;
+		}
 	}
 }

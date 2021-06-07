@@ -1,52 +1,49 @@
 #pragma once
 
-using fl_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
-using namespace hooks::mouse;
+#include <timeapi.h>
+#pragma comment(lib, "Winmm.lib")
 
-class clicker: public singleton<clicker>
+using floating_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
+
+enum buttons: bool
+{
+	RIGHT = false,
+	LEFT = true
+};
+
+enum input_types: bool
+{
+	UP = false,
+	DOWN = true
+};
+
+#define sleep(ms) { timeBeginPeriod(1); clicker.precise_timer_sleep( static_cast<double>( ms / 1000.f ) ); timeEndPeriod(1); }
+
+class c_clicker
 {
 private:
-	/// <summary>
-	/// Main clicking mouse function
-	/// </summary>
-	/// <param name="button"></param>
-	/// <param name="cps"></param>
-	/// <param name="is_first_click"></param>
-	void send_click( bool button, float cps, bool &is_first_click );
+	auto send_click( bool button, float cps, bool& is_first_click ) -> void;
 
-	/// <summary>
-	/// Precisely sleep for seconds
-	/// </summary>
-	/// <param name="seconds"></param>
-	void precise_timer_sleep( double seconds )
+	auto precise_timer_sleep( double seconds ) -> void
 	{
-		while (seconds > 5e-3)
+		while ( seconds > 5e-3 )
 		{
 			auto start = std::chrono::high_resolution_clock::now();
 			std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 			auto end = std::chrono::high_resolution_clock::now();
 
-			auto observed = (end - start).count() / 1e9;
+			auto observed = ( end - start ).count() / 1e9;
 			seconds -= observed;
 		}
 
-		/* ~~ Spin lock */
+		/* ~~ spin lock */
 		auto start = std::chrono::high_resolution_clock::now();
-		while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < seconds);
+		while ( ( std::chrono::high_resolution_clock::now() - start ).count() / 1e9 < seconds );
 	}
 
-	/// <summary>
-	/// Sleep wrapper
-	/// </summary>
-	/// <param name="ms"></param>
-	void sleep_precisely( float ms )
+	auto translate_button( bool button ) -> std::string
 	{
-		precise_timer_sleep( static_cast<double>(ms / 1000.f) );
-	}
-
-	std::string translate_button( bool button )
-	{
-		switch (button)
+		switch ( button )
 		{
 			case 0:
 				return "right mouse button";
@@ -57,56 +54,83 @@ private:
 		return {};
 	}
 
-	std::string translate_boolean( bool b )
+	void send_mouse_input( bool down, bool button )
 	{
-		switch (b)
-		{
-			case 0:
-				return "false";
-			case 1:
-				return "true";
-		}
+		POINT pos;
+		GetCursorPos( &pos );
 
-		return {};
+		down ? ( button ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+			PostMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) ) :
+			( button ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+				PostMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) );
 	}
 
-	/// <summary>
-	/// Delay for the sleep
-	/// </summary>
-	float delay = 0.f;
+	float m_delay = 0.f;
+	float m_random = 0.f;
 
-	/// <summary>
-	/// Random cps values to add up to current cps
-	/// </summary>
-	float random = 0.f;
+	bool m_blockhitted = false;
 
-	/// <summary>
-	/// Has blockhitted at the time
-	/// </summary>
-	bool blockhitted = false;
-
-	/* ~~ Easy to read variables */
-	static constexpr auto right_mouse_button = false;
-	static constexpr auto left_mouse_button = true;
-
-	static constexpr auto input_down = true;
-	static constexpr auto input_up = false;
-
-	bool is_left_clicking = false;
-	bool is_right_clicking = false;
+	bool m_is_left_clicking = false;
+	bool m_is_right_clicking = false;
 public:
-
-	/// <summary>
-	/// Initializes main loop
-	/// </summary>
 	void init();
-
-	/// <summary>
-	/// Separate randomization thread for more accurate randomization algorithm
-	/// </summary>
-	/// <param name="delay"></param>
 	void update_thread( float delay );
 
-	~clicker() = default;
-	clicker() = default;
+	~c_clicker() = default;
+	c_clicker() = default;
 };
+
+inline auto clicker = c_clicker();
+
+inline auto initialize_clicker_thread() -> void
+{
+	clicker.init();
+}
+
+inline auto initialize_clicker_randomization_thread() -> void
+{
+	clicker.update_thread( util::random::number( 1500, 3500 ) );
+}
+
+namespace hooking
+{
+	inline HHOOK h_hook;
+
+	static LRESULT CALLBACK keyboard_callback( int nCode, WPARAM wParam, LPARAM lParam )
+	{
+		static auto* k_hook = reinterpret_cast<KBDLLHOOKSTRUCT*>( lParam );
+
+		if ( wParam == WM_KEYDOWN && nCode == HC_ACTION && ( wParam >= WM_KEYFIRST ) && ( wParam <= WM_KEYLAST ) )
+		{
+			if ( util::extra::is_window_focused() )
+			{
+				if ( k_hook->vkCode == 69 )
+					var::key::inventory_opened = !var::key::inventory_opened;
+
+				if ( k_hook->vkCode == VK_ESCAPE )
+					var::key::inventory_opened = false;
+			}
+		}
+
+		return CallNextHookEx( h_hook, nCode, wParam, lParam );
+	}
+
+	inline auto spawn() -> void
+	{
+		h_hook = SetWindowsHookEx(
+			WH_KEYBOARD_LL,
+			keyboard_callback,
+			nullptr,
+			NULL
+		);
+
+		MSG msg;
+		while ( GetMessage( &msg, nullptr, 0, 0 ) )
+		{
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
+		}
+
+		UnhookWindowsHookEx( h_hook );
+	}
+}
