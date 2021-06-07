@@ -82,8 +82,8 @@
     <ClInclude Include="archivex.hpp" />
     <ClInclude Include="config.hpp" />
     <ClInclude Include="console.hpp" />
-    <ClInclude Include="imgui\font_awesome.hpp" />
-    <ClInclude Include="imgui\font_definitions.hpp" />
+    <ClInclude Include="imgui\font_data.h" />
+    <ClInclude Include="imgui\font_definitions.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />

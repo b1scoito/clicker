@@ -45,9 +45,9 @@ auto c_clicker::init() -> void
 
 auto c_clicker::send_click( bool button, float cps, bool& is_first_click ) -> void
 {
-	auto start = std::chrono::high_resolution_clock::now();
+	const auto start = std::chrono::high_resolution_clock::now();
 
-	/* ~~ Return if the cps is 0 */
+	// ~~ return if the cps is 0
 	if ( cps <= 0.f )
 		return;
 
@@ -59,11 +59,11 @@ auto c_clicker::send_click( bool button, float cps, bool& is_first_click ) -> vo
 	 * ~~ divided by 2 because the delay will be called both on input down and input up! */
 	m_delay = ( 1000.f / cps ) / 2.f;
 
-	/* ~~ If blatant is not enabled apply just a little randomization */
+	// ~~ if blatant is not enabled apply just a little randomization
 	if ( !config.clicker.b_enable_blatant )
 		m_delay += util::random::number( -10.f, 10.f );
 
-	/* ~~ If it's our first click, lets wait for the delay, send the input to up and set it back to false. */
+	// ~~ if it's our first click, lets wait for the delay, send the input to up and set it back to false.
 	if ( is_first_click )
 	{
 		sleep( m_delay );
@@ -71,7 +71,7 @@ auto c_clicker::send_click( bool button, float cps, bool& is_first_click ) -> vo
 		is_first_click = false;
 	}
 
-	/* ~~ Sleep and input down */
+	// ~~ sleep and input down
 	sleep( m_delay );
 	send_mouse_input( input_types::DOWN, button );
 
@@ -87,7 +87,7 @@ auto c_clicker::send_click( bool button, float cps, bool& is_first_click ) -> vo
 	sleep( m_delay );
 	send_mouse_input( input_types::UP, button );
 
-	/* ~~ If we blockhitted, send up input corresponding to the before down input and set variable back to false. */
+	// ~~ if we blockhitted, send up input corresponding to the before down input and set variable back to false.
 	if ( m_blockhitted )
 	{
 		send_mouse_input( input_types::UP, buttons::RIGHT );
@@ -96,10 +96,10 @@ auto c_clicker::send_click( bool button, float cps, bool& is_first_click ) -> vo
 
 	++var::stats::i_clicks_this_session;
 
-	auto end = std::chrono::high_resolution_clock::now();
+	const auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed = end - start;
 
-	log_debug( "cps -> [ %.3f ], delay -> [ %.3fms ], button -> [ %s ], time elapsed -> [ %.3fms ]", cps, m_delay * 2, translate_button( button ).c_str(), elapsed.count() );
+	log_debug( "cps: [ %.3f ], delay: [ %.3fms ], button: [ %s ], time elapsed: [ %.3fms ]", cps, m_delay * 2, translate_button( button ).c_str(), elapsed.count() );
 }
 
 auto c_clicker::update_thread( float delay ) -> void
@@ -107,31 +107,31 @@ auto c_clicker::update_thread( float delay ) -> void
 	auto should_update { false };
 	while ( true )
 	{
-		/* ~~ If we should update. */
+		// ~~ if we should update.
 		if ( should_update )
 		{
-			/* ~~ If persistent values is enabled, apply persistent values! */
+			// ~~ if persistent values is enabled, apply persistent values!
 			if ( config.clicker.b_enable_persistency )
 				m_random = util::random::number( -config.clicker.f_persistency_value, config.clicker.f_persistency_value );
 
-			/* ~~ If drop chance is enabled and the value is higher than 0 and the chance matches, apply it.. */
+			// ~~ if drop chance is enabled and the value is higher than 0 and the chance matches, apply it..
 			if ( config.clicker.b_enable_cps_drops && config.clicker.i_cps_drop_chance > 0 && std::rand() % ( 100 / config.clicker.i_cps_drop_chance ) == 0 )
 				m_random -= util::random::number( ( config.clicker.f_cps_drop_remove - 1.f ), config.clicker.f_cps_drop_remove );
 
-			/* ~~ If spike chance is enabled and the value is higher than 0 and the chance matches, apply it.. */
+			// ~~ if spike chance is enabled and the value is higher than 0 and the chance matches, apply it..
 			if ( config.clicker.b_enable_cps_spikes && config.clicker.i_cps_spike_chance > 0 && std::rand() % ( 100 / config.clicker.i_cps_spike_chance ) == 0 )
 				m_random += util::random::number( ( config.clicker.f_cps_spike_add - 1.f ), config.clicker.f_cps_spike_add );
 
-			/* ~~ Set it to false so we only set it one time.. */
+			// ~~ set it to false so we only set it one time..
 			should_update = false;
 		}
 
 		auto value = util::random::number( 1.f, delay );
 
-		/* ~~ Wait for the next update... */
+		// ~~ wait for the next update...
 		std::this_thread::sleep_for( floating_ms( value ) );
 
-		/* ~~ And start it!... */
+		// ~~ and start it!...
 		m_random = {};
 		should_update = true;
 	}

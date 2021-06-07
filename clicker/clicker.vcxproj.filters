@@ -85,10 +85,10 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>utils\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\font_awesome.hpp">
+    <ClInclude Include="imgui\font_data.h">
       <Filter>utils\imgui\impl\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\font_definitions.hpp">
+    <ClInclude Include="imgui\font_definitions.h">
       <Filter>utils\imgui\impl\fonts</Filter>
     </ClInclude>
     <ClInclude Include="keybind.hpp">

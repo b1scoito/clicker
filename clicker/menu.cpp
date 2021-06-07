@@ -145,7 +145,7 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "other" ) )
+			if ( ImGui::BeginTabItem( "misc" ) )
 			{
 				ImGui::Text( "Colors" );
 				ImGui::Separator();
@@ -236,7 +236,7 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "self-destruct" ) )
+			if ( ImGui::BeginTabItem( "destruct" ) )
 			{
 				ImGui::Text( "Self-destruct settings" );
 				if ( ImGui::IsItemHovered() )

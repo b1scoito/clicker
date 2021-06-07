@@ -7,8 +7,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
-#include "imgui/font_definitions.hpp"
-#include "imgui/font_awesome.hpp"
+#include "imgui/font_definitions.h"
+#include "imgui/font_data.h"
 
 static LPDIRECT3D9 g_pD3D;
 static LPDIRECT3DDEVICE9 g_pd3dDevice;
@@ -283,10 +283,10 @@ public:
 			io.Fonts->AddFontFromFileTTF( ( path / "SegoeUI.ttf" ).string().c_str(), 17.f, NULL, io.Fonts->GetGlyphRangesDefault() );
 		}
 
-		static const ImWchar ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		ImFontConfig f_config; f_config.MergeMode = true; f_config.PixelSnapH = true;
+		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+		ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
 
-		io.Fonts->AddFontFromMemoryCompressedTTF( fa_compressed_data, fa_compressed_size, 13.0f, &f_config, ranges );
+		io.Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 13.f, &icons_config, icons_ranges );
 
 		style.ScrollbarSize = 5.0f;
 		style.GrabRounding = 5.0f;

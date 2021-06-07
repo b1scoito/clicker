@@ -17,7 +17,7 @@ public:
 	auto save( size_t id ) const -> void;
 	auto add( std::string name ) -> void;
 	auto remove( size_t id ) -> void;
-	auto rename( size_t item, const std::string new_name ) -> void;
+	auto rename( size_t item, std::string new_name ) -> void;
 	auto reset() -> void;
 
 	constexpr auto& get_configs() { return configs; };
