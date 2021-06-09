@@ -236,7 +236,7 @@ public:
 	~c_menu() = default;
 	c_menu() = default;
 
-	__forceinline bool init_rendering( int width, int height ) noexcept
+	__forceinline auto init_rendering( int width, int height ) noexcept -> bool
 	{
 		WNDCLASSEX wc = {
 			sizeof( WNDCLASSEX ), CS_CLASSDC,
@@ -300,7 +300,7 @@ public:
 
 		ImGui_ImplDX9_Init( g_pd3dDevice );
 
-		ImVec4 clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
+		auto clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
 
 		bool done = false;
 		while ( !done )
@@ -323,7 +323,7 @@ public:
 
 			ImGui::NewFrame();
 
-			ImVec4* colors = style.Colors;
+			auto* colors = style.Colors;
 			colors[ImGuiCol_Text] = float_to_imvec4( config.clicker.f_color_accent_text );
 			colors[ImGuiCol_WindowBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
 			colors[ImGuiCol_PopupBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
@@ -348,12 +348,12 @@ public:
 			colors[ImGuiCol_TabHovered] = float_to_imvec4( config.clicker.f_color_accent_hovered );
 			colors[ImGuiCol_TabActive] = float_to_imvec4( config.clicker.f_color_accent_active );
 
+			if ( 1000.f / ImGui::GetIO().Framerate < 1000.f / 60 )
+				std::this_thread::sleep_for( std::chrono::milliseconds( (int64_t) ( 1000.f / 60 ) ) );
+
 			on_paint( hwnd, width, height );
 
 			ImGui::EndFrame();
-
-			if ( 1000.f / ImGui::GetIO().Framerate < 1000.f / 60 )
-				std::this_thread::sleep_for( std::chrono::milliseconds( (int64_t) ( 1000.f / 60 ) ) );
 
 			g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
 			g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );

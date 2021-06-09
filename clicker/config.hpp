@@ -33,8 +33,8 @@ public:
 		bool b_enable_left_clicker { false };
 		bool b_enable_right_clicker { false };
 
-		float f_left_cps { 1.f };
-		float f_right_cps { 1.f };
+		float f_left_cps { 11.5f };
+		float f_right_cps { 11.5f };
 
 		bool b_enable_blockhit { false };
 		int i_blockhit_chance { 5 };
@@ -43,14 +43,18 @@ public:
 
 		int i_hide_window_key { 0 };
 
+		bool b_enable_advanced_options { false };
 
-		bool b_enable_persistency { true };
-		float f_persistency_value { 2.f };
+		bool b_enable_persistence { false };
+		float f_persistence_value { 2.5f };
 
-		int i_cps_spike_chance { 15 };
-		float f_cps_spike_add { 3.5f };
+		float f_persistence_update_rate { 2000.f };
+		float f_default_timer_randomization { 5.f };
 
-		int i_cps_drop_chance { 10 };
+		int i_cps_spike_chance { 5 };
+		float f_cps_spike_add { 2.5f };
+
+		int i_cps_drop_chance { 15 };
 		float f_cps_drop_remove { 3.5f };
 
 		bool b_enable_cps_spikes { false };
@@ -64,7 +68,7 @@ public:
 		float f_color_accent_active[4] { 0.40f, 0.39f, 0.90f, 1.00f };
 		float f_color_accent_text[4] { 0.94f, 0.94f, 0.94f, 1.00f };
 
-		std::string window_title;
+		std::string str_window_title;
 	} clicker;
 };
 

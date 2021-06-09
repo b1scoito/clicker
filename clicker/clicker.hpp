@@ -22,59 +22,49 @@ enum input_types: bool
 class c_clicker
 {
 private:
-	auto send_click( bool button, float cps, bool& is_first_click ) -> void;
+	auto send_click( bool b_button, float f_cps, bool& b_is_first_click ) -> void;
 
-	auto precise_timer_sleep( double seconds ) -> void
+	auto precise_timer_sleep( double f_seconds ) -> void
 	{
-		while ( seconds > 5e-3 )
+		while ( f_seconds > 5e-3 )
 		{
 			auto start = std::chrono::high_resolution_clock::now();
 			std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 			auto end = std::chrono::high_resolution_clock::now();
 
 			auto observed = ( end - start ).count() / 1e9;
-			seconds -= observed;
+			f_seconds -= observed;
 		}
 
 		/* ~~ spin lock */
 		auto start = std::chrono::high_resolution_clock::now();
-		while ( ( std::chrono::high_resolution_clock::now() - start ).count() / 1e9 < seconds );
+		while ( ( std::chrono::high_resolution_clock::now() - start ).count() / 1e9 < f_seconds );
 	}
 
-	auto translate_button( bool button ) -> std::string
-	{
-		switch ( button )
-		{
-			case 0:
-				return "right mouse button";
-			case 1:
-				return "left mouse button";
-		}
-
-		return {};
-	}
-
-	void send_mouse_input( bool down, bool button )
+	void send_mouse_input( bool b_down, bool b_button )
 	{
 		POINT pos;
 		GetCursorPos( &pos );
 
-		down ? ( button ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+		b_down ? ( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 			PostMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) ) :
-			( button ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+			( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 				PostMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) );
 	}
 
-	float m_delay = 0.f;
-	float m_random = 0.f;
+	float m_delay { 0.f };
+	float m_random { 0.f };
 
-	bool m_blockhitted = false;
+	bool m_blockhitted { false };
 
-	bool m_is_left_clicking = false;
-	bool m_is_right_clicking = false;
+	bool m_is_left_clicking { false };
+	bool m_is_right_clicking { false };
+
+	float m_persistent_value { 0.f };
+
 public:
 	void init();
-	void update_thread( float delay );
+	void update_thread();
 
 	~c_clicker() = default;
 	c_clicker() = default;
@@ -82,55 +72,62 @@ public:
 
 inline auto clicker = c_clicker();
 
-inline auto initialize_clicker_thread() -> void
+namespace thread
 {
-	clicker.init();
-}
-
-inline auto initialize_clicker_randomization_thread() -> void
-{
-	clicker.update_thread( util::random::number( 1500, 3500 ) );
-}
-
-namespace hooking
-{
-	inline HHOOK h_hook;
-
-	static LRESULT CALLBACK keyboard_callback( int nCode, WPARAM wParam, LPARAM lParam )
+	namespace click
 	{
-		static auto* k_hook = reinterpret_cast<KBDLLHOOKSTRUCT*>( lParam );
-
-		if ( wParam == WM_KEYDOWN && nCode == HC_ACTION && ( wParam >= WM_KEYFIRST ) && ( wParam <= WM_KEYLAST ) )
+		inline auto init() -> void
 		{
-			if ( util::extra::is_window_focused() )
-			{
-				if ( k_hook->vkCode == 69 )
-					var::key::inventory_opened = !var::key::inventory_opened;
-
-				if ( k_hook->vkCode == VK_ESCAPE )
-					var::key::inventory_opened = false;
-			}
+			clicker.init();
 		}
 
-		return CallNextHookEx( h_hook, nCode, wParam, lParam );
+		inline auto randomization() -> void
+		{
+			clicker.update_thread();
+		}
 	}
 
-	inline auto spawn() -> void
+	// had to
+	namespace hooking
 	{
-		h_hook = SetWindowsHookEx(
-			WH_KEYBOARD_LL,
-			keyboard_callback,
-			nullptr,
-			NULL
-		);
+		inline HHOOK h_hook;
 
-		MSG msg;
-		while ( GetMessage( &msg, nullptr, 0, 0 ) )
+		static LRESULT CALLBACK keyboard_callback( int nCode, WPARAM wParam, LPARAM lParam )
 		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
+			static auto* k_hook = reinterpret_cast<KBDLLHOOKSTRUCT*>( lParam );
+
+			if ( wParam == WM_KEYDOWN && nCode == HC_ACTION && ( wParam >= WM_KEYFIRST ) && ( wParam <= WM_KEYLAST ) )
+			{
+				if ( util::extra::is_window_focused() )
+				{
+					if ( k_hook->vkCode == 69 )
+						var::key::inventory_opened = !var::key::inventory_opened;
+
+					if ( k_hook->vkCode == VK_ESCAPE )
+						var::key::inventory_opened = false;
+				}
+			}
+
+			return CallNextHookEx( h_hook, nCode, wParam, lParam );
 		}
 
-		UnhookWindowsHookEx( h_hook );
+		inline auto spawn() -> void
+		{
+			h_hook = SetWindowsHookEx(
+				WH_KEYBOARD_LL,
+				keyboard_callback,
+				nullptr,
+				NULL
+			);
+
+			MSG msg;
+			while ( GetMessage( &msg, nullptr, 0, 0 ) )
+			{
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+			}
+
+			UnhookWindowsHookEx( h_hook );
+		}
 	}
 }

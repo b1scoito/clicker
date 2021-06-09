@@ -41,8 +41,7 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 		{
 			if ( ImGui::BeginTabItem( "clicker" ) )
 			{
-				ImGui::Text( "Keybindings" );
-
+				ImGui::Text( "Keybind" );
 				ImGui::Separator();
 
 				keybind_button( config.clicker.i_clicker_key, 155, 22 );
@@ -50,7 +49,7 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				ImGui::SameLine();
 
 				ImGui::PushItemWidth( 100.f );
-				ImGui::Combo( "##activation_mode", &config.clicker.i_key_type, "Always on\0Hold\0Toggle\0\0" );
+				ImGui::Combo( "##var::clicker::i_key_type", &config.clicker.i_key_type, "Always\0Hold\0Toggle\0\0" );
 				ImGui::PopItemWidth();
 
 				ImGui::Text( "Clicker configuration" );
@@ -61,14 +60,16 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 
 				ImGui::Checkbox( "Left mouse clicker", &config.clicker.b_enable_left_clicker );
 				if ( config.clicker.b_enable_left_clicker )
-					ImGui::SliderFloat( "##left_cps", &config.clicker.f_left_cps, 1.f, 20.f, "%.2f cps" );
+					ImGui::SliderFloat( "##var::clicker::f_left_cps", &config.clicker.f_left_cps, 1.f, 20.f, "%.2f cps" );
 
 				ImGui::Checkbox( "Right mouse clicker", &config.clicker.b_enable_right_clicker );
 				if ( config.clicker.b_enable_right_clicker )
-					ImGui::SliderFloat( "##right_cps", &config.clicker.f_right_cps, 1.f, 20.f, "%.2f cps" );
+					ImGui::SliderFloat( "##var::clicker::f_right_cps", &config.clicker.f_right_cps, 1.f, 20.f, "%.2f cps" );
 
 				ImGui::Text( "Focus settings" );
 				ImGui::Separator();
+
+				ImGui::Combo( "##var::clicker::i_version_type", &config.clicker.i_version_type, "Minecraft\0Custom\0\0" );
 
 				if ( config.clicker.i_version_type == 0 )
 				{
@@ -80,20 +81,23 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 					{
 						ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
 						if ( ImGui::IsItemHovered() )
-							ImGui::SetTooltip( "If enabled, clicker will work while playing,\nwith the inventory opened." );
+							ImGui::SetTooltip( "If enabled, clicker will work while playing and with the inventory opened." );
 					}
 				}
-
-				ImGui::Combo( "##window_type", &config.clicker.i_version_type, "Minecraft\0Custom\0\0" );
+				else
+				{
+					config.clicker.b_only_in_game = false;
+					config.clicker.b_work_in_inventory = false;
+				}
 
 				static char buffer[32];
 				if ( config.clicker.i_version_type == 1 )
 				{
-					ImGui::InputText( "##window_title", buffer, IM_ARRAYSIZE( buffer ) );
+					ImGui::InputText( "##var::input::buffer", buffer, IM_ARRAYSIZE( buffer ) );
 					if ( ImGui::IsItemHovered() )
-						ImGui::SetTooltip( "Leave it blank for it to work anywhere." );
+						ImGui::SetTooltip( "If you leave it blank it'll work anywhere." );
 
-					config.clicker.window_title = buffer;
+					config.clicker.str_window_title = buffer;
 				}
 
 				if ( !config.clicker.b_enable_blatant )
@@ -101,12 +105,12 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 					ImGui::Text( "Randomization" );
 					ImGui::Separator();
 
-					ImGui::Checkbox( "Persistent randomization cps values", &config.clicker.b_enable_persistency );
+					ImGui::Checkbox( "Persistence", &config.clicker.b_enable_persistence );
 					if ( ImGui::IsItemHovered() )
 						ImGui::SetTooltip( "This randomization is applied in a short period of time,\nset to the defined cps randomized.\nRecommended." );
 
-					if ( config.clicker.b_enable_persistency )
-						ImGui::SliderFloat( "##default_persistent_randomization", &config.clicker.f_persistency_value, 1.f, 5.f, "%.1f cps" );
+					if ( config.clicker.b_enable_persistence )
+						ImGui::SliderFloat( "##config::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps" );
 
 					ImGui::Checkbox( "Spike chance", &config.clicker.b_enable_cps_spikes );
 					if ( ImGui::IsItemHovered() )
@@ -114,8 +118,8 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 
 					if ( config.clicker.b_enable_cps_spikes )
 					{
-						ImGui::SliderInt( "##cps_spike_chance", &config.clicker.i_cps_spike_chance, 1, 100, "chance %d%%" );
-						ImGui::SliderFloat( "##cps_spike_chance_addition", &config.clicker.f_cps_spike_add, 1.f, 5.f, "value addition %.1f cps" );
+						ImGui::SliderInt( "##var::clicker::i_cps_spike_chance", &config.clicker.i_cps_spike_chance, 1, 100, "chance %d%%" );
+						ImGui::SliderFloat( "##var::clicker::f_cps_spike_add", &config.clicker.f_cps_spike_add, 1.f, 5.f, "add %.1f cps" );
 					}
 
 					ImGui::Checkbox( "Drop chance", &config.clicker.b_enable_cps_drops );
@@ -124,8 +128,8 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 
 					if ( config.clicker.b_enable_cps_drops )
 					{
-						ImGui::SliderInt( "##cps_drop_chance", &config.clicker.i_cps_drop_chance, 1, 100, "chance %d%%" );
-						ImGui::SliderFloat( "##cps_drop_chance_removal", &config.clicker.f_cps_drop_remove, 1.f, 5.f, "value removal %.1f cps" );
+						ImGui::SliderInt( "##var::clicker::i_cps_drop_chance", &config.clicker.i_cps_drop_chance, 1, 100, "chance %d%%" );
+						ImGui::SliderFloat( "##var::clicker::f_cps_drop_remove", &config.clicker.f_cps_drop_remove, 1.f, 5.f, "remove %.1f cps" );
 					}
 
 					ImGui::Checkbox( "Blockhit", &config.clicker.b_enable_blockhit );
@@ -133,7 +137,24 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 						ImGui::SetTooltip( "Blockhits automatically with the given chance of blockhit." );
 
 					if ( config.clicker.b_enable_blockhit )
-						ImGui::SliderInt( "##blockhit_chance", &config.clicker.i_blockhit_chance, 1, 100, "chance %d%%" );
+						ImGui::SliderInt( "##var::clicker::i_blockhit_chance", &config.clicker.i_blockhit_chance, 1, 100, "chance %d%%" );
+
+					ImGui::Checkbox( "Advanced options", &config.clicker.b_enable_advanced_options );
+
+					if ( config.clicker.b_enable_advanced_options )
+					{
+						ImGui::Text( "Persistence update rate" );
+						if ( ImGui::IsItemHovered() )
+							ImGui::SetTooltip( "Smaller values, faster cps updates." );
+
+						ImGui::SliderFloat( "##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 500.f, 10000.f, "%.1f ms" );
+
+						ImGui::Text( "Default timer randomization" );
+						if ( ImGui::IsItemHovered() )
+							ImGui::SetTooltip( "Timer time delay variation. Much fancy words" );
+
+						ImGui::SliderFloat( "##var::clicker::f_default_timer_randomization", &config.clicker.f_default_timer_randomization, 1.f, 15.f, "%.1f ms" );
+					}
 				}
 
 				ImGui::Separator();

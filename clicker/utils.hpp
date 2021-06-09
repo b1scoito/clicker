@@ -33,10 +33,10 @@ namespace util
 			if ( wstr.empty() )
 				return {};
 
-			const auto size = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), 0, 0, 0, 0 );
+			const auto size = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), (int) wstr.size(), 0, 0, 0, 0 );
 			auto ret = std::string( size, 0 );
 
-			WideCharToMultiByte( CP_UTF8, 0, wstr.data(), wstr.size(), ret.data(), size, 0, 0 );
+			WideCharToMultiByte( CP_UTF8, 0, wstr.data(), (int) wstr.size(), ret.data(), size, 0, 0 );
 
 			return ret;
 		}
@@ -46,10 +46,10 @@ namespace util
 			if ( str.empty() )
 				return {};
 
-			const auto size = MultiByteToWideChar( CP_UTF8, 0, str.data(), str.size(), 0, 0 );
+			const auto size = MultiByteToWideChar( CP_UTF8, 0, str.data(), (int) str.size(), 0, 0 );
 			auto ret = std::wstring( size, 0 );
 
-			MultiByteToWideChar( CP_UTF8, 0, str.data(), str.size(), ret.data(), size );
+			MultiByteToWideChar( CP_UTF8, 0, str.data(), (int) str.size(), ret.data(), size );
 
 			return ret;
 		}
@@ -57,10 +57,10 @@ namespace util
 
 	namespace random
 	{
-		inline auto number( float start, float end ) -> float
+		inline auto number( float f_start, float f_end ) -> float
 		{
 			static std::mt19937 mersenne { static_cast<std::mt19937::result_type>( std::time( {} ) ) };
-			const std::uniform_real_distribution<float> distribution( start, end );
+			const std::uniform_real_distribution<float> distribution( f_start, f_end );
 			return distribution( mersenne );
 		}
 	}
@@ -108,7 +108,7 @@ namespace util
 				case 0:
 					return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
 				case 1:
-					return get_active_window_title().find( util::string::to_unicode( config.clicker.window_title ) ) != std::string::npos;
+					return get_active_window_title().find( util::string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos;
 				default:
 					return {};
 			}
