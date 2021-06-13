@@ -19,18 +19,18 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT ms
 class c_menu
 {
 private:
-	auto float_to_imvec4( float* color ) { return ImVec4( color[0], color[1], color[2], color[3] ); }
+	ImVec4 float_to_imvec4( float* color ) const { return ImVec4( color[0], color[1], color[2], color[3] ); }
 
 	// ~ render ImGui objects
-	auto on_paint( HWND hwnd, int width, int height ) -> void;
+	void on_paint( HWND hwnd, int i_width, int i_height );
 
 	// ~ ImGui widget for keybind button
-	auto keybind_button( int& key, int width, int height ) -> void
+	void keybind_button( int& i_key, int i_width, int i_height )
 	{
 		static auto b_get = false;
 		static std::string sz_text( "Click to bind" );
 
-		if ( ImGui::Button( sz_text.c_str(), ImVec2( static_cast<float>( width ), static_cast<float>( height ) ) ) )
+		if ( ImGui::Button( sz_text.c_str(), ImVec2( static_cast<float>( i_width ), static_cast<float>( i_height ) ) ) )
 			b_get = true;
 
 		if ( b_get )
@@ -41,21 +41,21 @@ private:
 				{
 					if ( i != 12 )
 					{
-						key = i == VK_ESCAPE ? 0 : i;
+						i_key = i == VK_ESCAPE ? 0 : i;
 						b_get = false;
 					}
 				}
 			}
 			sz_text = "Press a key";
 		}
-		else if ( !b_get && key == 0 )
+		else if ( !b_get && i_key == 0 )
 			sz_text = "Click to bind";
-		else if ( !b_get && key != 0 )
-			sz_text = "Bound to " + get_key_name_by_id( key );
+		else if ( !b_get && i_key != 0 )
+			sz_text = "Bound to " + get_key_name_by_id( i_key );
 	}
 
 	// ~ returns a key name from a keycode
-	auto get_key_name_by_id( int id ) -> std::string
+	std::string get_key_name_by_id( int i_id )
 	{
 		static std::unordered_map<int, std::string> key_names = {
 			{ 0, "None" },
@@ -104,23 +104,22 @@ private:
 			{ VK_RMENU, "Right Alt" },
 		};
 
-		if ( id >= 0x30 && id <= 0x5A )
-			return std::string( 1, (char) id );
+		if ( i_id >= 0x30 && i_id <= 0x5A )
+			return std::string( 1, (char) i_id );
 
-		if ( id >= 0x60 && id <= 0x69 )
-			return "Num " + std::to_string( id - 0x60 );
+		if ( i_id >= 0x60 && i_id <= 0x69 )
+			return "Num " + std::to_string( i_id - 0x60 );
 
-		if ( id >= 0x70 && id <= 0x87 )
-			return "F" + std::to_string( ( id - 0x70 ) + 1 );
+		if ( i_id >= 0x70 && i_id <= 0x87 )
+			return "F" + std::to_string( ( i_id - 0x70 ) + 1 );
 
-		return key_names[id];
+		return key_names[i_id];
 	}
 
 	// ~ sets a window handle position
-	auto set_position( int x, int y, int w, int h, bool b_center, HWND hwnd ) -> void
+	void set_position( int x, int y, int cx, int cy, HWND hwnd )
 	{
-		POINT point;
-		GetCursorPos( &point );
+		POINT point; GetCursorPos( &point );
 
 		auto flags = SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE;
 		if ( x != 0 && y != 0 )
@@ -130,36 +129,16 @@ private:
 			flags &= ~SWP_NOMOVE;
 		}
 
-		if ( w != 0 && h != 0 )
+		if ( cx != 0 && cy != 0 )
 			flags &= ~SWP_NOSIZE;
 
-		if ( b_center )
-		{
-			RECT rect;
-			if ( w != 0 && h != 0 )
-			{
-				rect.right = w;
-				rect.bottom = h;
-			}
-			else
-			{
-				GetWindowRect( hwnd, &rect );
-			}
-
-			x = ( GetSystemMetrics( SM_CXSCREEN ) - rect.right ) / 2;
-			y = ( GetSystemMetrics( SM_CYSCREEN ) - rect.bottom ) / 2;
-
-			flags &= ~SWP_NOMOVE;
-		}
-
-		SetWindowPos( hwnd, nullptr, x, y, w, h, flags );
+		SetWindowPos( hwnd, nullptr, x, y, cx, cy, flags );
 	}
 
 	// ~ gets the mouse offset position
-	auto get_mouse_offset( int& x, int& y, HWND hwnd ) -> void
+	void get_mouse_offset( int& x, int& y, HWND hwnd )
 	{
-		POINT point;
-		RECT rect;
+		POINT point; RECT rect;
 
 		GetCursorPos( &point );
 		GetWindowRect( hwnd, &rect );
@@ -195,7 +174,7 @@ private:
 		return DefWindowProc( hWnd, msg, wParam, lParam );
 	}
 
-	auto create_device_d3d( HWND hWnd ) -> bool
+	bool create_device_d3d( HWND hWnd )
 	{
 		if ( ( g_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) == NULL )
 			return false;
@@ -215,14 +194,13 @@ private:
 		return true;
 	}
 
-	auto cleanup_device_d3d() -> void
+	void cleanup_device_d3d()
 	{
 		if ( g_pd3dDevice ) { g_pd3dDevice->Release(); g_pd3dDevice = NULL; }
 		if ( g_pD3D ) { g_pD3D->Release(); g_pD3D = NULL; }
 	}
 
-	// ~ resets the d3d device
-	static auto reset_device() -> void
+	static void reset_device()
 	{
 		ImGui_ImplDX9_InvalidateDeviceObjects();
 
@@ -236,7 +214,7 @@ public:
 	~c_menu() = default;
 	c_menu() = default;
 
-	__forceinline auto init_rendering( int width, int height ) noexcept -> bool
+	__forceinline bool initialize( int width, int height ) noexcept
 	{
 		WNDCLASSEX wc = {
 			sizeof( WNDCLASSEX ), CS_CLASSDC,
@@ -244,7 +222,7 @@ public:
 			0L, 0L,
 			GetModuleHandle( NULL ),
 			NULL, NULL, NULL, NULL,
-			L"w",
+			L"Class",
 			NULL
 		};
 
@@ -280,13 +258,13 @@ public:
 		{
 			const std::filesystem::path path { fonts_path };
 			CoTaskMemFree( fonts_path );
-			io.Fonts->AddFontFromFileTTF( ( path / "SegoeUI.ttf" ).string().c_str(), 17.f, NULL, io.Fonts->GetGlyphRangesDefault() );
+			io.Fonts->AddFontFromFileTTF( ( path / "SegoeUI.ttf" ).string().c_str(), 16.f, NULL, io.Fonts->GetGlyphRangesDefault() );
 		}
 
 		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 		ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
 
-		io.Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 13.f, &icons_config, icons_ranges );
+		io.Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 10.f, &icons_config, icons_ranges );
 
 		style.ScrollbarSize = 5.0f;
 		style.GrabRounding = 5.0f;
@@ -297,10 +275,9 @@ public:
 		io.IniFilename = nullptr;
 
 		ImGui_ImplWin32_Init( hwnd );
-
 		ImGui_ImplDX9_Init( g_pd3dDevice );
 
-		auto clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
+		const auto clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
 
 		bool done = false;
 		while ( !done )

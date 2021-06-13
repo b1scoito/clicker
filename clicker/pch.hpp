@@ -11,6 +11,7 @@
 using namespace std::chrono_literals;
 
 #include "console.hpp"
+#include "keybind.hpp"
 #include "config.hpp"
 #include "vars.hpp"
 #include "utils.hpp"

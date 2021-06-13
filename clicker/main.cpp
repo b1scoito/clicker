@@ -2,12 +2,10 @@
 #include "clicker.hpp"
 #include "menu.hpp"
 
-auto init_self_destruct() -> void;
-
 // ~ main entrypoint
 INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 {
-	std::atexit( init_self_destruct );
+	std::atexit( [] {} );
 
 	config.run( "clicker" );
 
@@ -35,16 +33,10 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	log_debug( "waiting for program end." );
-	if ( !menu.init_rendering( 550, 350 ) )
+	if ( !menu.initialize( 550, 350 ) )
 	{
 		log_err( "Failed to create DirectX9 device!" );
 	}
 
-
 	return EXIT_SUCCESS;
-}
-
-auto init_self_destruct() -> void
-{
-	// Will there be?
 }

@@ -111,9 +111,6 @@
     <Filter Include="utils\console">
       <UniqueIdentifier>{74c48a25-e31a-4ae6-aeb0-576b22bc1cd3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils\vars">
-      <UniqueIdentifier>{c87a7cbb-b9a7-4307-b963-a65bc9292368}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils\imgui">
       <UniqueIdentifier>{3d4c588e-83c5-4f70-a5e4-eb2ac5f71192}</UniqueIdentifier>
     </Filter>
@@ -137,6 +134,9 @@
     </Filter>
     <Filter Include="utils\keybind">
       <UniqueIdentifier>{c6989783-89d7-4e8d-92f6-9cb3d878bc9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\vars">
+      <UniqueIdentifier>{c87a7cbb-b9a7-4307-b963-a65bc9292368}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

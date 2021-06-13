@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "config.hpp"
 
-auto c_config::run( std::string name ) -> void
+void c_config::run( std::string name )
 {
 	if ( PWSTR appdata_path; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_RoamingAppData, 0, nullptr, &appdata_path ) ) )
 	{
@@ -23,7 +23,7 @@ auto c_config::run( std::string name ) -> void
 	}
 }
 
-auto c_config::load( size_t id ) -> void
+void c_config::load( size_t id )
 {
 	if ( !std::filesystem::is_directory( path ) )
 	{
@@ -40,7 +40,7 @@ auto c_config::load( size_t id ) -> void
 	in.close();
 }
 
-auto c_config::save( size_t id ) const -> void
+void c_config::save( size_t id ) const
 {
 	if ( !std::filesystem::is_directory( path ) )
 	{
@@ -57,25 +57,25 @@ auto c_config::save( size_t id ) const -> void
 	out.close();
 }
 
-auto c_config::add( std::string name ) -> void
+void c_config::add( std::string name )
 {
 	if ( !( name.empty() ) && std::find( std::cbegin( configs ), std::cend( configs ), name ) == std::cend( configs ) )
 		configs.emplace_back( name );
 }
 
-auto c_config::remove( size_t id ) -> void
+void c_config::remove( size_t id )
 {
 	std::filesystem::remove( path / configs[id] );
 	configs.erase( configs.cbegin() + id );
 }
 
-auto c_config::rename( size_t item, std::string new_name ) -> void
+void c_config::rename( size_t item, std::string new_name )
 {
 	std::filesystem::rename( path / configs[item], path / new_name );
 	configs[item] = new_name;
 }
 
-auto c_config::reset() -> void
+void c_config::reset()
 {
 	clicker = { };
 }

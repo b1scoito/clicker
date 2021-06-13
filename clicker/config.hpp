@@ -12,13 +12,13 @@ private:
 	std::filesystem::path path;
 	std::vector<std::string> configs;
 public:
-	auto run( std::string name ) -> void;
-	auto load( size_t id ) -> void;
-	auto save( size_t id ) const -> void;
-	auto add( std::string name ) -> void;
-	auto remove( size_t id ) -> void;
-	auto rename( size_t item, std::string new_name ) -> void;
-	auto reset() -> void;
+	void run( std::string name );
+	void load( size_t id );
+	void save( size_t id ) const;
+	void add( std::string name );
+	void remove( size_t id );
+	void rename( size_t item, std::string new_name );
+	void reset();
 
 	constexpr auto& get_configs() { return configs; };
 	constexpr auto& get_path() { return path; };
@@ -28,7 +28,6 @@ public:
 		int i_clicker_key { 0 };
 		int i_key_type { 0 };
 		int i_version_type { 0 };
-
 
 		bool b_enable_left_clicker { false };
 		bool b_enable_right_clicker { false };
@@ -69,6 +68,7 @@ public:
 		float f_color_accent_text[4] { 0.94f, 0.94f, 0.94f, 1.00f };
 
 		std::string str_window_title;
+
 	} clicker;
 };
 

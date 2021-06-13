@@ -5,16 +5,16 @@
 
 using floating_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
 
-enum buttons: bool
+enum class button_t: bool
 {
-	RIGHT = false,
-	LEFT = true
+	right = false,
+	left = true
 };
 
-enum input_types: bool
+enum class input_type_t: bool
 {
-	UP = false,
-	DOWN = true
+	up = false,
+	down = true
 };
 
 #define sleep(ms) { timeBeginPeriod(1); clicker.precise_timer_sleep( static_cast<double>( ms / 1000.f ) ); timeEndPeriod(1); }
@@ -22,9 +22,9 @@ enum input_types: bool
 class c_clicker
 {
 private:
-	auto send_click( bool b_button, float f_cps, bool& b_is_first_click ) -> void;
+	void send_click( button_t b_button, float f_cps, bool& b_is_first_click );
 
-	auto precise_timer_sleep( double f_seconds ) -> void
+	void precise_timer_sleep( double f_seconds )
 	{
 		while ( f_seconds > 5e-3 )
 		{
@@ -41,14 +41,13 @@ private:
 		while ( ( std::chrono::high_resolution_clock::now() - start ).count() / 1e9 < f_seconds );
 	}
 
-	void send_mouse_input( bool b_down, bool b_button )
+	void send_mouse_input( input_type_t i_type, button_t b_button )
 	{
-		POINT pos;
-		GetCursorPos( &pos );
+		POINT pos; GetCursorPos( &pos );
 
-		b_down ? ( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+		static_cast<bool>( i_type ) ? ( static_cast<bool>( b_button ) ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 			PostMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) ) :
-			( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+			( static_cast<bool>( b_button ) ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 				PostMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) );
 	}
 
@@ -56,6 +55,8 @@ private:
 	float m_random { 0.f };
 
 	bool m_blockhitted { false };
+
+	bool m_should_update { false };
 
 	bool m_is_left_clicking { false };
 	bool m_is_right_clicking { false };
@@ -76,12 +77,12 @@ namespace thread
 {
 	namespace click
 	{
-		inline auto init() -> void
+		inline void init()
 		{
 			clicker.init();
 		}
 
-		inline auto randomization() -> void
+		inline void randomization()
 		{
 			clicker.update_thread();
 		}
@@ -111,7 +112,7 @@ namespace thread
 			return CallNextHookEx( h_hook, nCode, wParam, lParam );
 		}
 
-		inline auto spawn() -> void
+		inline void spawn()
 		{
 			h_hook = SetWindowsHookEx(
 				WH_KEYBOARD_LL,

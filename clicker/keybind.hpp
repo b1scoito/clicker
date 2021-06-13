@@ -1,10 +1,10 @@
 #pragma once
 
-enum keybind_state: int
+enum keybind_state_t: int
 {
-	ALWAYS = 0,
-	HOLD,
-	TOGGLE
+	always = 0,
+	hold,
+	toggle
 };
 
 class keybind
@@ -24,21 +24,21 @@ public:
 		i_key = key;
 	}
 
-	inline auto get() -> bool
+	inline bool get()
 	{
 		if ( i_key == 0 )
 			return b_state;
 
 		switch ( i_mode )
 		{
-			case 0:
+			case keybind_state_t::always:
 				b_state = true;
 				break;
-			case 1:
+			case keybind_state_t::hold:
 				b_state = GetAsyncKeyState( i_key ) & 0x8000;
 				break;
 
-			case 2:
+			case keybind_state_t::toggle:
 				auto h_state = GetAsyncKeyState( i_key );
 				if ( h_state & 0x8000 )
 					b_is_down = true;
@@ -54,14 +54,15 @@ public:
 		return b_state;
 	}
 
-	inline auto get_mode_as_string() const -> std::string
+	inline std::string get_mode_as_string() const
 	{
 		switch ( i_mode )
 		{
-			case 0: return std::string( "on" );
-			case 1: return std::string( "hold" );
-			case 2: return std::string( "toggle" );
-			default: return {};
+			case keybind_state_t::always: return std::string( "on" );
+			case keybind_state_t::hold: return std::string( "hold" );
+			case keybind_state_t::toggle: return std::string( "toggle" );
 		}
+
+		return {};
 	}
 };

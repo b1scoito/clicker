@@ -1,44 +1,29 @@
 #include "pch.hpp"
 #include "menu.hpp"
 
-void c_menu::on_paint( HWND hwnd, int width, int height )
+void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 {
-	static auto mouse_offset_x = 0, mouse_offset_y = 0;
+	static auto x = 0, y = 0;
 
-	ImGui::SetNextWindowSize( ImVec2( static_cast<float>( width ), static_cast<float>( height ) ), ImGuiCond_Always );
+	ImGui::SetNextWindowSize( ImVec2( static_cast<float>( i_width ), static_cast<float>( i_height ) ), ImGuiCond_Always );
 	ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_Always );
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-		get_mouse_offset( mouse_offset_x, mouse_offset_y, hwnd );
+		get_mouse_offset( x, y, hwnd );
 
 	var::key::hide_window.i_key = config.clicker.i_hide_window_key;
 	var::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
 
-	ImGui::Begin( "##begin", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
+	ImGui::Begin( "##var::clicker::begin", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
 	{
-		if ( mouse_offset_y >= 0 && mouse_offset_y <= ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 5.f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
-			set_position( mouse_offset_x, mouse_offset_y, width, height, false, hwnd );
+		if ( y >= 0 && y <= ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4.f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
+			set_position( x, y, i_width, i_height, hwnd );
 
-		ImGui::Text( "clicker" );
-		ImGui::PushStyleColor( ImGuiCol_Button, ImVec4( ImColor( 255, 255, 255, 0 ) ) );
-
-		ImGui::SameLine( 0.f, static_cast<float>( width ) - 105.f );
-
-		if ( ImGui::Button( ICON_FA_CLONE ) )
-			ShowWindow( hwnd, SW_MINIMIZE );
-
-		ImGui::SameLine();
-
-		if ( ImGui::Button( ICON_FA_TIMES ) )
+		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
-			ShowWindow( hwnd, SW_HIDE );
-			std::exit( 0 );
-		}
+			ImGui::SameLine( i_width - 30.f );
+			if ( ImGui::Button( "##close", { 15, 15 } ) ) { std::exit( 0 ); }
 
-		ImGui::PopStyleColor();
-
-		if ( ImGui::BeginTabBar( "##tabs" ) )
-		{
 			if ( ImGui::BeginTabItem( "clicker" ) )
 			{
 				ImGui::Text( "Keybind" );
@@ -110,7 +95,7 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 						ImGui::SetTooltip( "This randomization is applied in a short period of time,\nset to the defined cps randomized.\nRecommended." );
 
 					if ( config.clicker.b_enable_persistence )
-						ImGui::SliderFloat( "##config::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps" );
+						ImGui::SliderFloat( "##var::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps" );
 
 					ImGui::Checkbox( "Spike chance", &config.clicker.b_enable_cps_spikes );
 					if ( ImGui::IsItemHovered() )
@@ -140,7 +125,6 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 						ImGui::SliderInt( "##var::clicker::i_blockhit_chance", &config.clicker.i_blockhit_chance, 1, 100, "chance %d%%" );
 
 					ImGui::Checkbox( "Advanced options", &config.clicker.b_enable_advanced_options );
-
 					if ( config.clicker.b_enable_advanced_options )
 					{
 						ImGui::Text( "Persistence update rate" );
@@ -158,7 +142,6 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				}
 
 				ImGui::Separator();
-
 				ImGui::Checkbox( "Blatant", &config.clicker.b_enable_blatant );
 				if ( ImGui::IsItemHovered() )
 					ImGui::SetTooltip( "If this is checked no randomization will be added.\nUse it at your own risk." );
@@ -168,6 +151,11 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 
 			if ( ImGui::BeginTabItem( "misc" ) )
 			{
+				ImGui::Text( "Hide" );
+				ImGui::Separator();
+				ImGui::Text( "Hide window key" );
+				keybind_button( config.clicker.i_hide_window_key, 155, 22 );
+
 				ImGui::Text( "Colors" );
 				ImGui::Separator();
 				ImGui::ColorEdit4( "Color accent", config.clicker.f_color_accent, ImGuiColorEditFlags_NoInputs );
@@ -175,19 +163,25 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				ImGui::ColorEdit4( "Color accent active", config.clicker.f_color_accent_active, ImGuiColorEditFlags_NoInputs );
 				ImGui::ColorEdit4( "Color accent text", config.clicker.f_color_accent_text, ImGuiColorEditFlags_NoInputs );
 
-				ImGui::Text( "Information" );
-				ImGui::Separator();
-				ImGui::Text( "Is left button down: %s", var::key::left_clicker_down.get() ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-				ImGui::Text( "Is right button down: %s", var::key::right_clicker_down.get() ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-				ImGui::Text( "Is hotkey toggled: %s", var::key::clicker_enabled.get() ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-				ImGui::Text( "Is window focused: %s", util::extra::is_window_focused() ? ICON_FA_CHECK " " : ICON_FA_TIMES " " );
-				ImGui::Text( "Clicks this session: %d", var::stats::i_clicks_this_session );
-				ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
+				static bool show_advanced_debug { false };
+				ImGui::Checkbox( "Show advanced debug info", &show_advanced_debug );
 
-				ImGui::Separator();
-				ImGui::Text( "Github repository, hover me!" );
-				if ( ImGui::IsItemHovered() )
-					ImGui::SetTooltip( "https://github.com/b1scoito/clicker" );
+				if ( show_advanced_debug )
+				{
+					ImGui::Text( "Information" );
+					ImGui::Separator();
+					ImGui::Text( "Clicks this session: %d", var::stats::i_clicks_this_session );
+					ImGui::Text( "Is left button down: %s", var::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is right button down: %s", var::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is hotkey toggled: %s", var::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is window focused: %s", util::extra::is_window_focused() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is cursor visible: %s", util::extra::cursor_handle_status() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is in inventory: %s", var::key::inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Current window name: %ls", util::extra::get_active_window_title().c_str() );
+					ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
+					ImGui::Separator();
+					ImGui::Text( "Repository: https://github.com/b1scoito/clicker" );
+				}
 
 				ImGui::EndTabItem();
 			}
@@ -214,16 +208,17 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 				if ( static_cast<size_t>( current_config ) >= config_items.size() )
 					current_config = -1;
 
-				static char buffer[16];
+				static char buffer[32];
 
-				if ( ImGui::ListBox( "Configs", &current_config, []( void* data, int idx, const char** out_text )
+				ImGui::Text( "Configs" );
+				if ( ImGui::ListBox( "##var::clicker::config_list", &current_config, []( void* data, int idx, const char** out_text )
 				{
 					auto& vector = *static_cast<std::vector<std::string> *>( data );
 					*out_text = vector[idx].c_str();
 					return true;
 				}, &config_items, static_cast<int>( config_items.size() ), 5 ) && current_config != -1 ) strcpy_s( buffer, config_items[current_config].c_str() );
 
-				if ( ImGui::InputText( "Config name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
+				if ( ImGui::InputText( "##var::clicker::config_name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
 				{
 					if ( current_config != -1 )
 						config.rename( current_config, buffer );
@@ -254,19 +249,6 @@ void c_menu::on_paint( HWND hwnd, int width, int height )
 					if ( ImGui::Button( "Delete", ImVec2( 60, 25 ) ) )
 						config.remove( current_config );
 				}
-				ImGui::EndTabItem();
-			}
-
-			if ( ImGui::BeginTabItem( "destruct" ) )
-			{
-				ImGui::Text( "Self-destruct settings" );
-				if ( ImGui::IsItemHovered() )
-					ImGui::SetTooltip( "The self-destruct works when you close the program.\nIt will hide itself and exit when the cleaning process finishes.\nYou will hear a beep when it finishes." );
-
-				ImGui::Separator();
-
-				ImGui::Text( "Hide window key" );
-				keybind_button( config.clicker.i_hide_window_key, 155, 22 );
 
 				ImGui::EndTabItem();
 			}

@@ -30,7 +30,7 @@ class archivex final
 private:
 	TS& stream;
 public:
-	constexpr explicit archivex( TS& stream ): stream{ stream } {}
+	constexpr explicit archivex( TS& stream ): stream { stream } {}
 
 	template <typename T>
 	constexpr const auto& operator<<( const T& item ) const

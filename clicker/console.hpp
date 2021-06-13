@@ -39,7 +39,7 @@ public:
 			SetConsoleTitle( title_name.data() );
 		}
 
-		FILE* conin {}, * conout {};
+		FILE* conin, * conout;
 
 		freopen_s( &conin, "conin$", "r", stdin );
 		freopen_s( &conout, "conout$", "w", stdout );
@@ -54,7 +54,7 @@ public:
 	}
 
 	template< typename ... arg >
-	auto print( const msg_type_t type, const std::string& func, const std::string& format, arg ... a ) -> void
+	void print( const msg_type_t type, const std::string& func, const std::string& format, arg ... a )
 	{
 		static auto* h_console = GetStdHandle( STD_OUTPUT_HANDLE );
 		std::unique_lock<decltype( mutex )> lock( mutex );
