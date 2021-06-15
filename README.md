@@ -2,7 +2,7 @@
 C++ auto-clicker with modern coding style and techniques. Mainly made for Minecraft.
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
-![image](https://b.catgirlsare.sexy/SbG7Offi.png)
+![image](https://b.catgirlsare.sexy/I5f4OpCJ.png)
 
 # Getting started
 
