@@ -1,7 +1,6 @@
 #pragma once
 
-// ~ these variables aren't saved to configuration, only changed at runtime.
-namespace var
+namespace vars
 {
 	namespace key
 	{

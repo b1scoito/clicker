@@ -3,33 +3,35 @@
 
 void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 {
-	static auto x = 0, y = 0;
+	static int x = 0, y = 0;
 
-	ImGui::SetNextWindowSize( ImVec2( static_cast<float>( i_width ), static_cast<float>( i_height ) ), ImGuiCond_Always );
-	ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_Always );
+	ImGui::SetNextWindowSize( { static_cast<float>( i_width ), static_cast<float>( i_height ) }, ImGuiCond_Always );
+	ImGui::SetNextWindowPos( { 0, 0 }, ImGuiCond_Always );
 
-	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-		get_mouse_offset( x, y, hwnd );
+	vars::key::hide_window.i_key = config.clicker.i_hide_window_key;
+	vars::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
 
-	var::key::hide_window.i_key = config.clicker.i_hide_window_key;
-	var::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
+	static auto b_open = true;
 
-	ImGui::Begin( "##var::clicker::begin", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove );
+	if ( !b_open )
+		std::exit( 0 );
+
+	if ( ImGui::Begin( "clicker", &b_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
 	{
-		if ( y >= 0 && y <= ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4.f && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
+		if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
+			get_mouse_offset( x, y, hwnd );
+
+		if ( y >= 0 && y <= ( ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4 ) && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
 			set_position( x, y, i_width, i_height, hwnd );
 
 		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
-			ImGui::SameLine( i_width - 30.f );
-			if ( ImGui::Button( "##close", { 15, 15 } ) ) { std::exit( 0 ); }
-
-			if ( ImGui::BeginTabItem( "clicker" ) )
+			if ( ImGui::BeginTabItem( "mouse" ) )
 			{
 				ImGui::Text( "Keybind" );
 				ImGui::Separator();
 
-				keybind_button( config.clicker.i_clicker_key, 155, 22 );
+				keybind_button( config.clicker.i_clicker_key, 150, 22 );
 
 				ImGui::SameLine();
 
@@ -56,33 +58,28 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 				ImGui::Combo( "##var::clicker::i_version_type", &config.clicker.i_version_type, "Minecraft\0Custom\0\0" );
 
-				if ( config.clicker.i_version_type == 0 )
+				switch ( config.clicker.i_version_type )
 				{
-					ImGui::Checkbox( "Only playing", &config.clicker.b_only_in_game );
-					if ( ImGui::IsItemHovered() )
-						ImGui::SetTooltip( "If enabled, clicker will only work while playing.\nUseful for clicking in game menu." );
-
-					if ( config.clicker.b_only_in_game )
-					{
-						ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
+					case 0:
+						ImGui::Checkbox( "Only playing", &config.clicker.b_only_in_game );
 						if ( ImGui::IsItemHovered() )
-							ImGui::SetTooltip( "If enabled, clicker will work while playing and with the inventory opened." );
-					}
-				}
-				else
-				{
-					config.clicker.b_only_in_game = false;
-					config.clicker.b_work_in_inventory = false;
-				}
+							ImGui::SetTooltip( "If enabled, clicker will only work while playing.\nUseful for clicking in game menu." );
 
-				static char buffer[32];
-				if ( config.clicker.i_version_type == 1 )
-				{
-					ImGui::InputText( "##var::input::buffer", buffer, IM_ARRAYSIZE( buffer ) );
-					if ( ImGui::IsItemHovered() )
-						ImGui::SetTooltip( "If you leave it blank it'll work anywhere." );
+						if ( config.clicker.b_only_in_game )
+						{
+							ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
+							if ( ImGui::IsItemHovered() )
+								ImGui::SetTooltip( "If enabled, clicker will work while playing and with the inventory opened." );
+						}
+						break;
+					case 1:
+						static char buffer[32];
+						ImGui::InputText( "##var::input::buffer", buffer, IM_ARRAYSIZE( buffer ) );
+						if ( ImGui::IsItemHovered() )
+							ImGui::SetTooltip( "If you leave it blank it'll work anywhere." );
 
-					config.clicker.str_window_title = buffer;
+						config.clicker.str_window_title = buffer;
+						break;
 				}
 
 				if ( !config.clicker.b_enable_blatant )
@@ -127,7 +124,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Checkbox( "Advanced options", &config.clicker.b_enable_advanced_options );
 					if ( config.clicker.b_enable_advanced_options )
 					{
-						ImGui::Text( "Persistence update rate" );
+						ImGui::Text( "Maximum update rate delay" );
 						if ( ImGui::IsItemHovered() )
 							ImGui::SetTooltip( "Smaller values, faster cps updates." );
 
@@ -170,13 +167,13 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				{
 					ImGui::Text( "Information" );
 					ImGui::Separator();
-					ImGui::Text( "Clicks this session: %d", var::stats::i_clicks_this_session );
-					ImGui::Text( "Is left button down: %s", var::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is right button down: %s", var::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is hotkey toggled: %s", var::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Clicks this session: %d", vars::stats::i_clicks_this_session );
+					ImGui::Text( "Is left button down: %s", vars::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is right button down: %s", vars::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is window focused: %s", util::extra::is_window_focused() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is cursor visible: %s", util::extra::cursor_handle_status() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is in inventory: %s", var::key::inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is cursor visible: %s", util::extra::cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is in inventory: %s", vars::key::inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Current window name: %ls", util::extra::get_active_window_title().c_str() );
 					ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
 					ImGui::Separator();
@@ -203,7 +200,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				}
 
 				constexpr auto& config_items = config.get_configs();
-				static int current_config = -1;
+				static auto current_config = -1;
 
 				if ( static_cast<size_t>( current_config ) >= config_items.size() )
 					current_config = -1;
@@ -234,7 +231,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 				ImGui::SameLine();
 
-				if ( current_config != -1 )
+				if ( current_config > -1 )
 				{
 					if ( ImGui::Button( "Load", ImVec2( 60, 25 ) ) )
 						config.load( current_config );

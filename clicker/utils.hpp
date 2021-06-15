@@ -71,28 +71,29 @@ namespace util
 		{
 			wchar_t title[256];
 			const auto hwnd = GetForegroundWindow();
-			GetWindowText( hwnd, title, sizeof( title ) );
+			GetWindowText( hwnd, title, sizeof( title ) / 4 );
 			return title;
 		}
 
 		inline bool is_application_focused()
 		{
 			const auto hwnd = GetForegroundWindow();
-			if ( !hwnd ) return false;
+			if ( !hwnd )
+				return false;
 
 			DWORD dw_thread_process_id;
 			GetWindowThreadProcessId( hwnd, &dw_thread_process_id );
 			return ( GetCurrentProcessId() == dw_thread_process_id );
 		}
 
-		inline bool cursor_handle_status()
+		inline bool cursor_visible()
 		{
 			CURSORINFO ci { sizeof( CURSORINFO ) };
 			if ( GetCursorInfo( &ci ) )
 			{
 				const auto handle = ci.hCursor;
 
-				if ( ( handle > (HCURSOR) 50000 ) & ( handle < (HCURSOR) 100000 ) )
+				if ( !( ( handle > (HCURSOR) 50000 ) & ( handle < (HCURSOR) 100000 ) ) )
 					return true;
 			}
 
@@ -105,8 +106,10 @@ namespace util
 			{
 				case 0:
 					return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
+					break;
 				case 1:
-					return get_active_window_title().find( util::string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos;
+					return ( get_active_window_title().find( util::string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
+					break;
 			}
 
 			return false;
@@ -117,12 +120,14 @@ namespace util
 			if ( config.clicker.b_only_in_game )
 			{
 				if ( config.clicker.b_work_in_inventory )
-					return !( cursor_handle_status() ) || ( var::key::inventory_opened && cursor_handle_status() );
+				{
+					return cursor_visible() || ( vars::key::inventory_opened && !cursor_visible() );
+				}
 
-				return !( cursor_handle_status() );
+				return cursor_visible();
 			}
 
-			return true;
+			return false;
 		}
 	}
 }

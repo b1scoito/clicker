@@ -1,23 +1,22 @@
 #pragma once
 
+// for timeBeginPeriod
 #include <timeapi.h>
-#pragma comment(lib, "Winmm.lib")
+#pragma comment(lib, "winmm.lib")
 
 using floating_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
 
-enum class button_t: bool
+enum button_t: bool
 {
-	right = false,
-	left = true
+	right, left
 };
 
-enum class input_type_t: bool
+enum input_type_t: bool
 {
-	up = false,
-	down = true
+	up, down
 };
 
-#define sleep(ms) { timeBeginPeriod(1); clicker.precise_timer_sleep( static_cast<double>( ms / 1000.f ) ); timeEndPeriod(1); }
+#define sleep(ms) { timeBeginPeriod(1); g_clicker.precise_timer_sleep( static_cast<double>( ms / 1000 ) ); timeEndPeriod(1); }
 
 class c_clicker
 {
@@ -45,9 +44,9 @@ private:
 	{
 		POINT pos; GetCursorPos( &pos );
 
-		static_cast<bool>( i_type ) ? ( static_cast<bool>( b_button ) ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+		i_type ? ( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 			PostMessage( GetForegroundWindow(), WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) ) :
-			( static_cast<bool>( b_button ) ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
+			( b_button ? PostMessage( GetForegroundWindow(), WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM( pos.x, pos.y ) ) :
 				PostMessage( GetForegroundWindow(), WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM( pos.x, pos.y ) ) );
 	}
 
@@ -61,8 +60,6 @@ private:
 	bool m_is_left_clicking { false };
 	bool m_is_right_clicking { false };
 
-	float m_persistent_value { 0.f };
-
 public:
 	void init();
 	void update_thread();
@@ -71,64 +68,4 @@ public:
 	c_clicker() = default;
 };
 
-inline auto clicker = c_clicker();
-
-namespace thread
-{
-	namespace click
-	{
-		inline void init()
-		{
-			clicker.init();
-		}
-
-		inline void randomization()
-		{
-			clicker.update_thread();
-		}
-	}
-
-	// had to
-	namespace hooking
-	{
-		inline HHOOK h_hook;
-
-		static LRESULT CALLBACK keyboard_callback( int nCode, WPARAM wParam, LPARAM lParam )
-		{
-			static auto* k_hook = reinterpret_cast<KBDLLHOOKSTRUCT*>( lParam );
-
-			if ( wParam == WM_KEYDOWN && nCode == HC_ACTION && ( wParam >= WM_KEYFIRST ) && ( wParam <= WM_KEYLAST ) )
-			{
-				if ( util::extra::is_window_focused() )
-				{
-					if ( k_hook->vkCode == 69 )
-						var::key::inventory_opened = !var::key::inventory_opened;
-
-					if ( k_hook->vkCode == VK_ESCAPE )
-						var::key::inventory_opened = false;
-				}
-			}
-
-			return CallNextHookEx( h_hook, nCode, wParam, lParam );
-		}
-
-		inline void spawn()
-		{
-			h_hook = SetWindowsHookEx(
-				WH_KEYBOARD_LL,
-				keyboard_callback,
-				nullptr,
-				NULL
-			);
-
-			MSG msg;
-			while ( GetMessage( &msg, nullptr, 0, 0 ) )
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
-			}
-
-			UnhookWindowsHookEx( h_hook );
-		}
-	}
-}
+inline auto g_clicker = c_clicker();

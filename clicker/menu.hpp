@@ -266,7 +266,7 @@ public:
 
 		io.Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 10.f, &icons_config, icons_ranges );
 
-		style.ScrollbarSize = 5.0f;
+		style.ScrollbarSize = 10.0f;
 		style.GrabRounding = 5.0f;
 		style.GrabMinSize = 10.0f;
 		style.FrameRounding = 3.0f;
@@ -279,7 +279,7 @@ public:
 
 		const auto clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
 
-		bool done = false;
+		auto done = false;
 		while ( !done )
 		{
 			MSG msg;
@@ -306,6 +306,7 @@ public:
 			colors[ImGuiCol_PopupBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
 			colors[ImGuiCol_Border] = float_to_imvec4( config.clicker.f_color_accent );
 			colors[ImGuiCol_FrameBg] = ImVec4( 0.15f, 0.15f, 0.15f, 0.54f );
+			colors[ImGuiCol_TitleBgActive] = float_to_imvec4( config.clicker.f_color_accent );
 			colors[ImGuiCol_FrameBgHovered] = ImVec4( 0.19f, 0.19f, 0.19f, 0.54f );
 			colors[ImGuiCol_FrameBgActive] = ImVec4( 0.26f, 0.26f, 0.26f, 0.54f );
 			colors[ImGuiCol_ScrollbarBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );

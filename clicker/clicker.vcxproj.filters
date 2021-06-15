@@ -94,6 +94,9 @@
     <ClInclude Include="keybind.hpp">
       <Filter>utils\keybind</Filter>
     </ClInclude>
+    <ClInclude Include="threads.hpp">
+      <Filter>utils\threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="clicker">
@@ -137,6 +140,9 @@
     </Filter>
     <Filter Include="utils\vars">
       <UniqueIdentifier>{c87a7cbb-b9a7-4307-b963-a65bc9292368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\threads">
+      <UniqueIdentifier>{2fddc2fe-d959-4e3a-b967-7234b06e9dc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

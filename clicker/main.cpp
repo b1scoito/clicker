@@ -1,41 +1,36 @@
 #include "pch.hpp"
-#include "clicker.hpp"
-#include "menu.hpp"
 
-// ~ main entrypoint
 INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 {
-	std::atexit( [] {} );
+	std::atexit( [] { threads::hooking::unhook(); } );
 
 	config.run( "clicker" );
 
 	log_debug( "initializing threads..." );
 
-	if ( !_beginthreadex( nullptr, 0,
-		reinterpret_cast<unsigned( __stdcall* )( void* )>( thread::click::init ), nullptr, 0, nullptr ) )
+	std::vector<std::pair<void*, std::string>> functions =
 	{
-		log_err( "Failed to initialize clicker thread!" );
-		return EXIT_FAILURE;
+		{ threads::clicker::init, "clicker" },
+		{ threads::clicker::randomization, "clicker randomization" },
+		{ threads::hooking::spawn, "hooking" }
+	};
+
+	for ( auto& [func, name] : functions )
+	{
+		log_debug( "spawning %s thread...", name.c_str() );
+
+		if ( !_beginthreadex( nullptr, 0, reinterpret_cast<unsigned( __stdcall* )( void* )>( func ), nullptr, 0, nullptr ) )
+		{
+			log_err( "failed to spawn %s thread!", name.c_str() );
+			return EXIT_FAILURE;
+		}
 	}
 
-	if ( !_beginthreadex( nullptr, 0,
-		reinterpret_cast<unsigned( __stdcall* )( void* )>( thread::click::randomization ), nullptr, 0, nullptr ) )
-	{
-		log_err( "Failed to initialize clicker randomization thread!" );
-		return EXIT_FAILURE;
-	}
-
-	if ( !_beginthreadex( nullptr, 0,
-		reinterpret_cast<unsigned( __stdcall* )( void* )>( thread::hooking::spawn ), nullptr, 0, nullptr ) )
-	{
-		log_err( "Failed to initialize hooking!" );
-		return EXIT_FAILURE;
-	}
-
-	log_debug( "waiting for program end." );
+	log_debug( "calling menu..." );
 	if ( !menu.initialize( 550, 350 ) )
 	{
-		log_err( "Failed to create DirectX9 device!" );
+		log_err( "failed to create DirectX9 device!" );
+		return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;

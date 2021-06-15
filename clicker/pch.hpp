@@ -15,3 +15,6 @@ using namespace std::chrono_literals;
 #include "config.hpp"
 #include "vars.hpp"
 #include "utils.hpp"
+#include "clicker.hpp"
+#include "threads.hpp"
+#include "menu.hpp"

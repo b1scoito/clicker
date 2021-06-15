@@ -2,7 +2,7 @@
 
 #include "archivex.hpp"
 
-#include <ShlObj.h>
+#include <shlobj.h>
 #include <fstream>
 #include <filesystem>
 
