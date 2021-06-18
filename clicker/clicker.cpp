@@ -90,6 +90,8 @@ void c_clicker::update_thread()
 {
 	while ( true )
 	{
+		std::this_thread::sleep_for( 1ms );
+
 		if ( this->m_is_right_clicking || this->m_is_left_clicking )
 		{
 			auto rate = util::random::number( 0,
