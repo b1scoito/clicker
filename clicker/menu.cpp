@@ -19,10 +19,10 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 	if ( ImGui::Begin( "clicker", &b_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
 	{
 		if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-			get_mouse_offset( x, y, hwnd );
+			this->get_mouse_offset( x, y, hwnd );
 
 		if ( y >= 0 && y <= ( ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4 ) && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
-			set_position( x, y, i_width, i_height, hwnd );
+			this->set_position( x, y, i_width, i_height, hwnd );
 
 		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
@@ -31,7 +31,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Text( "Keybind" );
 				ImGui::Separator();
 
-				keybind_button( config.clicker.i_clicker_key, 150, 22 );
+				this->keybind_button( config.clicker.i_clicker_key, 150, 22 );
 
 				ImGui::SameLine();
 
@@ -73,12 +73,12 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 						}
 						break;
 					case 1:
-						static char buffer[32];
-						ImGui::InputText( "##var::input::buffer", buffer, IM_ARRAYSIZE( buffer ) );
+						static char window_name_buffer[32];
+						ImGui::InputText( "##var::input::buffer", window_name_buffer, IM_ARRAYSIZE( window_name_buffer ) );
 						if ( ImGui::IsItemHovered() )
 							ImGui::SetTooltip( "If you leave it blank it'll work anywhere." );
 
-						config.clicker.str_window_title = buffer;
+						config.clicker.str_window_title = window_name_buffer;
 						break;
 				}
 
@@ -168,6 +168,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Text( "Information" );
 					ImGui::Separator();
 					ImGui::Text( "Clicks this session: %d", vars::stats::i_clicks_this_session );
+					ImGui::Text( "Average CPS: %.2f", vars::stats::f_average_cps );
 					ImGui::Text( "Is left button down: %s", vars::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is right button down: %s", vars::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );

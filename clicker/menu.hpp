@@ -55,7 +55,7 @@ private:
 	}
 
 	// ~ returns a key name from a keycode
-	std::string get_key_name_by_id( int i_id )
+	std::string get_key_name_by_id( int id )
 	{
 		static std::unordered_map<int, std::string> key_names = {
 			{ 0, "None" },
@@ -104,16 +104,16 @@ private:
 			{ VK_RMENU, "Right Alt" },
 		};
 
-		if ( i_id >= 0x30 && i_id <= 0x5A )
-			return std::string( 1, (char) i_id );
+		if ( id >= 0x30 && id <= 0x5A )
+			return std::string( 1, (char) id );
 
-		if ( i_id >= 0x60 && i_id <= 0x69 )
-			return "Num " + std::to_string( i_id - 0x60 );
+		if ( id >= 0x60 && id <= 0x69 )
+			return "Num " + std::to_string( id - 0x60 );
 
-		if ( i_id >= 0x70 && i_id <= 0x87 )
-			return "F" + std::to_string( ( i_id - 0x70 ) + 1 );
+		if ( id >= 0x70 && id <= 0x87 )
+			return "F" + std::to_string( ( id - 0x70 ) + 1 );
 
-		return key_names[i_id];
+		return key_names[id];
 	}
 
 	// ~ sets a window handle position
@@ -216,7 +216,7 @@ public:
 
 	__forceinline bool initialize( int width, int height ) noexcept
 	{
-		WNDCLASSEX wc = {
+		const WNDCLASSEX wc = {
 			sizeof( WNDCLASSEX ), CS_CLASSDC,
 			this->wnd_proc,
 			0L, 0L,
@@ -228,7 +228,7 @@ public:
 
 		RegisterClassEx( &wc );
 
-		auto hwnd = CreateWindow(
+		const auto hwnd = CreateWindow(
 			wc.lpszClassName,
 			L"",
 			WS_POPUP,
@@ -239,10 +239,11 @@ public:
 			NULL
 		);
 
-		if ( !create_device_d3d( hwnd ) )
+		if ( !this->create_device_d3d( hwnd ) )
 		{
-			cleanup_device_d3d();
+			this->cleanup_device_d3d();
 			UnregisterClass( wc.lpszClassName, wc.hInstance );
+
 			return false;
 		}
 
@@ -301,35 +302,32 @@ public:
 			ImGui::NewFrame();
 
 			auto* colors = style.Colors;
-			colors[ImGuiCol_Text] = float_to_imvec4( config.clicker.f_color_accent_text );
+			colors[ImGuiCol_Text] = this->float_to_imvec4( config.clicker.f_color_accent_text );
 			colors[ImGuiCol_WindowBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
 			colors[ImGuiCol_PopupBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
-			colors[ImGuiCol_Border] = float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_Border] = this->float_to_imvec4( config.clicker.f_color_accent );
 			colors[ImGuiCol_FrameBg] = ImVec4( 0.15f, 0.15f, 0.15f, 0.54f );
-			colors[ImGuiCol_TitleBgActive] = float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_TitleBgActive] = this->float_to_imvec4( config.clicker.f_color_accent );
 			colors[ImGuiCol_FrameBgHovered] = ImVec4( 0.19f, 0.19f, 0.19f, 0.54f );
 			colors[ImGuiCol_FrameBgActive] = ImVec4( 0.26f, 0.26f, 0.26f, 0.54f );
 			colors[ImGuiCol_ScrollbarBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
-			colors[ImGuiCol_ScrollbarGrab] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_TextSelectedBg] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_CheckMark] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_SliderGrab] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_SliderGrabActive] = float_to_imvec4( config.clicker.f_color_accent_active );
-			colors[ImGuiCol_Button] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_ButtonHovered] = float_to_imvec4( config.clicker.f_color_accent_hovered );
-			colors[ImGuiCol_ButtonActive] = float_to_imvec4( config.clicker.f_color_accent_active );
-			colors[ImGuiCol_Header] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_HeaderHovered] = float_to_imvec4( config.clicker.f_color_accent_hovered );
-			colors[ImGuiCol_HeaderActive] = float_to_imvec4( config.clicker.f_color_accent_active );
-			colors[ImGuiCol_Separator] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_Tab] = float_to_imvec4( config.clicker.f_color_accent );
-			colors[ImGuiCol_TabHovered] = float_to_imvec4( config.clicker.f_color_accent_hovered );
-			colors[ImGuiCol_TabActive] = float_to_imvec4( config.clicker.f_color_accent_active );
+			colors[ImGuiCol_ScrollbarGrab] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_TextSelectedBg] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_CheckMark] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_SliderGrab] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_SliderGrabActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
+			colors[ImGuiCol_Button] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_ButtonHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
+			colors[ImGuiCol_ButtonActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
+			colors[ImGuiCol_Header] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_HeaderHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
+			colors[ImGuiCol_HeaderActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
+			colors[ImGuiCol_Separator] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_Tab] = this->float_to_imvec4( config.clicker.f_color_accent );
+			colors[ImGuiCol_TabHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
+			colors[ImGuiCol_TabActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
 
-			if ( 1000.f / ImGui::GetIO().Framerate < 1000.f / 60 )
-				std::this_thread::sleep_for( std::chrono::milliseconds( (int64_t) ( 1000.f / 60 ) ) );
-
-			on_paint( hwnd, width, height );
+			this->on_paint( hwnd, width, height );
 
 			ImGui::EndFrame();
 
@@ -349,7 +347,7 @@ public:
 			HRESULT result = g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
 			if ( result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET )
-				reset_device();
+				this->reset_device();
 		}
 
 		ImGui_ImplDX9_Shutdown();
@@ -357,7 +355,7 @@ public:
 
 		ImGui::DestroyContext();
 
-		cleanup_device_d3d();
+		this->cleanup_device_d3d();
 
 		DestroyWindow( hwnd );
 
@@ -367,4 +365,4 @@ public:
 	}
 };
 
-inline auto menu = c_menu();
+inline auto g_menu = c_menu();

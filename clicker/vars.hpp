@@ -13,6 +13,7 @@ namespace vars
 
 	namespace stats
 	{
+		inline auto f_average_cps { 0.f };
 		inline auto i_clicks_this_session { 0 };
 	}
 }

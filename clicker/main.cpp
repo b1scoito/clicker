@@ -27,7 +27,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	log_debug( "calling menu..." );
-	if ( !menu.initialize( 550, 350 ) )
+	if ( !g_menu.initialize( 550, 350 ) )
 	{
 		log_err( "failed to create DirectX9 device!" );
 		return EXIT_FAILURE;

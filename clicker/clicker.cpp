@@ -78,10 +78,13 @@ void c_clicker::send_click( button_t b_button, float f_cps, bool& b_is_first_cli
 		m_blockhitted = false;
 	}
 
-	++vars::stats::i_clicks_this_session;
 
 	const auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed { end - start };
+
+	vars::stats::f_average_cps = (float) ( 1000.f / elapsed.count() );
+
+	++vars::stats::i_clicks_this_session;
 
 	log_debug( "cps: [ %.3f ] delay: [ %.3fms ] time elapsed: [ %.3fms ]", f_cps, ( this->m_delay * 2 ), elapsed.count() );
 }
