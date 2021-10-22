@@ -1,5 +1,7 @@
 #pragma once
 
+#include <winternl.h>
+
 namespace string
 {
 	inline std::string to_utf8( std::wstring wstr )
@@ -29,7 +31,44 @@ namespace string
 	}
 }
 
-namespace math
+namespace timer
+{
+	inline void precise_sleep(float ms)
+	{
+		static HMODULE ntdll = NULL;
+		if (!ntdll)
+			ntdll = GetModuleHandle(L"ntdll.dll");
+
+		typedef NTSTATUS(WINAPI* fnNtDelayExecution)(BOOL Alertable, PLARGE_INTEGER DelayInterval);
+		static fnNtDelayExecution oNtDelayExecution = NULL;
+
+		if (!oNtDelayExecution)
+			oNtDelayExecution = (fnNtDelayExecution)GetProcAddress(ntdll, "NtDelayExecution");
+
+		typedef NTSTATUS(WINAPI* fnZwSetTimerResolution)(IN ULONG RequestedResolution, IN BOOLEAN Set, OUT PULONG ActualResolution);
+		static fnZwSetTimerResolution oZwSetTimerResolution = NULL;
+
+		if (!oZwSetTimerResolution)
+			oZwSetTimerResolution = (fnZwSetTimerResolution)GetProcAddress(ntdll, "ZwSetTimerResolution");
+
+		static std::once_flag flag;
+		std::call_once(flag, []()
+			{
+				ULONG current;
+				oZwSetTimerResolution((ULONG)(0.5f * 10000.f), true, &current);
+			});
+
+		if (ms < 0.5f)
+			ms = 0.5f;
+
+		LARGE_INTEGER time = { 0 };
+		time.QuadPart = -1 * (LONGLONG)(ms * 10000.f);
+
+		oNtDelayExecution(false, &time);
+	}
+}
+
+namespace rng
 {
 	template <typename T>
 	T random_range( T start, T end )
@@ -54,50 +93,34 @@ namespace math
 
 namespace input
 {
-	// TODO: More compact and simple single function to send inputs.
-	inline void left_up()
+	// TODO: Melhorar isso tudo
+	enum class mouse_button_t: bool { right, left };
+	enum class mouse_input_type_t: bool { up, down };
+	enum class mouse_type_t : DWORD
+	{
+		left_up = MOUSEEVENTF_LEFTUP,
+		left_down = MOUSEEVENTF_LEFTDOWN,
+
+		right_up = MOUSEEVENTF_RIGHTUP,
+		right_down = MOUSEEVENTF_RIGHTDOWN
+	};
+	
+	inline void send_input(mouse_type_t m_type)
 	{
 		INPUT ip = {};
 		{
 			ip.type = INPUT_MOUSE;
-			ip.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+			ip.mi.dwFlags = (DWORD)m_type;
 		}
 
-		SendInput( 1, &ip, sizeof( INPUT ) );
+		SendInput(1, &ip, sizeof(INPUT));
 	}
 
-	inline void left_down()
+	inline void click(mouse_input_type_t type, mouse_button_t button)
 	{
-		INPUT ip = {};
-		{
-			ip.type = INPUT_MOUSE;
-			ip.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-		}
-
-		SendInput( 1, &ip, sizeof( INPUT ) );
+		(bool)(type) ? (bool)(button) ? send_input(mouse_type_t::left_down) : send_input(mouse_type_t::right_down) : (bool)(button) ? send_input(mouse_type_t::left_up) : send_input(mouse_type_t::right_up);
 	}
 
-	inline void right_up()
-	{
-		INPUT ip = {};
-		{
-			ip.type = INPUT_MOUSE;
-			ip.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
-		}
-
-		SendInput( 1, &ip, sizeof( INPUT ) );
-	}
-
-	inline void right_down()
-	{
-		INPUT ip = {};
-		{
-			ip.type = INPUT_MOUSE;
-			ip.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
-		}
-
-		SendInput( 1, &ip, sizeof( INPUT ) );
-	}
 }
 
 namespace focus
@@ -130,25 +153,28 @@ namespace focus
 	{
 		CURSORINFO ci { sizeof( CURSORINFO ) };
 		if ( !GetCursorInfo( &ci ) )
-			return {};
+			return false;
 
 		const auto handle = ci.hCursor;
 
 		if ( ( handle > (HCURSOR) 50000 ) & ( handle < (HCURSOR) 100000 ) )
 			return true;
 
-		return {};
+		return false;
 	}
 
 	inline bool window_think()
 	{
 		switch ( config.clicker.i_version_type )
 		{
-			case 0: return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
-			case 1: return ( active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
+			case 0: 
+				return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
+			case 1: 
+				return ( active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
+			default: break;
 		}
 
-		return {};
+		return false;
 	}
 
 	inline bool cursor_think()
@@ -160,7 +186,9 @@ namespace focus
 
 			return !is_cursor_visible();
 		}
+		else
+			return is_cursor_visible();
 
-		return {};
+		return false;
 	}
 }

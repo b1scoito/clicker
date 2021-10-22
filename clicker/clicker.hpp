@@ -1,49 +1,11 @@
 #pragma once
 
-// for timeBeginPeriod
-#include <timeapi.h>
-#pragma comment(lib, "winmm.lib")
-
-using floating_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
-
-enum class button_t: bool
-{
-	right, left
-};
-
-enum class input_type_t: bool
-{
-	up, down
-};
-
-#define sleep(ms) { timeBeginPeriod(1); g_clicker.precise_timer_sleep( (double)( ms / 1000 ) ); timeEndPeriod(1); }
+#define sleep(ms) { timer::precise_sleep(ms); }
 
 class c_clicker
 {
 private:
-	void send_click( button_t b_button, float f_cps, bool& b_is_first_click );
-
-	void precise_timer_sleep( double seconds )
-	{
-		while ( seconds > 5e-3 )
-		{
-			auto start = std::chrono::high_resolution_clock::now();
-			std::this_thread::sleep_for( 1ms );
-			auto end = std::chrono::high_resolution_clock::now();
-
-			auto observed = ( end - start ).count() / 1e9;
-			seconds -= observed;
-		}
-
-		/* ~~ spin lock */
-		const auto start = std::chrono::high_resolution_clock::now();
-		while ( ( std::chrono::high_resolution_clock::now() - start ).count() / 1e9 < seconds );
-	}
-
-	void send_mouse_input( input_type_t i_type, button_t b_button )
-	{
-		(bool) ( i_type ) ? (bool) ( b_button ) ? input::left_down() : input::right_down() : (bool) ( b_button ) ? input::left_up() : input::right_up();
-	}
+	void send_click( input::mouse_button_t b_button, float f_cps, bool& b_is_first_click );
 
 	float m_delay { 0.f };
 	float m_random { 0.f };
@@ -63,4 +25,4 @@ public:
 	c_clicker() = default;
 };
 
-inline auto g_clicker = c_clicker();
+inline auto g_clicker = std::make_unique<c_clicker>();

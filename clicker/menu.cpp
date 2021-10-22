@@ -169,8 +169,8 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Separator();
 					ImGui::Text( "Clicks this session: %d", vars::stats::i_clicks_this_session );
 					ImGui::Text( "Average CPS: %.2f", vars::stats::f_average_cps );
-					ImGui::Text( "Is left button down: %s", vars::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is right button down: %s", vars::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is left button down: %s", vars::key::left_mouse.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is right button down: %s", vars::key::right_mouse.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );

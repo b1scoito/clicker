@@ -6,7 +6,7 @@ namespace threads
 	{
 		inline void spawn()
 		{
-			g_clicker.init();
+			g_clicker->init();
 		}
 	}
 
@@ -14,7 +14,7 @@ namespace threads
 	{
 		inline void spawn()
 		{
-			g_clicker.update_thread();
+			g_clicker->update_thread();
 		}
 	}
 

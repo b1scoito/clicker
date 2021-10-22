@@ -58,9 +58,12 @@ public:
 	{
 		switch ( i_mode )
 		{
-			case keybind_state_t::always: return std::string( "on" );
-			case keybind_state_t::hold: return std::string( "hold" );
-			case keybind_state_t::toggle: return std::string( "toggle" );
+			case keybind_state_t::always: 
+				return std::string( "on" );
+			case keybind_state_t::hold: 
+				return std::string( "hold" );
+			case keybind_state_t::toggle: 
+				return std::string( "toggle" );
 		}
 
 		return {};
