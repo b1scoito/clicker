@@ -76,15 +76,6 @@
     <ClInclude Include="imgui\imgui_internal.h">
       <Filter>utils\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>utils\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>utils\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>utils\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\font_data.h">
       <Filter>utils\imgui\impl\fonts</Filter>
     </ClInclude>
@@ -96,6 +87,15 @@
     </ClInclude>
     <ClInclude Include="threads.hpp">
       <Filter>utils\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>utils\imgui\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>utils\imgui\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>utils\imgui\stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +143,9 @@
     </Filter>
     <Filter Include="utils\threads">
       <UniqueIdentifier>{2fddc2fe-d959-4e3a-b967-7234b06e9dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\imgui\stb">
+      <UniqueIdentifier>{64418ae5-488a-44f0-aa10-d31c2dc334ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

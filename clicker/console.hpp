@@ -26,7 +26,7 @@ inline std::ostream& operator<< ( std::ostream& os, const msg_type_t type )
 class logger
 {
 private:
-	std::shared_timed_mutex mutex {};
+	std::shared_timed_mutex mutex;
 
 public:
 	logger( const std::wstring title_name = {} )
@@ -59,14 +59,14 @@ public:
 		static auto* h_console = GetStdHandle( STD_OUTPUT_HANDLE );
 		std::unique_lock<decltype( mutex )> lock( mutex );
 
-		const size_t size = static_cast<size_t>( 1 ) + std::snprintf( nullptr, 0, format.c_str(), a ... );
+		const size_t size = (size_t) ( 1 ) + std::snprintf( nullptr, 0, format.c_str(), a ... );
 		const std::unique_ptr<char[]> buf( new char[size] );
 		std::snprintf( buf.get(), size, format.c_str(), a ... );
 		const auto formated = std::string( buf.get(), buf.get() + size - 1 );
 
 		if ( type != msg_type_t::LNONE )
 		{
-			SetConsoleTextAttribute( h_console, static_cast<WORD>( type ) );
+			SetConsoleTextAttribute( h_console, (WORD) ( type ) );
 			std::cout << "[";
 			std::cout << type;
 			std::cout << "] ";
@@ -74,7 +74,7 @@ public:
 			SetConsoleTextAttribute( h_console, 15 /* white */ );
 			std::cout << "[ ";
 
-			SetConsoleTextAttribute( h_console, static_cast<WORD>( type ) );
+			SetConsoleTextAttribute( h_console, (WORD) ( type ) );
 			std::cout << func;
 
 			SetConsoleTextAttribute( h_console, 15 /* white */ );

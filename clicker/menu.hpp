@@ -2,11 +2,12 @@
 
 #include <d3d9.h>
 #include <unordered_map>
-#include <string> // w
+#include <string>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
+
 #include "imgui/font_definitions.h"
 #include "imgui/font_data.h"
 
@@ -30,7 +31,7 @@ private:
 		static auto b_get = false;
 		static std::string sz_text( "Click to bind" );
 
-		if ( ImGui::Button( sz_text.c_str(), ImVec2( static_cast<float>( i_width ), static_cast<float>( i_height ) ) ) )
+		if ( ImGui::Button( sz_text.c_str(), ImVec2( (float) ( i_width ), (float) ( i_height ) ) ) )
 			b_get = true;
 
 		if ( b_get )

@@ -4,34 +4,37 @@ namespace threads
 {
 	namespace clicker
 	{
-		inline void init()
+		inline void spawn()
 		{
 			g_clicker.init();
 		}
+	}
 
-		inline void randomization()
+	namespace randomization
+	{
+		inline void spawn()
 		{
 			g_clicker.update_thread();
 		}
 	}
 
-	namespace hooking
+	namespace hooks
 	{
 		inline HHOOK h_hook;
 
 		static LRESULT CALLBACK keyboard_callback( int nCode, WPARAM wParam, LPARAM lParam )
 		{
-			static auto* k_hook = reinterpret_cast<KBDLLHOOKSTRUCT*>( lParam );
+			static auto* k_hook = (KBDLLHOOKSTRUCT*) ( lParam );
 
 			if ( wParam == WM_KEYDOWN && nCode == HC_ACTION && ( wParam >= WM_KEYFIRST ) && ( wParam <= WM_KEYLAST ) )
 			{
-				if ( util::extra::is_window_focused() )
+				if ( focus::window_think() )
 				{
 					if ( k_hook->vkCode == 69 /* E */ )
-						vars::key::inventory_opened = !vars::key::inventory_opened;
+						vars::key::b_inventory_opened = !vars::key::b_inventory_opened;
 
 					if ( k_hook->vkCode == VK_ESCAPE )
-						vars::key::inventory_opened = false;
+						vars::key::b_inventory_opened = false;
 				}
 			}
 

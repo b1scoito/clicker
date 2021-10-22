@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "clicker.hpp"
 
+// TODO: Fix clicker
 void c_clicker::init()
 {
 	while ( true )
@@ -14,7 +15,7 @@ void c_clicker::init()
 		static auto first_click = true;
 		if ( vars::key::clicker_enabled.get() )
 		{
-			if ( util::extra::is_window_focused() && util::extra::is_cursor_visible() && !util::extra::is_application_focused() )
+			if ( focus::window_think() && focus::cursor_think() && !focus::is_self_focused() )
 			{
 				// left
 				//
@@ -48,7 +49,7 @@ void c_clicker::send_click( button_t b_button, float f_cps, bool& b_is_first_cli
 
 	if ( !config.clicker.b_enable_blatant )
 	{
-		this->m_delay += util::random::number( -config.clicker.f_default_timer_randomization,
+		this->m_delay += math::random_real<float>( -config.clicker.f_default_timer_randomization,
 			config.clicker.f_default_timer_randomization );
 	}
 
@@ -97,8 +98,7 @@ void c_clicker::update_thread()
 
 		if ( this->m_is_right_clicking || this->m_is_left_clicking )
 		{
-			auto rate = util::random::number( 0,
-				config.clicker.f_persistence_update_rate );
+			auto rate = math::random_real<float>( 0, config.clicker.f_persistence_update_rate );
 
 			if ( this->m_should_update )
 			{
@@ -107,7 +107,7 @@ void c_clicker::update_thread()
 				// ~ persistence
 				if ( config.clicker.b_enable_persistence )
 				{
-					m_random = util::random::number( -config.clicker.f_persistence_value, config.clicker.f_persistence_value );
+					m_random = math::random_real<float>( -config.clicker.f_persistence_value, config.clicker.f_persistence_value );
 				}
 
 				// ~ cps drops

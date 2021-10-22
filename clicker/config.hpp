@@ -11,6 +11,7 @@ class c_config
 private:
 	std::filesystem::path path;
 	std::vector<std::string> configs;
+
 public:
 	void run( std::string name );
 	void load( size_t id );
@@ -68,7 +69,6 @@ public:
 		float f_color_accent_text[4] { 0.94f, 0.94f, 0.94f, 1.00f };
 
 		std::string str_window_title;
-
 	} clicker;
 };
 

@@ -5,8 +5,8 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 {
 	static int x = 0, y = 0;
 
-	ImGui::SetNextWindowSize( { static_cast<float>( i_width ), static_cast<float>( i_height ) }, ImGuiCond_Always );
-	ImGui::SetNextWindowPos( { 0, 0 }, ImGuiCond_Always );
+	ImGui::SetNextWindowSize( { (float) ( i_width ), (float) ( i_height ) }, ImGuiCond_Once );
+	ImGui::SetNextWindowPos( { 0, 0 }, ImGuiCond_Once );
 
 	vars::key::hide_window.i_key = config.clicker.i_hide_window_key;
 	vars::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
@@ -172,13 +172,13 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Text( "Is left button down: %s", vars::key::left_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is right button down: %s", vars::key::right_clicker_down.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is window focused: %s", util::extra::is_window_focused() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is cursor visible: %s", util::extra::cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is in inventory: %s", vars::key::inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Current window name: %ls", util::extra::get_active_window_title().c_str() );
+					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Current window name: %ls", focus::active_window_title().c_str() );
 					ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
 					ImGui::Separator();
-					ImGui::Text( "Repository: https://github.com/b1scoito/clicker" );
+					ImGui::Text( "https://github.com/b1scoito/clicker" );
 				}
 
 				ImGui::EndTabItem();
@@ -203,7 +203,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				constexpr auto& config_items = config.get_configs();
 				static auto current_config = -1;
 
-				if ( static_cast<size_t>( current_config ) >= config_items.size() )
+				if ( (size_t) ( current_config ) >= config_items.size() )
 					current_config = -1;
 
 				static char buffer[32];
@@ -211,10 +211,10 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Text( "Configs" );
 				if ( ImGui::ListBox( "##var::clicker::config_list", &current_config, []( void* data, int idx, const char** out_text )
 				{
-					auto& vector = *static_cast<std::vector<std::string> *>( data );
+					auto& vector = *( std::vector<std::string> * )( data );
 					*out_text = vector[idx].c_str();
 					return true;
-				}, &config_items, static_cast<int>( config_items.size() ), 5 ) && current_config != -1 ) strcpy_s( buffer, config_items[current_config].c_str() );
+				}, &config_items, (int) ( config_items.size() ), 5 ) && current_config != -1 ) strcpy_s( buffer, config_items[current_config].c_str() );
 
 				if ( ImGui::InputText( "##var::clicker::config_name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
 				{
@@ -234,13 +234,13 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 				if ( current_config > -1 )
 				{
-					if ( ImGui::Button( "Load", ImVec2( 60, 25 ) ) )
-						config.load( current_config );
+					if ( ImGui::Button( "Save", ImVec2( 60, 25 ) ) )
+						config.save( current_config );
 
 					ImGui::SameLine();
 
-					if ( ImGui::Button( "Save", ImVec2( 60, 25 ) ) )
-						config.save( current_config );
+					if ( ImGui::Button( "Load", ImVec2( 60, 25 ) ) )
+						config.load( current_config );
 
 					ImGui::SameLine();
 
