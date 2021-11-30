@@ -12,7 +12,7 @@
       <Filter>menu</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>utils\pch</Filter>
+      <Filter>utils\precompiled</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx9.cpp">
       <Filter>utils\imgui\impl\dx9</Filter>
@@ -34,6 +34,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>utils\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="threads.cpp">
+      <Filter>utils\threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +62,7 @@
       <Filter>utils\vars</Filter>
     </ClInclude>
     <ClInclude Include="pch.hpp">
-      <Filter>utils\pch</Filter>
+      <Filter>utils\precompiled</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui_impl_dx9.h">
       <Filter>utils\imgui\impl\dx9</Filter>
@@ -129,9 +132,6 @@
     <Filter Include="utils\imgui\impl\fonts">
       <UniqueIdentifier>{e03d8ee1-45d8-48e9-908e-5068534f2c83}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils\pch">
-      <UniqueIdentifier>{4b318143-ea30-4b46-875b-edfdf4ad9267}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils\utils">
       <UniqueIdentifier>{40cd9742-07b4-40cf-b1be-d3baf0050cf2}</UniqueIdentifier>
     </Filter>
@@ -146,6 +146,9 @@
     </Filter>
     <Filter Include="utils\imgui\stb">
       <UniqueIdentifier>{64418ae5-488a-44f0-aa10-d31c2dc334ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\precompiled">
+      <UniqueIdentifier>{4b318143-ea30-4b46-875b-edfdf4ad9267}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

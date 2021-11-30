@@ -4,6 +4,7 @@
 
 namespace string
 {
+	// Try to port the whole project to unicode (Hello ImGui?)
 	inline std::string to_utf8( std::wstring wstr )
 	{
 		if ( wstr.empty() )
@@ -93,32 +94,32 @@ namespace rng
 
 namespace input
 {
-	// TODO: Melhorar isso tudo
+	// TODO: Fix this logic
 	enum class mouse_button_t: bool { right, left };
 	enum class mouse_input_type_t: bool { up, down };
+	enum class mouse_side_t: DWORD
+	{
+		left = MK_LBUTTON,
+		right = MK_RBUTTON
+	};
 	enum class mouse_type_t : DWORD
 	{
-		left_up = MOUSEEVENTF_LEFTUP,
-		left_down = MOUSEEVENTF_LEFTDOWN,
+		left_up = WM_LBUTTONUP,
+		left_down = WM_LBUTTONDOWN,
 
-		right_up = MOUSEEVENTF_RIGHTUP,
-		right_down = MOUSEEVENTF_RIGHTDOWN
+		right_up = WM_RBUTTONUP,
+		right_down = WM_RBUTTONDOWN
 	};
 	
-	inline void send_input(mouse_type_t m_type)
+	inline void send_input(mouse_type_t m_type, mouse_side_t m_side)
 	{
-		INPUT ip = {};
-		{
-			ip.type = INPUT_MOUSE;
-			ip.mi.dwFlags = (DWORD)m_type;
-		}
-
-		SendInput(1, &ip, sizeof(INPUT));
+		// Change to RawInput in the future.
+		SendMessage( GetForegroundWindow(), (DWORD)m_type, (DWORD)m_side, NULL );
 	}
 
 	inline void click(mouse_input_type_t type, mouse_button_t button)
 	{
-		(bool)(type) ? (bool)(button) ? send_input(mouse_type_t::left_down) : send_input(mouse_type_t::right_down) : (bool)(button) ? send_input(mouse_type_t::left_up) : send_input(mouse_type_t::right_up);
+		(bool)(type) ? (bool)(button) ? send_input(mouse_type_t::left_down, mouse_side_t::left) : send_input(mouse_type_t::right_down, mouse_side_t::right) : (bool)(button) ? send_input(mouse_type_t::left_up, mouse_side_t::left) : send_input(mouse_type_t::right_up, mouse_side_t::right);
 	}
 
 }
@@ -137,6 +138,7 @@ namespace focus
 		return title;
 	}
 
+	// Can get better?
 	inline bool is_self_focused()
 	{
 		const auto hwnd = GetForegroundWindow();
@@ -149,6 +151,7 @@ namespace focus
 		return ( GetCurrentProcessId() == dw_thread_process_id );
 	}
 
+	// Can get better?
 	inline bool is_cursor_visible()
 	{
 		CURSORINFO ci { sizeof( CURSORINFO ) };
@@ -165,13 +168,17 @@ namespace focus
 
 	inline bool window_think()
 	{
-		switch ( config.clicker.i_version_type )
+		if ( !focus::is_self_focused() )
 		{
-			case 0: 
-				return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
-			case 1: 
-				return ( active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
-			default: break;
+			switch ( config.clicker.i_version_type )
+			{
+				case 0: 
+					return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
+				case 1: 
+					return ( active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
+				default: 
+					return {};
+			}
 		}
 
 		return false;
@@ -182,13 +189,11 @@ namespace focus
 		if ( config.clicker.b_only_in_game )
 		{
 			if ( config.clicker.b_work_in_inventory )
-				return !is_cursor_visible() || ( vars::key::b_inventory_opened && is_cursor_visible() );
+				return !(is_cursor_visible()) || ( vars::key::b_inventory_opened && is_cursor_visible() );
 
-			return !is_cursor_visible();
+			return !(is_cursor_visible());
 		}
-		else
-			return is_cursor_visible();
 
-		return false;
+		return true;
 	}
 }
