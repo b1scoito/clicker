@@ -177,9 +177,12 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Current window name: %ls", focus::active_window_title().c_str() );
 					ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
-					ImGui::Separator();
-					ImGui::Text( "https://github.com/b1scoito/clicker" );
 				}
+
+				ImGui::Separator();
+				ImGui::Text( "https://github.com/b1scoito/clicker" );
+				if ( ImGui::IsItemClicked( ImGuiMouseButton_Left ) )
+					ShellExecute( 0, 0, L"https://github.com/b1scoito/clicker", 0, 0, SW_SHOW );
 
 				ImGui::EndTabItem();
 			}

@@ -1,8 +1,10 @@
 #pragma once
 
-#include <d3d9.h>
 #include <unordered_map>
 #include <string>
+
+#include <d3d9.h>
+#include <shellapi.h>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
