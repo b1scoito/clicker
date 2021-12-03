@@ -1,13 +1,11 @@
 #include "pch.hpp"
 #include "clicker.hpp"
 
-// TODO: Fix clicker
 void c_clicker::init()
 {
-	// Get rid of the inifite loop
-	while ( true )
+	while ( vars::b_is_running )
 	{
-		if ( !this->m_is_right_clicking || !this->m_is_left_clicking )
+		if ( !this->is_right_clicking || !this->is_left_clicking )
 			std::this_thread::sleep_for( 1ms );
 
 		vars::key::clicker_enabled.i_mode = config.clicker.i_key_type;
@@ -18,15 +16,13 @@ void c_clicker::init()
 			if ( focus::window_think() && focus::cursor_think() )
 			{
 				// left
-				this->m_is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down );
-
-				if ( this->m_is_left_clicking )
+				this->is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down );
+				if ( this->is_left_clicking )
 					this->send_click(input::mouse_button_t::left, config.clicker.f_left_cps, vars::key::l_is_first_click );
 
 				// right
-				this->m_is_right_clicking = ( config.clicker.b_enable_right_clicker && vars::key::is_right_down);
-
-				if ( this->m_is_right_clicking )
+				this->is_right_clicking = ( config.clicker.b_enable_right_clicker && vars::key::is_right_down);
+				if ( this->is_right_clicking )
 					this->send_click(input::mouse_button_t::right, config.clicker.f_right_cps, vars::key::r_is_first_click );
 			}
 		}
@@ -41,36 +37,39 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_
 		return;
 
 	if ( !config.clicker.b_enable_blatant )
-		f_cps += this->m_random;
+		f_cps += this->random;
 
-	this->m_delay = ( 1000 / f_cps ) / 2;
+	this->delay = ( 1000 / f_cps ) / 2;
 
 	if ( !config.clicker.b_enable_blatant )
-		this->m_delay += rng::random_real<float>( -config.clicker.f_default_timer_randomization, config.clicker.f_default_timer_randomization );
+		this->delay += rng::random_real<float>( -config.clicker.f_default_timer_randomization, 
+			config.clicker.f_default_timer_randomization );
 	
 	if ( b_is_first_click )
 	{
-		sleep( this->m_delay );
+		PreciseSleep( this->delay );
 		input::click( input::mouse_input_type_t::up, b_button );
 		b_is_first_click = false;
 	}
 
-	sleep( this->m_delay );
+	PreciseSleep( this->delay );
 	input::click( input::mouse_input_type_t::down, b_button );
 
-	if ( config.clicker.b_enable_blockhit && config.clicker.i_blockhit_chance > 0 && std::rand() % ( 100 / config.clicker.i_blockhit_chance ) == 0 )
+	if ( config.clicker.b_enable_blockhit && 
+		config.clicker.i_blockhit_chance > 0 && 
+		std::rand() % ( 100 / config.clicker.i_blockhit_chance ) == 0 )
 	{
-		this->m_blockhitted = true;
+		this->blockhitted = true;
 		input::click( input::mouse_input_type_t::down, input::mouse_button_t::right );
 	}
 
-	sleep( this->m_delay );
+	PreciseSleep( this->delay );
 	input::click( input::mouse_input_type_t::up, b_button );
 
-	if (this->m_blockhitted)
+	if (this->blockhitted)
 	{
-		input::click(input::mouse_input_type_t::up, b_button);
-		m_blockhitted = false;
+		input::click(input::mouse_input_type_t::up, input::mouse_button_t::right );
+		blockhitted = false;
 	}
 
 	const auto end = std::chrono::high_resolution_clock::now();
@@ -80,42 +79,55 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_
 
 	++vars::stats::i_clicks_this_session;
 
-	log_debug( "cps: [ %.3f ] delay: [ %.3fms ] time elapsed: [ %.3fms ]", f_cps, ( this->m_delay * 2 ), elapsed.count() );
+	log_debug( "[%d]: CPS: [ %.3f ] Delay: [ %.3fms ] Time elapsed: [ %.3fms ] Avg CPS: [ %.3fms ]", 
+		vars::stats::i_clicks_this_session, 
+		f_cps, 
+		( this->delay * 2 ), 
+		elapsed.count(), 
+		vars::stats::f_average_cps
+	);
 }
 
 void c_clicker::update_thread()
 {
-	while ( true )
+	while ( vars::b_is_running )
 	{
-		std::this_thread::sleep_for( 1ms );
+		if ( !this->is_right_clicking || !this->is_left_clicking )
+			std::this_thread::sleep_for( 1ms );
 
-		if ( this->m_is_right_clicking || this->m_is_left_clicking )
+		auto rate = rng::random_real<float>( 0, config.clicker.f_persistence_update_rate );
+
+		if ( this->should_update )
 		{
-			auto rate = rng::random_real<float>( 0, config.clicker.f_persistence_update_rate );
+			log_debug( "Update %.3fms", rate );
 
-			if ( this->m_should_update )
+			// Persistence
+			if ( config.clicker.b_enable_persistence )
+				random = rng::random_real<float>( -config.clicker.f_persistence_value,
+					config.clicker.f_persistence_value );
+
+			// CPS Drops
+			if ( config.clicker.b_enable_cps_drops &&
+				config.clicker.i_cps_drop_chance > 0 &&
+				( std::rand() % ( 100 / config.clicker.i_cps_drop_chance ) == 0 ) )
 			{
-				log_debug( "Update %.3fms", rate );
-
-				// persistence
-				if ( config.clicker.b_enable_persistence )
-					m_random = rng::random_real<float>( -config.clicker.f_persistence_value, config.clicker.f_persistence_value );
-
-				// cps drops
-				if ( config.clicker.b_enable_cps_drops && config.clicker.i_cps_drop_chance > 0 && ( std::rand() % ( 100 / config.clicker.i_cps_drop_chance ) == 0 ) )
-					m_random -= config.clicker.f_cps_drop_remove;
-
-				// cps spikes
-				if ( config.clicker.b_enable_cps_spikes && config.clicker.i_cps_spike_chance > 0 && ( std::rand() % ( 100 / config.clicker.i_cps_spike_chance ) == 0 ) )
-					m_random += config.clicker.f_cps_spike_add;
-
-				this->m_should_update = false;
+				random -= config.clicker.f_cps_drop_remove;
 			}
 
-			sleep( rate );
+			// CPS Spikes
+			if ( config.clicker.b_enable_cps_spikes &&
+				config.clicker.i_cps_spike_chance > 0 &&
+				( std::rand() % ( 100 / config.clicker.i_cps_spike_chance ) == 0 ) )
+			{
+				random += config.clicker.f_cps_spike_add;
+			}
 
-			this->m_random = {};
-			this->m_should_update = true;
+			this->should_update = false;
 		}
+
+		PreciseSleep( rate );
+
+		this->random = {};
+		this->should_update = true;
 	}
 }

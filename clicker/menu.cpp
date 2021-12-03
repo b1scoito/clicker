@@ -5,18 +5,16 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 {
 	static int x = 0, y = 0;
 
-	ImGui::SetNextWindowSize( { (float) ( i_width ), (float) ( i_height ) }, ImGuiCond_Once );
+	ImGui::SetNextWindowSize( { (float)i_width, (float)i_height }, ImGuiCond_Once );
 	ImGui::SetNextWindowPos( { 0, 0 }, ImGuiCond_Once );
 
 	vars::key::hide_window.i_key = config.clicker.i_hide_window_key;
 	vars::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
 
-	static auto b_open = true;
-
-	if ( !b_open )
+	if ( !vars::b_is_running )
 		std::exit( 0 );
 
-	if ( ImGui::Begin( "clicker", &b_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
+	if ( ImGui::Begin( "clicker", &vars::b_is_running, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
 	{
 		if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
 			this->get_mouse_offset( x, y, hwnd );
@@ -26,7 +24,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
-			if ( ImGui::BeginTabItem( "mouse" ) )
+			if ( ImGui::BeginTabItem( "Mouse" ) )
 			{
 				ImGui::Text( "Keybind" );
 				ImGui::Separator();
@@ -39,7 +37,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Combo( "##var::clicker::i_key_type", &config.clicker.i_key_type, "Always\0Hold\0Toggle\0\0" );
 				ImGui::PopItemWidth();
 
-				ImGui::Text( "Clicker configuration" );
+				ImGui::Text( "General" );
 				if ( ImGui::IsItemHovered() )
 					ImGui::SetTooltip( "Press Ctrl + Left click on the slider for custom values.\nValues between 9.5f - 12.5f are recommended for bypassing server-sided anti-cheats." );
 
@@ -53,7 +51,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				if ( config.clicker.b_enable_right_clicker )
 					ImGui::SliderFloat( "##var::clicker::f_right_cps", &config.clicker.f_right_cps, 1.f, 20.f, "%.2f cps" );
 
-				ImGui::Text( "Focus settings" );
+				ImGui::Text( "Focus" );
 				ImGui::Separator();
 
 				ImGui::Combo( "##var::clicker::i_version_type", &config.clicker.i_version_type, "Minecraft\0Custom\0\0" );
@@ -61,16 +59,9 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				switch ( config.clicker.i_version_type )
 				{
 					case 0:
-						ImGui::Checkbox( "Only playing", &config.clicker.b_only_in_game );
-						if ( ImGui::IsItemHovered() )
-							ImGui::SetTooltip( "If enabled, clicker will only work while playing.\nUseful for clicking in game menu." );
-
-						if ( config.clicker.b_only_in_game )
-						{
 							ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
 							if ( ImGui::IsItemHovered() )
-								ImGui::SetTooltip( "If enabled, clicker will work while playing and with the inventory opened." );
-						}
+								ImGui::SetTooltip( "If enabled, the clicker will work with the inventory opened." );
 						break;
 					case 1:
 						static char window_name_buffer[32];
@@ -89,7 +80,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 					ImGui::Checkbox( "Persistence", &config.clicker.b_enable_persistence );
 					if ( ImGui::IsItemHovered() )
-						ImGui::SetTooltip( "This randomization is applied in a short period of time,\nset to the defined cps randomized.\nRecommended." );
+						ImGui::SetTooltip( "This randomization is applied in a short period of time set to the defined CPS.\nRecommended." );
 
 					if ( config.clicker.b_enable_persistence )
 						ImGui::SliderFloat( "##var::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps" );
@@ -126,13 +117,13 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					{
 						ImGui::Text( "Maximum update rate delay" );
 						if ( ImGui::IsItemHovered() )
-							ImGui::SetTooltip( "Smaller values, faster cps updates." );
+							ImGui::SetTooltip( "Maximum CPS rate delay update." );
 
 						ImGui::SliderFloat( "##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 500.f, 10000.f, "%.1f ms" );
 
 						ImGui::Text( "Default timer randomization" );
 						if ( ImGui::IsItemHovered() )
-							ImGui::SetTooltip( "Timer time delay variation. Much fancy words" );
+							ImGui::SetTooltip( "Default timer delay variation." );
 
 						ImGui::SliderFloat( "##var::clicker::f_default_timer_randomization", &config.clicker.f_default_timer_randomization, 1.f, 15.f, "%.1f ms" );
 					}
@@ -141,12 +132,12 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Separator();
 				ImGui::Checkbox( "Blatant", &config.clicker.b_enable_blatant );
 				if ( ImGui::IsItemHovered() )
-					ImGui::SetTooltip( "If this is checked no randomization will be added.\nUse it at your own risk." );
+					ImGui::SetTooltip( "If this is enabled no randomization will be added. Use it at your own risk." );
 
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "misc" ) )
+			if ( ImGui::BeginTabItem( "Misc" ) )
 			{
 				ImGui::Text( "Hide" );
 				ImGui::Separator();
@@ -181,13 +172,15 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 				ImGui::Separator();
 				ImGui::Text( "https://github.com/b1scoito/clicker" );
+				if ( ImGui::IsItemHovered() )
+					ImGui::SetTooltip( "Click me!" );
 				if ( ImGui::IsItemClicked( ImGuiMouseButton_Left ) )
 					ShellExecute( 0, 0, L"https://github.com/b1scoito/clicker", 0, 0, SW_SHOW );
 
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "config" ) )
+			if ( ImGui::BeginTabItem( "Config" ) )
 			{
 				ImGui::Text( "Config settings" );
 				ImGui::Separator();
@@ -253,6 +246,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 
 				ImGui::EndTabItem();
 			}
+			
 			ImGui::EndTabBar();
 		}
 		ImGui::End();

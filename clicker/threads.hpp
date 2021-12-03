@@ -1,5 +1,7 @@
 #pragma once
 
+#include "clicker.hpp"
+
 namespace threads
 {
 	// Find a better way to sort this out

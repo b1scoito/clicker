@@ -77,6 +77,7 @@
     </ClCompile>
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="threads.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clicker.hpp" />

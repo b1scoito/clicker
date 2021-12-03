@@ -38,6 +38,9 @@
     <ClCompile Include="threads.cpp">
       <Filter>utils\threads</Filter>
     </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>utils\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="archivex.hpp">

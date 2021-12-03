@@ -7,14 +7,14 @@ DWORD WINAPI threads::spawn_hooks()
 	oLowLevelKeyboardProc = SetWindowsHookEx( WH_KEYBOARD_LL, LowLevelKeyboardProc, nullptr, 0 );
 	if ( !oLowLevelKeyboardProc )
 	{
-		// Failed to setup WH_KEYBOARD_LL
+		log_err( "Failed to setup WH_KEYBOARD_LL" );
 		return EXIT_SUCCESS;
 	}
 
 	oLowLevelMouseProc = SetWindowsHookEx( WH_MOUSE_LL, LowLevelMouseProc, nullptr, 0 );
 	if ( !oLowLevelMouseProc )
 	{
-		// Failed to setup WH_MOUSE_LL
+		log_err( "Failed to setup WH_MOUSE_LL" );
 		return EXIT_SUCCESS;
 	}
 
@@ -71,17 +71,17 @@ LRESULT CALLBACK threads::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM
 {
 	if ( nCode == HC_ACTION )
 	{
-		auto mi = *( (KBDLLHOOKSTRUCT*) lParam );
+		auto ki = *( (KBDLLHOOKSTRUCT*) lParam );
 
 		switch ( wParam )
 		{
 			case WM_KEYDOWN:
 				if ( focus::window_think() )
 				{
-					if ( mi.vkCode == 69 /* E */ )
+					if ( ki.vkCode == 69 /* E */ )
 						vars::key::b_inventory_opened = !vars::key::b_inventory_opened;
 
-					if ( mi.vkCode == VK_ESCAPE )
+					if ( ki.vkCode == VK_ESCAPE )
 						vars::key::b_inventory_opened = false;
 				}
 				break;
