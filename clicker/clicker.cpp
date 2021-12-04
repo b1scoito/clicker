@@ -8,7 +8,7 @@ void c_clicker::init()
 		if ( !this->is_right_clicking || !this->is_left_clicking )
 			std::this_thread::sleep_for( 1ms );
 
-		vars::key::clicker_enabled.i_mode = config.clicker.i_key_type;
+		vars::key::clicker_enabled.i_mode = config.clicker.i_key_type; 
 		vars::key::clicker_enabled.i_key = config.clicker.i_clicker_key;
 
 		if ( vars::key::clicker_enabled.get() )

@@ -6,7 +6,6 @@
 #include <iostream>
 #include <thread>
 #include <random>
-#include <functional>
 
 #include <windows.h>
 

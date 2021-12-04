@@ -5,20 +5,20 @@
 enum class msg_type_t: std::uint32_t
 {
 	LNONE = 0,
-	LSUCCESS = 10,	/* green */
 	LDEBUG = 9,		/* blue */
-	LWARN = 14,		/* yellow */
-	LERROR = 12		/* red */
+	LSUCCESS = 10,	/* green */
+	LERROR = 12,	/* red */
+	LWARN = 14		/* yellow */
 };
 
 inline std::ostream& operator<< ( std::ostream& os, const msg_type_t type )
 {
 	switch ( type )
 	{
-		case msg_type_t::LSUCCESS:	return os << ">>";
-		case msg_type_t::LDEBUG:	return os << "..";
-		case msg_type_t::LWARN:		return os << "**";
-		case msg_type_t::LERROR:	return os << "!!";
+		case msg_type_t::LDEBUG:	return os << ".";
+		case msg_type_t::LSUCCESS:	return os << "+";
+		case msg_type_t::LERROR:	return os << "!";
+		case msg_type_t::LWARN:		return os << "*";
 		default: return os << "";
 	}
 }
@@ -29,15 +29,13 @@ private:
 	std::shared_timed_mutex mutex;
 
 public:
-	logger( const std::wstring title_name = {} )
+	logger( const std::wstring_view title_name = {} )
 	{
 		AllocConsole();
 		AttachConsole( GetCurrentProcessId() );
 
 		if ( !title_name.empty() )
-		{
 			SetConsoleTitle( title_name.data() );
-		}
 
 		FILE* conin, * conout;
 
@@ -54,7 +52,7 @@ public:
 	}
 
 	template< typename ... arg >
-	void print( const msg_type_t type, const std::string& func, const std::string& format, arg ... a )
+	void print( const msg_type_t type, const std::string_view& func, const std::string& format, arg ... a )
 	{
 		static auto* h_console = GetStdHandle( STD_OUTPUT_HANDLE );
 		std::unique_lock<decltype( mutex )> lock( mutex );
@@ -91,16 +89,16 @@ public:
 };
 
 #ifdef _DEBUG
-inline auto g_logger = logger( L"-> clicker debug" );
-#define log_raw(...) g_logger.print( msg_type_t::LNONE, __FUNCTION__, __VA_ARGS__ )
-#define log_ok(...) g_logger.print( msg_type_t::LSUCCESS, __FUNCTION__, __VA_ARGS__ )
-#define log_debug(...) g_logger.print( msg_type_t::LDEBUG, __FUNCTION__, __VA_ARGS__ )
-#define log_warn(...) g_logger.print( msg_type_t::LWARN, __FUNCTION__, __VA_ARGS__ )
-#define log_err(...) g_logger.print( msg_type_t::LERROR, __FUNCTION__, __VA_ARGS__ )
+inline auto g_logger = logger( L"> clicker debug" );
+#define log_debug(...)	g_logger.print( msg_type_t::LDEBUG, __FUNCTION__, __VA_ARGS__ )
+#define log_ok(...)		g_logger.print( msg_type_t::LSUCCESS, __FUNCTION__, __VA_ARGS__ )
+#define log_err(...)	g_logger.print( msg_type_t::LERROR, __FUNCTION__, __VA_ARGS__ )
+#define log_warn(...)	g_logger.print( msg_type_t::LWARN, __FUNCTION__, __VA_ARGS__ )
+#define log_raw(...)	g_logger.print( msg_type_t::LNONE, __FUNCTION__, __VA_ARGS__ )
 #else
-#define log_raw(...)
-#define log_ok(...)
 #define log_debug(...)
-#define log_warn(...)
+#define log_ok(...)
 #define log_err(...)
+#define log_warn(...)
+#define log_raw(...)
 #endif

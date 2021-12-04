@@ -3,6 +3,8 @@
 #include "threads.hpp"
 #include "menu.hpp"
 
+#include <functional>
+
 INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 {
 	std::atexit( [] { 
@@ -26,7 +28,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		std::thread( func ).detach();
 
 	log_debug( "Waiting for program end." );
-	if ( !g_menu.initialize( 550, 350 ) )
+	if ( !g_menu->init( 600, 350 ) )
 	{
 		log_err( "Failed to create DX9 device!" );
 		return EXIT_FAILURE;
