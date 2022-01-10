@@ -38,6 +38,9 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 Install the following
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
 
+## Known issues
+- The mouse hook is known to make the cursor teleport on Minecraft, this will be fixed on the next update alongside with other features like changing the way inputs are sent.
+
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
 
