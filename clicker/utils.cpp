@@ -71,12 +71,19 @@ namespace input
 {
 	void send_input( mouse_type_t m_type, mouse_side_t m_side )
 	{
-		SendMessage( GetForegroundWindow(), (DWORD) m_type, (DWORD) m_side, NULL );
+		POINT pos; if (!GetCursorPos(&pos)) return;
+		SendMessage( GetForegroundWindow(), (DWORD) m_type, (DWORD) m_side, MAKELPARAM(pos.x, pos.y) );
 	}
 
 	void click( mouse_input_type_t type, mouse_button_t button )
 	{
-		(bool) ( type ) ? (bool) ( button ) ? send_input( mouse_type_t::left_down, mouse_side_t::left ) : send_input( mouse_type_t::right_down, mouse_side_t::right ) : (bool) ( button ) ? send_input( mouse_type_t::left_up, mouse_side_t::left ) : send_input( mouse_type_t::right_up, mouse_side_t::right );
+		(bool) ( type ) ? 
+			(bool) ( button ) ? 
+			send_input( mouse_type_t::left_down, mouse_side_t::left ):
+			send_input( mouse_type_t::right_down, mouse_side_t::right ):
+			(bool) ( button ) ? 
+			send_input( mouse_type_t::left_up, mouse_side_t::left ):
+			send_input( mouse_type_t::right_up, mouse_side_t::right );
 	}
 
 }

@@ -35,9 +35,6 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>utils\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="threads.cpp">
-      <Filter>utils\threads</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>utils\utils</Filter>
     </ClCompile>
@@ -90,9 +87,6 @@
     </ClInclude>
     <ClInclude Include="keybind.hpp">
       <Filter>utils\keybind</Filter>
-    </ClInclude>
-    <ClInclude Include="threads.hpp">
-      <Filter>utils\threads</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_rectpack.h">
       <Filter>utils\imgui\stb</Filter>

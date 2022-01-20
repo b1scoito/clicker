@@ -17,8 +17,8 @@ private:
 	bool is_right_clicking = false;
 
 public:
-	void init();
-	void update_thread();
+	void initialize();
+	void update();
 
 	~c_clicker() = default;
 	c_clicker() = default;

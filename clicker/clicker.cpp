@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "clicker.hpp"
 
-void c_clicker::init()
+void c_clicker::initialize()
 {
 	while ( vars::b_is_running )
 	{
@@ -16,14 +16,14 @@ void c_clicker::init()
 			if ( focus::window_think() && focus::cursor_think() )
 			{
 				// left
-				this->is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down );
+				this->is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down.get());
 				if ( this->is_left_clicking )
-					this->send_click(input::mouse_button_t::left, config.clicker.f_left_cps, vars::key::l_is_first_click );
+					this->send_click(input::mouse_button_t::left, config.clicker.f_left_cps, vars::key::is_left_down.b_state);
 
 				// right
-				this->is_right_clicking = ( config.clicker.b_enable_right_clicker && vars::key::is_right_down);
+				this->is_right_clicking = ( config.clicker.b_enable_right_clicker && vars::key::is_right_down.get());
 				if ( this->is_right_clicking )
-					this->send_click(input::mouse_button_t::right, config.clicker.f_right_cps, vars::key::r_is_first_click );
+					this->send_click(input::mouse_button_t::right, config.clicker.f_right_cps, vars::key::is_left_down.b_state);
 			}
 		}
 	}
@@ -79,16 +79,16 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_
 
 	++vars::stats::i_clicks_this_session;
 
-	log_debug( "[%d]: CPS: [ %.3f ] Delay: [ %.3fms ] Time elapsed: [ %.3fms ] Avg CPS: [ %.3fms ]", 
-		vars::stats::i_clicks_this_session, 
-		f_cps, 
-		( this->delay * 2 ), 
-		elapsed.count(), 
+	log_debug( "[%d]: CPS: [ %.3f ] Delay: [ %.3fms ] Time elapsed: [ %.3fms ] Avg CPS: [ %.3fms ]",
+		vars::stats::i_clicks_this_session,
+		f_cps,
+		( this->delay * 2 ),
+		elapsed.count(),
 		vars::stats::f_average_cps
 	);
 }
 
-void c_clicker::update_thread()
+void c_clicker::update()
 {
 	while ( vars::b_is_running )
 	{
@@ -99,8 +99,6 @@ void c_clicker::update_thread()
 
 		if ( this->should_update )
 		{
-			log_debug( "Update %.3fms", rate );
-
 			// Persistence
 			if ( config.clicker.b_enable_persistence )
 				random = rng::random_real<float>( -config.clicker.f_persistence_value,
