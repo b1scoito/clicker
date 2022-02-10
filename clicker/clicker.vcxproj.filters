@@ -138,9 +138,6 @@
     <Filter Include="utils\vars">
       <UniqueIdentifier>{c87a7cbb-b9a7-4307-b963-a65bc9292368}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils\threads">
-      <UniqueIdentifier>{2fddc2fe-d959-4e3a-b967-7234b06e9dc9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils\imgui\stb">
       <UniqueIdentifier>{64418ae5-488a-44f0-aa10-d31c2dc334ad}</UniqueIdentifier>
     </Filter>

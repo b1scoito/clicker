@@ -59,9 +59,9 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				switch ( config.clicker.i_version_type )
 				{
 					case 0:
-							ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
-							if ( ImGui::IsItemHovered() )
-								ImGui::SetTooltip( "If enabled, the clicker will work with the inventory opened." );
+							//ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
+							//if ( ImGui::IsItemHovered() )
+							//	ImGui::SetTooltip( "If enabled, the clicker will work with the inventory opened." );
 						break;
 					case 1:
 						static char window_name_buffer[32];
@@ -144,6 +144,15 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Text( "Hide window key" );
 				keybind_button( config.clicker.i_hide_window_key, 155, 22 );
 
+				ImGui::Text("Input");
+				ImGui::Separator();
+				ImGui::Text("Send input method");
+				ImGui::PushItemWidth(200.f);
+				ImGui::Combo("##var::clicker::i_send_input_method", &config.clicker.i_send_input_method, "SendMessage\0PostMessage\0\0");
+				ImGui::PopItemWidth();
+				
+
+				ImGui::Separator();
 				ImGui::Text( "Colors" );
 				ImGui::Separator();
 				ImGui::ColorEdit4( "Color accent", config.clicker.f_color_accent, ImGuiColorEditFlags_NoInputs );
@@ -151,6 +160,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::ColorEdit4( "Color accent active", config.clicker.f_color_accent_active, ImGuiColorEditFlags_NoInputs );
 				ImGui::ColorEdit4( "Color accent text", config.clicker.f_color_accent_text, ImGuiColorEditFlags_NoInputs );
 
+				ImGui::Separator();
 				static bool show_advanced_debug { false };
 				ImGui::Checkbox( "Show advanced debug info", &show_advanced_debug );
 
@@ -161,11 +171,11 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Text( "Clicks this session: %d", vars::stats::i_clicks_this_session );
 					ImGui::Text( "Average CPS: %.2f", vars::stats::f_average_cps );
 					ImGui::Text( "Is left button down: %s", vars::key::is_left_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES);
-					ImGui::Text( "Is right button down: %s", vars::key::is_left_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is right button down: %s", vars::key::is_right_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					//ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
 
 					if ( !focus::active_window_title().empty() )
 						ImGui::Text( "Current window name: %ls", focus::active_window_title().data() );
@@ -480,14 +490,7 @@ bool c_menu::init( int width, int height ) noexcept
 	auto& io = ImGui::GetIO();
 	auto& style = ImGui::GetStyle();
 
-	// io.Fonts->AddFontDefault();
-
-	if ( PWSTR fonts_path; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &fonts_path ) ) )
-	{
-		const std::filesystem::path path { fonts_path };
-		CoTaskMemFree( fonts_path );
-		io.Fonts->AddFontFromFileTTF( ( path / "SegoeUI.ttf" ).string().c_str(), 16.f, NULL, io.Fonts->GetGlyphRangesDefault() );
-	}
+	io.Fonts->AddFontDefault();
 
 	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 	ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;

@@ -7,11 +7,12 @@
 #include <thread>
 #include <random>
 
-#include <windows.h>
+#include <Windows.h>
 
 using namespace std::chrono_literals;
 
 #include "console.hpp"
 #include "utils.hpp"
 #include "config.hpp"
+#include "keybind.hpp"
 #include "vars.hpp"

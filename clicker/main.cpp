@@ -10,7 +10,7 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		vars::b_is_running = false;
 	} );
 
-	std::srand( (unsigned int) std::time( NULL ) );
+	std::srand( (std::uint32_t) std::time( NULL ) );
 
 	std::thread(&c_clicker::initialize, c_clicker()).detach();
 	std::thread(&c_clicker::update, c_clicker()).detach();

@@ -11,25 +11,23 @@ void c_clicker::initialize()
 		vars::key::clicker_enabled.i_mode = config.clicker.i_key_type; 
 		vars::key::clicker_enabled.i_key = config.clicker.i_clicker_key;
 
-		if ( vars::key::clicker_enabled.get() )
-		{
-			if ( focus::window_think() && focus::cursor_think() )
-			{
+		if ( vars::key::clicker_enabled.get() ) {
+			if ( focus::window_think() && focus::cursor_think() ) {
 				// left
 				this->is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down.get());
 				if ( this->is_left_clicking )
-					this->send_click(input::mouse_button_t::left, config.clicker.f_left_cps, vars::key::is_left_down.b_state);
+					this->send_click(input::mouse_button_t::left, config.clicker.f_left_cps);
 
 				// right
 				this->is_right_clicking = ( config.clicker.b_enable_right_clicker && vars::key::is_right_down.get());
 				if ( this->is_right_clicking )
-					this->send_click(input::mouse_button_t::right, config.clicker.f_right_cps, vars::key::is_left_down.b_state);
+					this->send_click(input::mouse_button_t::right, config.clicker.f_right_cps);
 			}
 		}
 	}
 }
 
-void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_is_first_click )
+void c_clicker::send_click(input::mouse_button_t b_button, float f_cps )
 {
 	const auto start = std::chrono::high_resolution_clock::now();
 
@@ -44,13 +42,6 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_
 	if ( !config.clicker.b_enable_blatant )
 		this->delay += rng::random_real<float>( -config.clicker.f_default_timer_randomization, 
 			config.clicker.f_default_timer_randomization );
-	
-	if ( b_is_first_click )
-	{
-		PreciseSleep( this->delay );
-		input::click( input::mouse_input_type_t::up, b_button );
-		b_is_first_click = false;
-	}
 
 	PreciseSleep( this->delay );
 	input::click( input::mouse_input_type_t::down, b_button );
@@ -79,8 +70,9 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps, bool& b_
 
 	++vars::stats::i_clicks_this_session;
 
-	log_debug( "[%d]: CPS: [ %.3f ] Delay: [ %.3fms ] Time elapsed: [ %.3fms ] Avg CPS: [ %.3fms ]",
+	log_debug( "[%d, %s]: CPS: [ %.3f ] Delay: [ %.3fms ] Time elapsed: [ %.3fms ] Avg CPS: [ %.3f ]",
 		vars::stats::i_clicks_this_session,
+		config.clicker.i_send_input_method ? "PostMessage" : "SendMessage",
 		f_cps,
 		( this->delay * 2 ),
 		elapsed.count(),

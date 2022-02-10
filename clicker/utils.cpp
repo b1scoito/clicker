@@ -3,20 +3,7 @@
 
 namespace string
 {
-	std::string to_utf8( std::wstring wstr )
-	{
-		if ( wstr.empty() )
-			return {};
-
-		const auto size = WideCharToMultiByte( CP_UTF8, 0, wstr.data(), (int) wstr.size(), 0, 0, 0, 0 );
-		auto ret = std::string( size, 0 );
-
-		WideCharToMultiByte( CP_UTF8, 0, wstr.data(), (int) wstr.size(), ret.data(), size, 0, 0 );
-
-		return ret;
-	}
-
-	std::wstring to_unicode( std::string str )
+	std::wstring to_unicode( std::string_view str )
 	{
 		if ( str.empty() )
 			return {};
@@ -39,29 +26,28 @@ namespace timer
 			ntdll = GetModuleHandle( L"ntdll.dll" );
 
 		typedef NTSTATUS( WINAPI* fnNtDelayExecution )( BOOL Alertable, PLARGE_INTEGER DelayInterval );
-		static fnNtDelayExecution oNtDelayExecution = NULL;
 
-		if ( !oNtDelayExecution )
+		static fnNtDelayExecution oNtDelayExecution = NULL;
+		if ( !oNtDelayExecution && ntdll )
 			oNtDelayExecution = (fnNtDelayExecution) GetProcAddress( ntdll, "NtDelayExecution" );
 
 		typedef NTSTATUS( WINAPI* fnZwSetTimerResolution )( IN ULONG RequestedResolution, IN BOOLEAN Set, OUT PULONG ActualResolution );
+		
 		static fnZwSetTimerResolution oZwSetTimerResolution = NULL;
-
-		if ( !oZwSetTimerResolution )
+		if ( !oZwSetTimerResolution && ntdll )
 			oZwSetTimerResolution = (fnZwSetTimerResolution) GetProcAddress( ntdll, "ZwSetTimerResolution" );
 
 		static std::once_flag flag;
-		std::call_once( flag, []()
-		{
+		std::call_once( flag, []() {
 			ULONG current;
-			oZwSetTimerResolution( (ULONG) ( 0.5f * 10000.f ), true, &current );
+			oZwSetTimerResolution( (unsigned long) ( 0.5f * 10000.f ), true, &current );
 		} );
 
 		if ( ms < 0.5f )
 			ms = 0.5f;
 
 		LARGE_INTEGER time = { 0 };
-		time.QuadPart = -1 * (LONGLONG) ( ms * 10000.f );
+		time.QuadPart = -1 * (long long) ( ms * 10000.f );
 
 		oNtDelayExecution( false, &time );
 	}
@@ -71,8 +57,21 @@ namespace input
 {
 	void send_input( mouse_type_t m_type, mouse_side_t m_side )
 	{
-		POINT pos; if (!GetCursorPos(&pos)) return;
-		SendMessage( GetForegroundWindow(), (DWORD) m_type, (DWORD) m_side, MAKELPARAM(pos.x, pos.y) );
+		POINT pos; 
+		if (!GetCursorPos(&pos)) 
+			return;
+
+		const auto curr_wnd = GetForegroundWindow();
+
+		switch (config.clicker.i_send_input_method)
+		{
+			case 0: // SendMessage
+				SendMessage(curr_wnd, (DWORD)m_type, (DWORD)m_side, MAKELPARAM(pos.x, pos.y));
+				break;
+			case 1: // PostMessage
+				PostMessage(curr_wnd, (DWORD)m_type, (DWORD)m_side, MAKELPARAM(pos.x, pos.y));
+				break;
+		}
 	}
 
 	void click( mouse_input_type_t type, mouse_button_t button )
@@ -85,7 +84,6 @@ namespace input
 			send_input( mouse_type_t::left_up, mouse_side_t::left ):
 			send_input( mouse_type_t::right_up, mouse_side_t::right );
 	}
-
 }
 
 namespace focus
@@ -102,7 +100,6 @@ namespace focus
 		return title;
 	}
 
-	// Can get better?
 	bool is_self_focused()
 	{
 		const auto hwnd = GetForegroundWindow();
@@ -112,10 +109,9 @@ namespace focus
 		DWORD dw_thread_process_id;
 		GetWindowThreadProcessId( hwnd, &dw_thread_process_id );
 
-		return ( GetCurrentProcessId() == dw_thread_process_id );
+		return dw_thread_process_id && (GetCurrentProcessId() == dw_thread_process_id);
 	}
 
-	// Can get better?
 	bool is_cursor_visible()
 	{
 		CURSORINFO ci { sizeof( CURSORINFO ) };
@@ -123,8 +119,7 @@ namespace focus
 			return false;
 
 		const auto handle = ci.hCursor;
-
-		if ( ( handle > (HCURSOR) 50000 ) & ( handle < (HCURSOR) 100000 ) )
+		if ( ( handle > (HCURSOR) 50000 ) && ( handle < (HCURSOR) 100000 ) )
 			return true;
 
 		return false;
@@ -137,9 +132,9 @@ namespace focus
 			switch ( config.clicker.i_version_type )
 			{
 				case 0:
-					return ( GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) );
+					return GetForegroundWindow() == FindWindow( L"LWJGL", nullptr );
 				case 1:
-					return ( active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos );
+					return active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos;
 				default:
 					return {};
 			}

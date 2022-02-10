@@ -5,7 +5,7 @@
 class c_clicker
 {
 private:
-	void send_click( input::mouse_button_t b_button, float f_cps, bool& b_is_first_click );
+	void send_click( input::mouse_button_t b_button, float f_cps );
 
 	float delay = 0.f;
 	float random = 0.f;
