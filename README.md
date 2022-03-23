@@ -2,7 +2,7 @@
 Minecraft auto-clicker made in modern C++, performance optimized and easy to use.  
 Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
 
-![image](https://b.catgirlsare.sexy/I5f4OpCJ.png)
+![image](https://b.catgirlsare.sexy/JfRVFDUWAG19.png)
 
 # Getting started
 
@@ -37,9 +37,6 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 ### d3d9.dll error
 Install the following
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
-
-## Known issues
-- The mouse hook is known to make the cursor teleport on Minecraft, this will be fixed on the next update alongside with other features like changing the way inputs are sent.
 
 ## Discord
 Our little community if you want to join. Please read FAQ before anything!
