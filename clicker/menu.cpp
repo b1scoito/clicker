@@ -1,15 +1,32 @@
 #include "pch.hpp"
 #include "menu.hpp"
 
-void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
+namespace directx9
+{
+	inline IDirect3D9* context = {};
+	inline IDirect3DDevice9* device = {};
+	inline D3DPRESENT_PARAMETERS param;
+}
+
+namespace ctx 
+{
+	inline HWND hWnd = {};
+	inline WNDCLASSEX wc = {};
+	inline int menu_width = { 600 }, menu_height = { 350 };
+
+	inline ImGuiStyle* imgui_style = {};
+	inline ImGuiIO* imgui_io = {};
+}
+
+void c_menu::on_paint()
 {
 	static int x = 0, y = 0;
 
-	ImGui::SetNextWindowSize( { (float)i_width, (float)i_height }, ImGuiCond_Once );
+	ImGui::SetNextWindowSize( { (float)ctx::menu_width, (float)ctx::menu_height }, ImGuiCond_Once );
 	ImGui::SetNextWindowPos( { 0, 0 }, ImGuiCond_Once );
 
 	vars::key::hide_window.i_key = config.clicker.i_hide_window_key;
-	vars::key::hide_window.get() ? ShowWindow( hwnd, SW_HIDE ) : ShowWindow( hwnd, SW_SHOW );
+	vars::key::hide_window.get() ? ShowWindow( ctx::hWnd, SW_HIDE ) : ShowWindow(ctx::hWnd, SW_SHOW );
 
 	if ( !vars::b_is_running )
 		std::exit( 0 );
@@ -17,10 +34,10 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 	if ( ImGui::Begin( "clicker", &vars::b_is_running, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
 	{
 		if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-			this->get_mouse_offset( x, y, hwnd );
+			get_mouse_offset( x, y, ctx::hWnd);
 
 		if ( y >= 0 && y <= ( ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4 ) && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
-			this->set_position( x, y, i_width, i_height, hwnd );
+			set_position( x, y, ctx::menu_width, ctx::menu_height, ctx::hWnd);
 
 		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
@@ -29,7 +46,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Text( "Keybind" );
 				ImGui::Separator();
 
-				this->keybind_button( config.clicker.i_clicker_key, 150, 22 );
+				keybind_button( config.clicker.i_clicker_key, 150, 22 );
 
 				ImGui::SameLine();
 
@@ -59,9 +76,9 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				switch ( config.clicker.i_version_type )
 				{
 					case 0:
-							//ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
-							//if ( ImGui::IsItemHovered() )
-							//	ImGui::SetTooltip( "If enabled, the clicker will work with the inventory opened." );
+							ImGui::Checkbox( "Work in inventory", &config.clicker.b_work_in_inventory );
+							if ( ImGui::IsItemHovered() )
+								ImGui::SetTooltip( "If enabled, the clicker will work with the inventory opened." );
 						break;
 					case 1:
 						static char window_name_buffer[32];
@@ -105,13 +122,6 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 						ImGui::SliderFloat( "##var::clicker::f_cps_drop_remove", &config.clicker.f_cps_drop_remove, 1.f, 5.f, "remove %.1f cps" );
 					}
 
-					ImGui::Checkbox( "Blockhit", &config.clicker.b_enable_blockhit );
-					if ( ImGui::IsItemHovered() )
-						ImGui::SetTooltip( "Blockhits automatically with the given chance of blockhit." );
-
-					if ( config.clicker.b_enable_blockhit )
-						ImGui::SliderInt( "##var::clicker::i_blockhit_chance", &config.clicker.i_blockhit_chance, 1, 100, "chance %d%%" );
-
 					ImGui::Checkbox( "Advanced options", &config.clicker.b_enable_advanced_options );
 					if ( config.clicker.b_enable_advanced_options )
 					{
@@ -119,7 +129,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 						if ( ImGui::IsItemHovered() )
 							ImGui::SetTooltip( "Maximum CPS rate delay update." );
 
-						ImGui::SliderFloat( "##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 500.f, 10000.f, "%.1f ms" );
+						ImGui::SliderFloat( "##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 1500.f, 10000.f, "%.1f ms" );
 
 						ImGui::Text( "Default timer randomization" );
 						if ( ImGui::IsItemHovered() )
@@ -151,7 +161,6 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 				ImGui::Combo("##var::clicker::i_send_input_method", &config.clicker.i_send_input_method, "SendMessage\0PostMessage\0\0");
 				ImGui::PopItemWidth();
 				
-
 				ImGui::Separator();
 				ImGui::Text( "Colors" );
 				ImGui::Separator();
@@ -175,7 +184,7 @@ void c_menu::on_paint( HWND hwnd, int i_width, int i_height )
 					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					//ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
 
 					if ( !focus::active_window_title().empty() )
 						ImGui::Text( "Current window name: %ls", focus::active_window_title().data() );
@@ -385,7 +394,8 @@ void c_menu::get_mouse_offset( int& x, int& y, HWND hwnd )
 	y = point.y - rect.top;
 }
 
-LRESULT WINAPI c_menu::wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+// Taken from: https://github.com/ocornut/imgui/blob/master/examples/example_win32_directx9/main.cpp
+LRESULT WINAPI c_menu::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
 	if ( ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam ) )
 		return true;
@@ -393,11 +403,11 @@ LRESULT WINAPI c_menu::wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	switch ( msg )
 	{
 		case WM_SIZE:
-			if ( g_pd3dDevice != NULL && wParam != SIZE_MINIMIZED )
+			if ( directx9::device != NULL && wParam != SIZE_MINIMIZED )
 			{
-				g_d3dpp.BackBufferWidth = LOWORD( lParam );
-				g_d3dpp.BackBufferHeight = HIWORD( lParam );
-				reset_device();
+				directx9::param.BackBufferWidth = LOWORD( lParam );
+				directx9::param.BackBufferHeight = HIWORD( lParam );
+				ResetDevice();
 			}
 			return 0;
 		case WM_SYSCOMMAND:
@@ -412,184 +422,182 @@ LRESULT WINAPI c_menu::wndproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
-bool c_menu::create_device_d3d( HWND hWnd )
+bool c_menu::CreateDeviceD3D( HWND hWnd )
 {
-	if ( ( g_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) == NULL )
+	if ((directx9::context = Direct3DCreate9(D3D_SDK_VERSION)) == NULL)
 		return false;
 
-	ZeroMemory( &g_d3dpp, sizeof( g_d3dpp ) );
+	// Create the D3DDevice
+	ZeroMemory(&directx9::param, sizeof(directx9::param));
+	{
+		directx9::param.Windowed = TRUE;
+		directx9::param.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		directx9::param.BackBufferFormat = D3DFMT_UNKNOWN; // Need to use an explicit format with alpha if needing per-pixel alpha composition.
+		directx9::param.EnableAutoDepthStencil = TRUE;
+		directx9::param.AutoDepthStencilFormat = D3DFMT_D16;
+		directx9::param.PresentationInterval = D3DPRESENT_INTERVAL_ONE; // Present with vsync
+	}
 
-	g_d3dpp.Windowed = TRUE;
-	g_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	g_d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-	g_d3dpp.EnableAutoDepthStencil = TRUE;
-	g_d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-	g_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-
-	if ( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &g_d3dpp, &g_pd3dDevice ) < 0 )
+	if (directx9::context->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &directx9::param, &directx9::device) < 0)
 		return false;
 
 	return true;
 }
 
-void c_menu::cleanup_device_d3d()
+void c_menu::CleanupDeviceD3D()
 {
-	if ( g_pd3dDevice ) { g_pd3dDevice->Release(); g_pd3dDevice = NULL; }
-	if ( g_pD3D ) { g_pD3D->Release(); g_pD3D = NULL; }
+	if (directx9::device) { directx9::device->Release(); directx9::device = NULL; }
+	if (directx9::context) { directx9::context->Release(); directx9::context = NULL; }
 }
 
-void c_menu::reset_device()
+void c_menu::ResetDevice()
 {
 	ImGui_ImplDX9_InvalidateDeviceObjects();
 
-	HRESULT hr = g_pd3dDevice->Reset( &g_d3dpp );
-	if ( hr == D3DERR_INVALIDCALL )
-		IM_ASSERT( 0 );
+	HRESULT hr = directx9::device->Reset(&directx9::param);
+	if (hr == D3DERR_INVALIDCALL)
+		IM_ASSERT(0);
 
 	ImGui_ImplDX9_CreateDeviceObjects();
 }
 
-bool c_menu::init( int width, int height ) noexcept
+void c_menu::destroy()
 {
-	const WNDCLASSEX wc = {
-		sizeof( WNDCLASSEX ), CS_CLASSDC,
-		this->wndproc,
-		0L, 0L,
-		GetModuleHandle( NULL ),
-		NULL, NULL, NULL, NULL,
-		L"Class",
-		NULL
-	};
+	ImGui_ImplDX9_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 
-	RegisterClassEx( &wc );
+	CleanupDeviceD3D();
+	DestroyWindow(ctx::hWnd);
+	UnregisterClass(ctx::wc.lpszClassName, ctx::wc.hInstance);
+}
 
-	const auto hwnd = CreateWindow(
-		wc.lpszClassName,
-		L"",
-		WS_POPUP,
-		100, 100,
-		width, height,
-		NULL, NULL,
-		wc.hInstance,
-		NULL
-	);
-
-	if ( !this->create_device_d3d( hwnd ) )
-	{
-		this->cleanup_device_d3d();
-		UnregisterClass( wc.lpszClassName, wc.hInstance );
-
-		return false;
-	}
-
-	ShowWindow( hwnd, SW_SHOWDEFAULT );
-	UpdateWindow( hwnd );
-
-	ImGui::CreateContext();
-
-	auto& io = ImGui::GetIO();
-	auto& style = ImGui::GetStyle();
-
-	io.Fonts->AddFontDefault();
-
-	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
-
-	io.Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 10.f, &icons_config, icons_ranges );
-
-	style.ScrollbarSize = 10.0f;
-	style.GrabRounding = 5.0f;
-	style.GrabMinSize = 10.0f;
-	style.FrameRounding = 3.0f;
-	style.TabRounding = 3.0f;
-
-	io.IniFilename = nullptr;
-
-	ImGui_ImplWin32_Init( hwnd );
-	ImGui_ImplDX9_Init( g_pd3dDevice );
-
-	const auto clear_color = ImVec4( 0.09f, 0.09f, 0.09f, 0.94f );
+void c_menu::render()
+{
+	const auto clear_color = ImVec4(0.09f, 0.09f, 0.09f, 0.94f);
 
 	auto done = false;
-	while ( !done )
+	while (!done)
 	{
 		MSG msg;
-		while ( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+		while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 
-			if ( msg.message == WM_QUIT )
+			if (msg.message == WM_QUIT)
 				done = true;
 		}
 
-		if ( done )
+		if (done)
 			break;
 
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
-
 		ImGui::NewFrame();
 
-		auto* colors = style.Colors;
-		colors[ImGuiCol_Text] = this->float_to_imvec4( config.clicker.f_color_accent_text );
-		colors[ImGuiCol_WindowBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
-		colors[ImGuiCol_PopupBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
-		colors[ImGuiCol_Border] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_FrameBg] = ImVec4( 0.15f, 0.15f, 0.15f, 0.54f );
-		colors[ImGuiCol_TitleBgActive] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_FrameBgHovered] = ImVec4( 0.19f, 0.19f, 0.19f, 0.54f );
-		colors[ImGuiCol_FrameBgActive] = ImVec4( 0.26f, 0.26f, 0.26f, 0.54f );
-		colors[ImGuiCol_ScrollbarBg] = ImVec4( 0.11f, 0.11f, 0.11f, 0.94f );
-		colors[ImGuiCol_ScrollbarGrab] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_TextSelectedBg] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_CheckMark] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_SliderGrab] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_SliderGrabActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
-		colors[ImGuiCol_Button] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_ButtonHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
-		colors[ImGuiCol_ButtonActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
-		colors[ImGuiCol_Header] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_HeaderHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
-		colors[ImGuiCol_HeaderActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
-		colors[ImGuiCol_Separator] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_Tab] = this->float_to_imvec4( config.clicker.f_color_accent );
-		colors[ImGuiCol_TabHovered] = this->float_to_imvec4( config.clicker.f_color_accent_hovered );
-		colors[ImGuiCol_TabActive] = this->float_to_imvec4( config.clicker.f_color_accent_active );
+		auto* colors = ctx::imgui_style->Colors;
+		colors[ImGuiCol_Text] = float_to_imvec4(config.clicker.f_color_accent_text);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.11f, 0.11f, 0.11f, 0.94f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.11f, 0.11f, 0.11f, 0.94f);
+		colors[ImGuiCol_Border] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_FrameBg] = ImVec4(0.15f, 0.15f, 0.15f, 0.54f);
+		colors[ImGuiCol_TitleBgActive] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.26f, 0.26f, 0.54f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.11f, 0.11f, 0.11f, 0.94f);
+		colors[ImGuiCol_ScrollbarGrab] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_TextSelectedBg] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_CheckMark] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_SliderGrab] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_SliderGrabActive] = float_to_imvec4(config.clicker.f_color_accent_active);
+		colors[ImGuiCol_Button] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_ButtonHovered] = float_to_imvec4(config.clicker.f_color_accent_hovered);
+		colors[ImGuiCol_ButtonActive] = float_to_imvec4(config.clicker.f_color_accent_active);
+		colors[ImGuiCol_Header] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_HeaderHovered] = float_to_imvec4(config.clicker.f_color_accent_hovered);
+		colors[ImGuiCol_HeaderActive] = float_to_imvec4(config.clicker.f_color_accent_active);
+		colors[ImGuiCol_Separator] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_Tab] = float_to_imvec4(config.clicker.f_color_accent);
+		colors[ImGuiCol_TabHovered] = float_to_imvec4(config.clicker.f_color_accent_hovered);
+		colors[ImGuiCol_TabActive] = float_to_imvec4(config.clicker.f_color_accent_active);
 
-		this->on_paint( hwnd, width, height );
+		on_paint();
 
 		ImGui::EndFrame();
 
-		g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-		g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-		g_pd3dDevice->SetRenderState( D3DRS_SCISSORTESTENABLE, FALSE );
-		D3DCOLOR clear_col_dx = D3DCOLOR_RGBA( (int) ( clear_color.x * clear_color.w * 255.0f ), (int) ( clear_color.y * clear_color.w * 255.0f ), (int) ( clear_color.z * clear_color.w * 255.0f ), (int) ( clear_color.w * 255.0f ) );
-		g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0 );
+		directx9::device->SetRenderState(D3DRS_ZENABLE, FALSE);
+		directx9::device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		directx9::device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 
-		if ( g_pd3dDevice->BeginScene() >= 0 )
+		D3DCOLOR clear_col_dx = D3DCOLOR_RGBA((int)(clear_color.x * clear_color.w * 255.0f), (int)(clear_color.y * clear_color.w * 255.0f), (int)(clear_color.z * clear_color.w * 255.0f), (int)(clear_color.w * 255.0f));
+		directx9::device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
+
+		if (directx9::device->BeginScene() >= 0)
 		{
 			ImGui::Render();
-			ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData() );
-			g_pd3dDevice->EndScene();
+			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+			directx9::device->EndScene();
 		}
 
-		HRESULT result = g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+		HRESULT result = directx9::device->Present(NULL, NULL, NULL, NULL);
+		if (result == D3DERR_DEVICELOST && directx9::device->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+			ResetDevice();
 
-		if ( result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET )
-			this->reset_device();
+	}
+	
+	destroy();
+}
+
+bool c_menu::setup()
+{
+	ImGui_ImplWin32_EnableDpiAwareness();
+	ctx::wc = { sizeof( WNDCLASSEX ), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle( NULL ), NULL, NULL, NULL, NULL, L"Class", NULL };
+	RegisterClassEx( &ctx::wc );
+
+	ctx::hWnd = CreateWindow(ctx::wc.lpszClassName, L"", WS_POPUP, 100, 100, 600, 350, NULL, NULL, ctx::wc.hInstance, NULL);
+	if ( !CreateDeviceD3D(ctx::hWnd) )
+	{
+		CleanupDeviceD3D();
+		UnregisterClass( ctx::wc.lpszClassName, ctx::wc.hInstance );
+
+		return false;
 	}
 
-	ImGui_ImplDX9_Shutdown();
-	ImGui_ImplWin32_Shutdown();
+	ShowWindow(ctx::hWnd, SW_SHOWDEFAULT );
+	UpdateWindow(ctx::hWnd);
 
-	ImGui::DestroyContext();
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
 
-	this->cleanup_device_d3d();
+	ctx::imgui_io = &ImGui::GetIO();
+	ctx::imgui_style = &ImGui::GetStyle();
 
-	DestroyWindow( hwnd );
+	ctx::imgui_io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	UnregisterClass( wc.lpszClassName, wc.hInstance );
+	if (PWSTR fonts_path; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &fonts_path)))
+	{
+		const std::filesystem::path path { fonts_path };
+		CoTaskMemFree(fonts_path);
 
-	return 0;
+		ctx::imgui_io->Fonts->AddFontFromFileTTF((path / "SegoeUI.ttf").string().data(), 16.f, NULL, ctx::imgui_io->Fonts->GetGlyphRangesDefault());
+	}
+
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
+
+	ctx::imgui_io->Fonts->AddFontFromMemoryCompressedTTF( fontawesome_compressed_data, fontawesome_compressed_size, 10.f, &icons_config, icons_ranges );
+
+	ctx::imgui_style->ScrollbarSize = 10.0f;
+	ctx::imgui_style->GrabRounding = 5.0f;
+	ctx::imgui_style->GrabMinSize = 10.0f;
+	ctx::imgui_style->FrameRounding = 3.0f;
+	ctx::imgui_style->TabRounding = 3.0f;
+
+	ctx::imgui_io->IniFilename = nullptr;
+
+	ImGui_ImplWin32_Init(ctx::hWnd);
+	ImGui_ImplDX9_Init( directx9::device );
+
+	return true;
 }

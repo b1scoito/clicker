@@ -2,17 +2,21 @@
 
 #include <winternl.h>
 
-namespace string {
+namespace string 
+{
 	std::wstring to_unicode( std::string_view str );
 }
 
-namespace timer {
+namespace timer 
+{
 	void precise_sleep( float ms );
 }
 
-namespace rng {
+namespace rng 
+{
 	template <typename T>
-	T random_range( T start, T end ) {
+	T random_range( T start, T end ) 
+	{
 		std::random_device rd;
 		std::mt19937_64 rng( rd() );
 		std::uniform_int_distribution<T> uni( start, end );
@@ -21,7 +25,8 @@ namespace rng {
 	}
 
 	template <typename T>
-	T random_real( T start, T end ) {
+	T random_real( T start, T end )
+	{
 		std::random_device rd;
 		std::mt19937_64 rng( rd() );
 		std::uniform_real_distribution<T> uni( start, end );
@@ -30,7 +35,8 @@ namespace rng {
 	}
 }
 
-namespace input {
+namespace input 
+{
 	// TODO: Fix this logic
 	enum class mouse_button_t: bool { right, left };
 	enum class mouse_input_type_t: bool { up, down };
@@ -54,14 +60,13 @@ namespace input {
 
 }
 
-namespace focus {
+namespace focus 
+{
 	std::wstring active_window_title();
 
 	bool is_self_focused();
-
 	bool is_cursor_visible();
 
 	bool window_think();
-
 	bool cursor_think();
 }

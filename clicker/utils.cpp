@@ -148,9 +148,9 @@ namespace focus
 		if ( config.clicker.i_version_type == 0 )
 		{
 			if ( config.clicker.b_work_in_inventory )
-				return !( is_cursor_visible() ) || ( vars::key::b_inventory_opened && is_cursor_visible() );
+				return !is_cursor_visible() || ( vars::key::b_inventory_opened && is_cursor_visible() );
 
-			return !( is_cursor_visible() );
+			return !is_cursor_visible();
 		}
 
 		return true;

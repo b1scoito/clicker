@@ -37,9 +37,6 @@ public:
 		float f_left_cps { rng::random_real<float>( 9.5f, 12.5f ) };
 		float f_right_cps { rng::random_real<float>( 9.5f, 12.5f ) };
 
-		bool b_enable_blockhit { false };
-		int i_blockhit_chance { 5 };
-
 		bool b_enable_blatant { false };
 
 		int i_hide_window_key { 0 };
@@ -47,9 +44,9 @@ public:
 		bool b_enable_advanced_options { false };
 
 		bool b_enable_persistence { false };
-		float f_persistence_value { rng::random_real<float>( 0.5f, 2.5f ) };
+		float f_persistence_value { rng::random_real<float>( 1.f, 5.f ) };
 
-		float f_persistence_update_rate { 2000.f };
+		float f_persistence_update_rate { 3000.f };
 		float f_default_timer_randomization { 5.f };
 
 		int i_cps_spike_chance { 5 };

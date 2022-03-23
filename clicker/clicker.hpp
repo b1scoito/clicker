@@ -5,23 +5,20 @@
 class c_clicker
 {
 private:
-	void send_click( input::mouse_button_t b_button, float f_cps );
+	void send_click(input::mouse_button_t b_button, float f_cps);
 
-	float delay = 0.f;
-	float random = 0.f;
+	float f_delay = {};
+	float f_random = {};
 
-	bool blockhitted = false;
-	bool should_update = false;
+	bool b_should_update = {};
 
-	bool is_left_clicking = false;
-	bool is_right_clicking = false;
+	bool b_is_left_clicking = {};
+	bool b_is_right_clicking = {};
 
 public:
-	void initialize();
-	void update();
-
-	~c_clicker() = default;
-	c_clicker() = default;
+	void thread();
+	void update_cps();
+	void update_variables();
 };
 
 inline auto g_clicker = std::make_unique<c_clicker>();
