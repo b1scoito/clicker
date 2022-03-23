@@ -100,8 +100,6 @@ void c_clicker::update_cps()
 			this->b_should_update = false;
 		}
 
-		log_debug("Random after update %.1f", this->f_random);
-
 		PreciseSleep(rate);
 
 		this->f_random = {};

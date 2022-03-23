@@ -41,7 +41,7 @@ void c_menu::on_paint()
 
 		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
 		{
-			if ( ImGui::BeginTabItem( "Mouse" ) )
+			if ( ImGui::BeginTabItem( "mouse" ) )
 			{
 				ImGui::Text( "Keybind" );
 				ImGui::Separator();
@@ -147,7 +147,7 @@ void c_menu::on_paint()
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "Misc" ) )
+			if ( ImGui::BeginTabItem( "misc" ) )
 			{
 				ImGui::Text( "Hide" );
 				ImGui::Separator();
@@ -202,7 +202,7 @@ void c_menu::on_paint()
 				ImGui::EndTabItem();
 			}
 
-			if ( ImGui::BeginTabItem( "Config" ) )
+			if ( ImGui::BeginTabItem( "config" ) )
 			{
 				ImGui::Text( "Config settings" );
 				ImGui::Separator();
