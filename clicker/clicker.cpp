@@ -9,11 +9,12 @@ void c_clicker::thread()
 		if ( !this->b_is_right_clicking || !this->b_is_left_clicking )
 			std::this_thread::sleep_for( 1ms );
 
-		if ( vars::key::clicker_enabled.get() ) {
-			if ( focus::window_think() && focus::cursor_think() ) {
-
+		if ( vars::key::clicker_enabled.get() ) 
+		{
+			if ( focus::window_think() && focus::cursor_think() ) 
+			{
 				// Left button
-				this->b_is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down.get());
+				this->b_is_left_clicking = ( config.clicker.b_enable_left_clicker && vars::key::is_left_down.get() && !vars::key::is_right_down.get());
 				if (this->b_is_left_clicking )
 					send_click(input::mouse_button_t::left, config.clicker.f_left_cps);
 
@@ -57,13 +58,8 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps )
 	++vars::stats::i_clicks_this_session;
 
 	log_debug( "(%s, %d): CPS: %.3f | delay: %.3fms | time elapsed: %.3fms | avg. CPS: %.3f",
-		config.clicker.i_send_input_method ? "PostMessage" : "SendMessage",
-		vars::stats::i_clicks_this_session,
-		f_cps,
-		(this->f_delay * 2 ),
-		elapsed.count(),
-		vars::stats::f_average_cps
-	);
+		config.clicker.i_send_input_method ? "PostMessage" : "SendMessage", 
+		vars::stats::i_clicks_this_session, f_cps, (this->f_delay * 2 ), elapsed.count(), vars::stats::f_average_cps);
 }
 
 void c_clicker::update_cps()
@@ -116,10 +112,12 @@ void c_clicker::update_variables()
 
 		vars::key::clicker_enabled.i_mode = config.clicker.i_key_type;
 		vars::key::clicker_enabled.i_key = config.clicker.i_clicker_key;
-
+		
 		if (vars::key::clicker_enabled.get()) {
 			if (focus::window_think())
 			{
+				vars::key::b_shift_pressed = GetAsyncKeyState(VK_SHIFT);
+
 				if (GetAsyncKeyState(69))
 				{
 					vars::key::b_inventory_opened = !vars::key::b_inventory_opened;

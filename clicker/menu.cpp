@@ -185,6 +185,7 @@ void c_menu::on_paint()
 					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
 					ImGui::Text( "Is in inventory: %s", vars::key::b_inventory_opened ? ICON_FA_CHECK : ICON_FA_TIMES );
+					ImGui::Text( "Is shift pressed: %s", vars::key::b_shift_pressed ? ICON_FA_CHECK : ICON_FA_TIMES );
 
 					if ( !focus::active_window_title().empty() )
 						ImGui::Text( "Current window name: %ls", focus::active_window_title().data() );

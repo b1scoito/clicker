@@ -13,6 +13,7 @@ namespace vars
 		inline auto is_right_down = keybind(false, keybind_state_t::hold, VK_RBUTTON);
 
 		inline auto b_inventory_opened = false;
+		inline auto b_shift_pressed = false;
 	}
 
 	namespace stats

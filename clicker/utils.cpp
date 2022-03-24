@@ -57,7 +57,7 @@ namespace input
 {
 	void send_input( mouse_type_t m_type, mouse_side_t m_side )
 	{
-		POINT pos; 
+		POINT pos {};
 		if (!GetCursorPos(&pos)) 
 			return;
 
@@ -148,7 +148,7 @@ namespace focus
 		if ( config.clicker.i_version_type == 0 )
 		{
 			if ( config.clicker.b_work_in_inventory )
-				return !is_cursor_visible() || ( vars::key::b_inventory_opened && is_cursor_visible() );
+				return !is_cursor_visible() || (vars::key::b_shift_pressed && vars::key::b_inventory_opened && is_cursor_visible() );
 
 			return !is_cursor_visible();
 		}
