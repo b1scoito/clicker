@@ -9,7 +9,7 @@ namespace string
 
 namespace timer 
 {
-	void precise_sleep( float ms );
+	void precise_sleep(double secs);
 }
 
 namespace rng 

@@ -29,7 +29,6 @@ public:
 		int i_clicker_key { 0 };
 		int i_key_type { 0 };
 		int i_version_type { 0 };
-		int i_send_input_method { 0 };
 
 		bool b_enable_left_clicker { false };
 		bool b_enable_right_clicker { false };

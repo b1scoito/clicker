@@ -19,37 +19,21 @@ namespace string
 
 namespace timer
 {
-	void precise_sleep( float ms )
+	void precise_sleep( double secs )
 	{
-		static HMODULE ntdll = NULL;
-		if ( !ntdll )
-			ntdll = GetModuleHandle( L"ntdll.dll" );
+		while (secs > 5e-3)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			auto end = std::chrono::high_resolution_clock::now();
 
-		typedef NTSTATUS( WINAPI* fnNtDelayExecution )( BOOL Alertable, PLARGE_INTEGER DelayInterval );
+			auto observed = (end - start).count() / 1e9;
+			secs -= observed;
+		}
 
-		static fnNtDelayExecution oNtDelayExecution = NULL;
-		if ( !oNtDelayExecution && ntdll )
-			oNtDelayExecution = (fnNtDelayExecution) GetProcAddress( ntdll, "NtDelayExecution" );
-
-		typedef NTSTATUS( WINAPI* fnZwSetTimerResolution )( IN ULONG RequestedResolution, IN BOOLEAN Set, OUT PULONG ActualResolution );
-		
-		static fnZwSetTimerResolution oZwSetTimerResolution = NULL;
-		if ( !oZwSetTimerResolution && ntdll )
-			oZwSetTimerResolution = (fnZwSetTimerResolution) GetProcAddress( ntdll, "ZwSetTimerResolution" );
-
-		static std::once_flag flag;
-		std::call_once( flag, []() {
-			ULONG current;
-			oZwSetTimerResolution( (unsigned long) ( 0.5f * 10000.f ), true, &current );
-		} );
-
-		if ( ms < 0.5f )
-			ms = 0.5f;
-
-		LARGE_INTEGER time = { 0 };
-		time.QuadPart = -1 * (long long) ( ms * 10000.f );
-
-		oNtDelayExecution( false, &time );
+		/* ~~ spin lock */
+		auto start = std::chrono::high_resolution_clock::now();
+		while ((std::chrono::high_resolution_clock::now() - start).count() / 1e9 < secs);
 	}
 }
 
@@ -62,16 +46,9 @@ namespace input
 			return;
 
 		const auto curr_wnd = GetForegroundWindow();
-
-		switch (config.clicker.i_send_input_method)
-		{
-			case 0: // SendMessage
-				SendMessage(curr_wnd, (DWORD)m_type, (DWORD)m_side, MAKELPARAM(pos.x, pos.y));
-				break;
-			case 1: // PostMessage
-				PostMessage(curr_wnd, (DWORD)m_type, (DWORD)m_side, MAKELPARAM(pos.x, pos.y));
-				break;
-		}
+		
+		// SendMessage, SendInput, all poorly optimized for such a precise task
+		PostMessage(curr_wnd, (DWORD)m_type, (DWORD)m_side, MAKELPARAM(pos.x, pos.y));
 	}
 
 	void click( mouse_input_type_t type, mouse_button_t button )
@@ -83,6 +60,20 @@ namespace input
 			(bool) ( button ) ? 
 			send_input( mouse_type_t::left_up, mouse_side_t::left ):
 			send_input( mouse_type_t::right_up, mouse_side_t::right );
+	}
+
+	DWORD convert_wm_to_mouseeventf(DWORD m_type)
+	{
+		switch (m_type)
+		{
+			case WM_LBUTTONUP:		return MOUSEEVENTF_LEFTUP;
+			case WM_LBUTTONDOWN:	return MOUSEEVENTF_LEFTDOWN;
+			case WM_RBUTTONUP:		return MOUSEEVENTF_RIGHTUP;
+			case WM_RBUTTONDOWN:	return MOUSEEVENTF_RIGHTDOWN;
+			default: break;
+		}
+
+		return 0x0;
 	}
 }
 

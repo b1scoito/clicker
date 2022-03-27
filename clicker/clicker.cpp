@@ -43,23 +43,21 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps )
 		this->f_delay += rng::random_real<float>(1.f, config.clicker.f_default_timer_randomization );
 
 	// Down delay
-	PreciseSleep(this->f_delay );
+	PreciseSleep((double)this->f_delay);
 	input::click( input::mouse_input_type_t::down, b_button );
 
 	// Up delay
-	PreciseSleep(this->f_delay );
+	PreciseSleep((double)this->f_delay);
 	input::click( input::mouse_input_type_t::up, b_button );
 
 	const auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> elapsed { end - start };
-
 	vars::stats::f_average_cps = (float) ( 1000.f / elapsed.count() );
 
 	++vars::stats::i_clicks_this_session;
 
-	log_debug( "(%s, %d): CPS: %.3f | delay: %.3fms | time elapsed: %.3fms | avg. CPS: %.3f",
-		config.clicker.i_send_input_method ? "PostMessage" : "SendMessage", 
-		vars::stats::i_clicks_this_session, f_cps, (this->f_delay * 2 ), elapsed.count(), vars::stats::f_average_cps);
+	log_debug( "[%d]: CPS: %.3f | delay: %.3fms | time elapsed: %.3fms | avg. CPS: %.3f",
+		vars::stats::i_clicks_this_session, f_cps, (this->f_delay * 2), elapsed.count(), vars::stats::f_average_cps);
 }
 
 void c_clicker::update_cps()
@@ -96,7 +94,7 @@ void c_clicker::update_cps()
 			this->b_should_update = false;
 		}
 
-		PreciseSleep(rate);
+		PreciseSleep((double)rate);
 
 		this->f_random = {};
 		this->b_should_update = true;

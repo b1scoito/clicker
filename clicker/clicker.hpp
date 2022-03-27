@@ -1,6 +1,6 @@
 #pragma once
 
-#define PreciseSleep(ms) { timer::precise_sleep(ms); }
+#define PreciseSleep(ms) { timer::precise_sleep(ms / 1000.); }
 
 class c_clicker
 {

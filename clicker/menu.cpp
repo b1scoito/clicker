@@ -154,14 +154,6 @@ void c_menu::on_paint()
 				ImGui::Text( "Hide window key" );
 				keybind_button( config.clicker.i_hide_window_key, 155, 22 );
 
-				ImGui::Text("Input");
-				ImGui::Separator();
-				ImGui::Text("Send input method");
-				ImGui::PushItemWidth(200.f);
-				ImGui::Combo("##var::clicker::i_send_input_method", &config.clicker.i_send_input_method, "SendMessage\0PostMessage\0\0");
-				ImGui::PopItemWidth();
-				
-				ImGui::Separator();
 				ImGui::Text( "Colors" );
 				ImGui::Separator();
 				ImGui::ColorEdit4( "Color accent", config.clicker.f_color_accent, ImGuiColorEditFlags_NoInputs );
