@@ -3,7 +3,7 @@
 
 void c_clicker::thread()
 {
-	SetThreadPriority(GetCurrentProcess(), THREAD_PRIORITY_TIME_CRITICAL);
+	SetThreadPriority(std::this_thread::get_id, THREAD_PRIORITY_TIME_CRITICAL);
 
 	// Loop while running
 	while ( vars::b_is_running )
