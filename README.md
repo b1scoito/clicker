@@ -37,8 +37,3 @@ Please install preferably both `x86` and `x64` packages of the VC++ 2019 runtime
 ### d3d9.dll error
 Install the following
 - https://www.microsoft.com/en-us/download/confirmation.aspx?id=35
-
-## Discord
-Our little community if you want to join. Please read FAQ before anything!
-
-[![widget for the community guild](https://discord.com/api/guilds/739053636583424060/widget.png?style=shield)](https://discord.gg/cUqkhDxWrK)
