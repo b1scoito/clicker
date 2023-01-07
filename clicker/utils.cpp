@@ -123,7 +123,7 @@ namespace focus
 			switch ( config.clicker.i_version_type )
 			{
 				case 0:
-					return GetForegroundWindow() == FindWindow( L"LWJGL", nullptr );
+					return GetForegroundWindow() == FindWindow( L"LWJGL", nullptr ) || FindWindow(L"GLFW30", nullptr);
 				case 1:
 					return active_window_title().find( string::to_unicode( config.clicker.str_window_title ) ) != std::string::npos;
 				default:

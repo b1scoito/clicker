@@ -118,7 +118,7 @@ void c_clicker::update_variables()
 			{
 				vars::key::b_shift_pressed = GetAsyncKeyState(VK_SHIFT);
 
-				if (GetAsyncKeyState(69))
+				if (GetAsyncKeyState(69) || GetAsyncKeyState(VK_RSHIFT))
 				{
 					vars::key::b_inventory_opened = !vars::key::b_inventory_opened;
 					std::this_thread::sleep_for(std::chrono::milliseconds(200));
